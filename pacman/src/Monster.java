@@ -16,9 +16,12 @@ public abstract class Monster extends Actor
   private int seed = 0;
   private Random randomiser = new Random(0);
 
-  public Monster(Game game, MonsterType type)
+  // Define where all the needed images are located
+  public static String SPRITE_FOLDER = "sprites/";
+
+  public Monster(Game game, String spriteName)
   {
-    super("sprites/" + type.getImageName());
+    super(SPRITE_FOLDER + spriteName);
     this.game = game; // Does not need to store the whole board
   }
 
@@ -63,14 +66,14 @@ public abstract class Monster extends Actor
       setHorzMirror(true);
   }
 
-  private void addVisitedList(Location location)
+  protected void addVisitedList(Location location)
   {
     visitedList.add(location);
     if (visitedList.size() == listLength)
       visitedList.remove(0);
   }
 
-  private boolean isVisited(Location location)
+  protected boolean isVisited(Location location)
   {
     for (Location loc : visitedList)
       if (loc.equals(location))
@@ -81,7 +84,7 @@ public abstract class Monster extends Actor
   // Have to rewrite this get location function
   // Most likely add either an array of classes/locations
   // of objects that can collide
-  private boolean canMove(Location location)
+  protected boolean canMove(Location location)
   {
     Color c = getBackground().getColor(location);
     if (c.equals(Color.gray) || location.getX() >= game.getNumHorzCells()
