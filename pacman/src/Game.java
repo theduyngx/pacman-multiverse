@@ -126,13 +126,6 @@ public class Game extends GameGrid {
         String[] tx5Locations = this.properties.getProperty("TX5.location").split(",");
         String[] pacManLocations = this.properties.getProperty("PacMan.location").split(",");
 
-        ///
-        System.out.println(pacManLocations.length);
-        System.out.println(trollLocations.length);
-        System.out.println(tx5Locations.length);
-        ///
-
-
         int trollX = Integer.parseInt(trollLocations[0]);
         int trollY = Integer.parseInt(trollLocations[1]);
 
@@ -145,6 +138,8 @@ public class Game extends GameGrid {
         addActor(troll, new Location(trollX, trollY), Location.NORTH);
         addActor(pacActor, new Location(pacManX, pacManY));
         addActor(tx5, new Location(tx5X, tx5Y), Location.NORTH);
+
+        System.out.println(troll.);
     }
 
     private int countPillsAndItems() {
