@@ -16,7 +16,6 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
     private int nbPills = 0;
     private int score = 0;
     private Game game;
-    private ArrayList<Location> visitedList = new ArrayList<Location>();
     private List<String> propertyMoves = new ArrayList<>();
     private int propertyMoveIndex = 0;
     private final int listLength = 10;
@@ -52,22 +51,22 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
             return;
         Location next = null;
         switch (keyCode) {
-            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_LEFT -> {
                 next = getLocation().getNeighbourLocation(Location.WEST);
                 setDirection(Location.WEST);
-                break;
-            case KeyEvent.VK_UP:
+            }
+            case KeyEvent.VK_UP -> {
                 next = getLocation().getNeighbourLocation(Location.NORTH);
                 setDirection(Location.NORTH);
-                break;
-            case KeyEvent.VK_RIGHT:
+            }
+            case KeyEvent.VK_RIGHT -> {
                 next = getLocation().getNeighbourLocation(Location.EAST);
                 setDirection(Location.EAST);
-                break;
-            case KeyEvent.VK_DOWN:
+            }
+            case KeyEvent.VK_DOWN -> {
                 next = getLocation().getNeighbourLocation(Location.SOUTH);
                 setDirection(Location.SOUTH);
-                break;
+            }
         }
         if (next != null && canMove(next)) {
             setLocation(next);
@@ -104,20 +103,16 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
 
     private void followPropertyMoves() {
         String currentMove = propertyMoves.get(propertyMoveIndex);
-        switch(currentMove) {
-            case "R":
-                turn(90);
-                break;
-            case "L":
-                turn(-90);
-                break;
-            case "M":
+        switch (currentMove) {
+            case "R" -> turn(90);
+            case "L" -> turn(-90);
+            case "M" -> {
                 Location next = getNextMoveLocation();
                 if (canMove(next)) {
                     setLocation(next);
                     eatPill(next);
                 }
-                break;
+            }
         }
         propertyMoveIndex++;
     }
@@ -134,7 +129,7 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
                 getLocation().get4CompassDirectionTo(closestPill);
         Location next = getLocation().getNeighbourLocation(compassDir);
         setDirection(compassDir);
-        if (!isVisited(next) && canMove(next)) {
+        if (canMove(next)) {
             setLocation(next);
         }
         else {
@@ -169,20 +164,6 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
             }
         }
         eatPill(next);
-        addVisitedList(next);
-    }
-
-    private void addVisitedList(Location location) {
-        visitedList.add(location);
-        if (visitedList.size() == listLength)
-            visitedList.remove(0);
-    }
-
-    private boolean isVisited(Location location) {
-        for (Location loc : visitedList)
-            if (loc.equals(location))
-                return true;
-        return false;
     }
 
     private boolean canMove(Location location) {

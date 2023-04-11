@@ -12,40 +12,60 @@ import java.util.Properties;
 public class Game extends GameGrid {
     private final static int nbHorzCells = 20;
     private final static int nbVertCells = 11;
-    protected PacManGameGrid grid = new PacManGameGrid(nbHorzCells, nbVertCells);
+    protected PacManGameGrid grid;
 
     protected PacActor pacActor = new PacActor(this);
+    private final ArrayList<Monster> monsters;
     private Monster troll = new Monster(this, MonsterType.Troll);
     private Monster tx5 = new Monster(this, MonsterType.TX5);
 
+    ///
+    private final Properties properties;
+    ///
 
-    private ArrayList<Location> pillAndItemLocations = new ArrayList<Location>();
-    private ArrayList<Actor> iceCubes = new ArrayList<Actor>();
-    private ArrayList<Actor> goldPieces = new ArrayList<Actor>();
-    private GameCallback gameCallback;
-    private Properties properties;
+
+    private final ArrayList<Location> pillAndItemLocations;
+    private final ArrayList<Actor> iceCubes;
+    private final ArrayList<Actor> goldPieces;
+    private final GameCallback gameCallback;
     private int seed = 30006;
-    private ArrayList<Location> propertyPillLocations = new ArrayList<>();
-    private ArrayList<Location> propertyGoldLocations = new ArrayList<>();
+    private final ArrayList<Location> propertyPillLocations;
+    private final ArrayList<Location> propertyGoldLocations;
 
     public Game(GameCallback gameCallback, Properties properties) {
         //Setup game
-        super(nbHorzCells, nbVertCells, 20, false);
+        super(nbHorzCells, nbVertCells, 50, false);
         this.gameCallback = gameCallback;
+        this.grid = new PacManGameGrid(nbHorzCells, nbVertCells);
+        ///
         this.properties = properties;
+        ///
+        this.monsters = new ArrayList<>();
+        this.pillAndItemLocations = new ArrayList<Location>();
+        this.iceCubes = new ArrayList<Actor>();
+        this.goldPieces = new ArrayList<Actor>();
+        this.propertyPillLocations = new ArrayList<>();
+        this.propertyGoldLocations = new ArrayList<>();
+        parseProperty(properties);
+    }
+
+    public void parseProperty(Properties properties) {
+        pacActor.setPropertyMoves(properties.getProperty("PacMan.move"));
+        pacActor.setAuto(Boolean.parseBoolean(properties.getProperty("PacMan.isAuto")));
+        seed = Integer.parseInt(properties.getProperty("seed"));
+    }
+
+    public void run() {
         setSimulationPeriod(100);
         setTitle("[PacMan in the Multiverse]");
 
         //Setup for auto test
-        pacActor.setPropertyMoves(properties.getProperty("PacMan.move"));
-        pacActor.setAuto(Boolean.parseBoolean(properties.getProperty("PacMan.isAuto")));
         loadPillAndItemsLocations();
 
         GGBackground bg = getBg();
         drawGrid(bg);
 
         //Setup Random seeds
-        seed = Integer.parseInt(properties.getProperty("seed"));
         pacActor.setSeed(seed);
         troll.setSeed(seed);
         tx5.setSeed(seed);
@@ -105,6 +125,14 @@ public class Game extends GameGrid {
         String[] trollLocations = this.properties.getProperty("Troll.location").split(",");
         String[] tx5Locations = this.properties.getProperty("TX5.location").split(",");
         String[] pacManLocations = this.properties.getProperty("PacMan.location").split(",");
+
+        ///
+        System.out.println(pacManLocations.length);
+        System.out.println(trollLocations.length);
+        System.out.println(tx5Locations.length);
+        ///
+
+
         int trollX = Integer.parseInt(trollLocations[0]);
         int trollY = Integer.parseInt(trollLocations[1]);
 
