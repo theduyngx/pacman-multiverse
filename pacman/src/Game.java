@@ -16,8 +16,8 @@ public class Game extends GameGrid {
 
     protected PacActor pacActor = new PacActor(this);
     private final ArrayList<Monster> monsters;
-    private Monster troll = new Monster(this, MonsterType.Troll);
-    private Monster tx5 = new Monster(this, MonsterType.TX5);
+    private final Monster troll = new Monster(this, MonsterType.Troll);
+    private final Monster tx5 = new Monster(this, MonsterType.TX5);
 
     ///
     private final Properties properties;
@@ -41,9 +41,9 @@ public class Game extends GameGrid {
         this.properties = properties;
         ///
         this.monsters = new ArrayList<>();
-        this.pillAndItemLocations = new ArrayList<Location>();
-        this.iceCubes = new ArrayList<Actor>();
-        this.goldPieces = new ArrayList<Actor>();
+        this.pillAndItemLocations = new ArrayList<>();
+        this.iceCubes = new ArrayList<>();
+        this.goldPieces = new ArrayList<>();
         this.propertyPillLocations = new ArrayList<>();
         this.propertyGoldLocations = new ArrayList<>();
         parseProperty(properties);
@@ -210,14 +210,10 @@ public class Game extends GameGrid {
 
 
         if (propertyPillLocations.size() > 0) {
-            for (Location location : propertyPillLocations) {
-                pillAndItemLocations.add(location);
-            }
+            pillAndItemLocations.addAll(propertyPillLocations);
         }
         if (propertyGoldLocations.size() > 0) {
-            for (Location location : propertyGoldLocations) {
-                pillAndItemLocations.add(location);
-            }
+            pillAndItemLocations.addAll(propertyGoldLocations);
         }
     }
 
