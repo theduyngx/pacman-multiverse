@@ -25,7 +25,7 @@ public class Ice extends Item {
         if (matchPacmanLocation(manager)) {
 
             // trigger signal
-            for (Monster monster : manager.getMonsters()) {
+            for (Monster monster : manager.getMonsters().values()) {
                 monster.stopMoving(FREEZE_TIME);
             }
         }

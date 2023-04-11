@@ -116,7 +116,7 @@ public class Monster extends Actor
 
     private boolean canMove(Location location) {
         Color c = getBackground().getColor(location);
-        return !c.equals(Color.gray) && location.getX() < game.getNumHorzCells()
-                && location.getX() >= 0 && location.getY() < game.getNumVertCells() && location.getY() >= 0;
+        return !c.equals(Color.gray) && location.getX() < game.getNumHorizontalCells()
+                && location.getX() >= 0 && location.getY() < game.getNumVerticalCells() && location.getY() >= 0;
     }
 }

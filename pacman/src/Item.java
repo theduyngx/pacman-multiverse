@@ -39,6 +39,17 @@ public abstract class Item {
         return (xItem == xPac || yItem == yPac);
     }
 
+    // remove item
+    public void removeItem(ObjectManager manager) {
+        if (this instanceof Pill)
+            manager.getPills().remove(location);
+        else if (this instanceof Gold)
+            manager.getGolds().remove(location);
+        else if (this instanceof Ice)
+            manager.getIces().remove(location);
+        actor.removeSelf();
+    }
+
     public abstract void putItem(GGBackground bg, Game game);
 
     public abstract void signalManager(ObjectManager manager);

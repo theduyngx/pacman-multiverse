@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 public class Game extends GameGrid {
-    private final static int nbHorzCells = 20;
-    private final static int nbVertCells = 11;
+    private final static int numHorizontalCells = 20;
+    private final static int numVerticalCells = 11;
     protected PacManGameGrid grid;
 
     protected PacActor pacActor = new PacActor(this);
@@ -34,9 +34,9 @@ public class Game extends GameGrid {
 
     public Game(GameCallback gameCallback, Properties properties) {
         //Setup game
-        super(nbHorzCells, nbVertCells, 50, false);
+        super(numHorizontalCells, numVerticalCells, 50, false);
         this.gameCallback = gameCallback;
-        this.grid = new PacManGameGrid(nbHorzCells, nbVertCells);
+        this.grid = new PacManGameGrid(numHorizontalCells, numVerticalCells);
         ///
         this.properties = properties;
         ///
@@ -142,8 +142,8 @@ public class Game extends GameGrid {
 
     private int countPillsAndItems() {
         int pillsAndItemsCount = 0;
-        for (int y = 0; y < nbVertCells; y++) {
-            for (int x = 0; x < nbHorzCells; x++) {
+        for (int y = 0; y < numVerticalCells; y++) {
+            for (int x = 0; x < numHorizontalCells; x++) {
                 Location location = new Location(x, y);
                 int a = grid.getCell(location);
                 if (a == 1 && propertyPillLocations.size() == 0) { // Pill
@@ -192,8 +192,8 @@ public class Game extends GameGrid {
         }
     }
     private void setupPillAndItemsLocations() {
-        for (int y = 0; y < nbVertCells; y++) {
-            for (int x = 0; x < nbHorzCells; x++) {
+        for (int y = 0; y < numVerticalCells; y++) {
+            for (int x = 0; x < numHorizontalCells; x++) {
                 Location location = new Location(x, y);
                 int a = grid.getCell(location);
                 if (a == 1 && propertyPillLocations.size() == 0) {
@@ -220,8 +220,8 @@ public class Game extends GameGrid {
     private void drawGrid(GGBackground bg) {
         bg.clear(Color.gray);
         bg.setPaintColor(Color.white);
-        for (int y = 0; y < nbVertCells; y++) {
-            for (int x = 0; x < nbHorzCells; x++) {
+        for (int y = 0; y < numVerticalCells; y++) {
+            for (int x = 0; x < numHorizontalCells; x++) {
                 bg.setPaintColor(Color.white);
                 Location location = new Location(x, y);
                 int a = grid.getCell(location);
@@ -248,47 +248,10 @@ public class Game extends GameGrid {
         }
     }
 
-    private void putPill(GGBackground bg, Location location){
-        bg.fillCircle(toPoint(location), 5);
+    public int getNumHorizontalCells(){
+        return this.numHorizontalCells;
     }
-
-    private void putGold(GGBackground bg, Location location){
-        bg.setPaintColor(Color.yellow);
-        bg.fillCircle(toPoint(location), 5);
-        Actor gold = new Actor("sprites/gold.png");
-        this.goldPieces.add(gold);
-        addActor(gold, location);
-    }
-
-    private void putIce(GGBackground bg, Location location){
-        bg.setPaintColor(Color.blue);
-        bg.fillCircle(toPoint(location), 5);
-        Actor ice = new Actor("sprites/ice.png");
-        this.iceCubes.add(ice);
-        addActor(ice, location);
-    }
-
-    public void removeItem(String type,Location location) {
-        if (type.equals("gold")){
-            for (Actor item : this.goldPieces) {
-                if (location.getX() == item.getLocation().getX() && location.getY() == item.getLocation().getY()) {
-                    item.hide();
-                }
-            }
-        }
-        else if(type.equals("ice")) {
-            for (Actor item : this.iceCubes) {
-                if (location.getX() == item.getLocation().getX() && location.getY() == item.getLocation().getY()) {
-                    item.hide();
-                }
-            }
-        }
-    }
-
-    public int getNumHorzCells(){
-        return this.nbHorzCells;
-    }
-    public int getNumVertCells(){
-        return this.nbVertCells;
+    public int getNumVerticalCells() {
+        return this.numVerticalCells;
     }
 }

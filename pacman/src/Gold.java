@@ -24,7 +24,7 @@ public class Gold extends Item {
         if (! matchPacmanLocation(manager)) {
 
             // trigger signal
-            for (Monster monster : manager.getMonsters()) {
+            for (Monster monster : manager.getMonsters().values()) {
                 // NOTE: gold is supposed to aggravate
                 monster.stopMoving(AGGRAVATE_TIME);
             }
