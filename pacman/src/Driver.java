@@ -1,6 +1,5 @@
 package src;
 
-import ch.aplu.jgamegrid.Location;
 import src.utility.GameCallback;
 import src.utility.PropertiesLoader;
 import java.util.Properties;
