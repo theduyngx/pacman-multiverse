@@ -6,7 +6,7 @@ import ch.aplu.jgamegrid.*;
 import java.awt.Color;
 import java.util.*;
 
-public class Monster extends Actor
+public abstract class Monster extends Actor
 {
   private Game game;
   private MonsterType type;
@@ -19,9 +19,10 @@ public class Monster extends Actor
   public Monster(Game game, MonsterType type)
   {
     super("sprites/" + type.getImageName());
-    this.game = game;
-    this.type = type;
+    this.game = game; // Does not need to store the whole board
   }
+
+  protected abstract void walkApproach();
 
   public void stopMoving(int seconds) {
     this.stopMoving = true;
@@ -34,6 +35,11 @@ public class Monster extends Actor
         monster.stopMoving = false;
       }
     }, seconds * SECOND_TO_MILLISECONDS);
+  }
+
+  public void furious(int seconds)
+  {
+    return;
   }
 
   public void setSeed(int seed) {
@@ -57,70 +63,6 @@ public class Monster extends Actor
       setHorzMirror(true);
   }
 
-  private void walkApproach()
-  {
-    Location pacLocation = game.pacActor.getLocation();
-    double oldDirection = getDirection();
-
-    // Walking approach:
-    // TX5: Determine direction to pacActor and try to move in that direction. Otherwise, random walk.
-    // Troll: Random walk.
-    Location.CompassDirection compassDir =
-      getLocation().get4CompassDirectionTo(pacLocation);
-    Location next = getLocation().getNeighbourLocation(compassDir);
-    setDirection(compassDir);
-    if (type == MonsterType.TX5 &&
-      !isVisited(next) && canMove(next))
-    {
-      setLocation(next);
-    }
-    else
-    {
-      // Random walk
-      int sign = randomiser.nextDouble() < 0.5 ? 1 : -1;
-      setDirection(oldDirection);
-      turn(sign * 90);  // Try to turn left/right
-      next = getNextMoveLocation();
-      if (canMove(next))
-      {
-        setLocation(next);
-      }
-      else
-      {
-        setDirection(oldDirection);
-        next = getNextMoveLocation();
-        if (canMove(next)) // Try to move forward
-        {
-          setLocation(next);
-        }
-        else
-        {
-          setDirection(oldDirection);
-          turn(-sign * 90);  // Try to turn right/left
-          next = getNextMoveLocation();
-          if (canMove(next))
-          {
-            setLocation(next);
-          }
-          else
-          {
-
-            setDirection(oldDirection);
-            turn(180);  // Turn backward
-            next = getNextMoveLocation();
-            setLocation(next);
-          }
-        }
-      }
-    }
-    game.getGameCallback().monsterLocationChanged(this);
-    addVisitedList(next);
-  }
-
-  public MonsterType getType() {
-    return type;
-  }
-
   private void addVisitedList(Location location)
   {
     visitedList.add(location);
@@ -136,6 +78,9 @@ public class Monster extends Actor
     return false;
   }
 
+  // Have to rewrite this get location function
+  // Most likely add either an array of classes/locations
+  // of objects that can collide
   private boolean canMove(Location location)
   {
     Color c = getBackground().getColor(location);
