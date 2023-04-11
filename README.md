@@ -3,5 +3,5 @@
 PacMan in the Multiverse
 # Team Members
 - 1234567 Student A (<student.a@student.unimelb.edu.au>)
-- 1234567 Student B (<student.b@student.unimelb.edu.au>)
+- 1263651 Jonathan Chen Jie Kong (<jonathanchen@student.unimelb.edu.au>)
 - 1233281 Ramon Javier L. Felipe VI (<rfelipe@student.unimelb.edu.au>)
