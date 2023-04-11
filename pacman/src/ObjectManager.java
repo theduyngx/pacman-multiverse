@@ -2,33 +2,47 @@ package src;
 
 import ch.aplu.jgamegrid.Location;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 
 public class ObjectManager {
     private final PacActor pacActor;
-    private final ArrayList<Monster> monsters;
-    private final ArrayList<Pill> pills;
-    private final ArrayList<Gold> golds;
-    private final ArrayList<Ice> ices;
+    private final HashMap<Location, Monster> monsters;
+    private final HashMap<Location, Pill> pills;
+    private final HashMap<Location, Gold> golds;
+    private final HashMap<Location, Ice> ices;
 
     // constructor
     public ObjectManager(PacActor pacActor) {
         if (pacActor == null) {
             System.exit(1);
         }
-        this.monsters = new ArrayList<>();
+        this.monsters = new HashMap<>();
         this.pacActor = pacActor;
-        this.pills = new ArrayList<>();
-        this.golds = new ArrayList<>();
-        this.ices = new ArrayList<>();
+        this.pills = new HashMap<>();
+        this.golds = new HashMap<>();
+        this.ices = new HashMap<>();
     }
 
     // getters
     public PacActor getPacActor() {
         return pacActor;
     }
-    public ArrayList<Monster> getMonsters() {
+
+    public HashMap<Location, Monster> getMonsters() {
         return monsters;
+    }
+
+    public HashMap<Location, Pill> getPills() {
+        return pills;
+    }
+
+    public HashMap<Location, Gold> getGolds() {
+        return golds;
+    }
+
+    public HashMap<Location, Ice> getIces() {
+        return ices;
     }
 
     // other methods
@@ -41,8 +55,9 @@ public class ObjectManager {
             String[] pos = pL.split(",");
             int posX = Integer.parseInt(pos[0]);
             int posY = Integer.parseInt(pos[1]);
-            Pill pill = new Pill(new Location(posX, posY));
-            pills.add(pill);
+            Location location = new Location(posX, posY);
+            Pill pill = new Pill(location);
+            pills.put(location, pill);
         }
 
         String[] goldLocations = properties.getProperty("Gold.location").split(";");
@@ -50,8 +65,9 @@ public class ObjectManager {
             String[] pos = gL.split(",");
             int posX = Integer.parseInt(pos[0]);
             int posY = Integer.parseInt(pos[1]);
-            Gold gold = new Gold(new Location(posX, posY));
-            golds.add(gold);
+            Location location = new Location(posX, posY);
+            Gold gold = new Gold(location);
+            golds.put(location, gold);
         }
 
         String[] iceLocations = properties.getProperty("Gold.location").split(";");
@@ -59,8 +75,9 @@ public class ObjectManager {
             String[] pos = iL.split(",");
             int posX = Integer.parseInt(pos[0]);
             int posY = Integer.parseInt(pos[1]);
-            Ice ice = new Ice(new Location(posX, posY));
-            ices.add(ice);
+            Location location = new Location(posX, posY);
+            Ice ice = new Ice(location);
+            ices.put(location, ice);
         }
     }
 }
