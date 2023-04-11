@@ -26,25 +26,39 @@ public class ObjectManager {
         return pacActor;
     }
 
+    public ArrayList<Monster> getMonsters() {
+        return monsters;
+    }
+
     public void parseProperties(Properties properties) {
         pacActor.setPropertyMoves(properties.getProperty("PacMan.move"));
         pacActor.setAuto(Boolean.parseBoolean(properties.getProperty("PacMan.isAuto")));
-        String[] pillLocations = properties.getProperty("Pills.location").split(";");
 
+        String[] pillLocations = properties.getProperty("Pills.location").split(";");
         for (String pL : pillLocations) {
             String[] pos = pL.split(",");
             int posX = Integer.parseInt(pos[0]);
             int posY = Integer.parseInt(pos[1]);
-
             Pill pill = new Pill(new Location(posX, posY));
             pills.add(pill);
         }
-        for (String pL : pillLocations) {
-            String[] pos = pL.split(",");
+
+        String[] goldLocations = properties.getProperty("Gold.location").split(";");
+        for (String gL : goldLocations) {
+            String[] pos = gL.split(",");
             int posX = Integer.parseInt(pos[0]);
             int posY = Integer.parseInt(pos[1]);
+            Gold gold = new Gold(new Location(posX, posY));
+            golds.add(gold);
+        }
 
-            Pill pill = new Pill(new Location(posX, posY));
+        String[] Locations = properties.getProperty("Gold.location").split(";");
+        for (String gL : goldLocations) {
+            String[] pos = gL.split(",");
+            int posX = Integer.parseInt(pos[0]);
+            int posY = Integer.parseInt(pos[1]);
+            Gold gold = new Gold(new Location(posX, posY));
+            golds.add(gold);
         }
     }
 }

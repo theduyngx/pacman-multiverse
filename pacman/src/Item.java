@@ -14,5 +14,15 @@ public abstract class Item {
         return location.getY();
     }
 
+
+    public boolean matchPacmanLocation(ObjectManager manager) {
+        // assert that player is in fact at the location of item
+        int xItem = this.getX();
+        int yItem = this.getY();
+        int xPac  = manager.getPacActor().getX();
+        int yPac  = manager.getPacActor().getY();
+        return (xItem == xPac || yItem == yPac);
+    }
+
     public abstract void signalManager(ObjectManager manager);
 }
