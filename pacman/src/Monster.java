@@ -93,4 +93,15 @@ public abstract class Monster extends Actor
     else
       return true;
   }
+
+  protected Random getRandomiser()
+  {
+    return this.randomiser;
+  }
+
+  protected Game getGame()
+  {
+    return this.game;
+  }
+
 }
