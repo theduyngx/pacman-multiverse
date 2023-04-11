@@ -11,6 +11,7 @@ public class ObjectManager {
     private final ArrayList<Gold> golds;
     private final ArrayList<Ice> ices;
 
+    // constructor
     public ObjectManager(PacActor pacActor) {
         if (pacActor == null) {
             System.exit(1);
@@ -22,14 +23,15 @@ public class ObjectManager {
         this.ices = new ArrayList<>();
     }
 
+    // getters
     public PacActor getPacActor() {
         return pacActor;
     }
-
     public ArrayList<Monster> getMonsters() {
         return monsters;
     }
 
+    // other methods
     public void parseProperties(Properties properties) {
         pacActor.setPropertyMoves(properties.getProperty("PacMan.move"));
         pacActor.setAuto(Boolean.parseBoolean(properties.getProperty("PacMan.isAuto")));
@@ -52,13 +54,13 @@ public class ObjectManager {
             golds.add(gold);
         }
 
-        String[] Locations = properties.getProperty("Gold.location").split(";");
-        for (String gL : goldLocations) {
-            String[] pos = gL.split(",");
+        String[] iceLocations = properties.getProperty("Gold.location").split(";");
+        for (String iL : iceLocations) {
+            String[] pos = iL.split(",");
             int posX = Integer.parseInt(pos[0]);
             int posY = Integer.parseInt(pos[1]);
-            Gold gold = new Gold(new Location(posX, posY));
-            golds.add(gold);
+            Ice ice = new Ice(new Location(posX, posY));
+            ices.add(ice);
         }
     }
 }

@@ -8,13 +8,13 @@ import java.util.*;
 
 public class Monster extends Actor
 {
-    private Game game;
-    private MonsterType type;
-    private ArrayList<Location> visitedList = new ArrayList<Location>();
+    private final Game game;
+    private final MonsterType type;
+    private final ArrayList<Location> visitedList = new ArrayList<>();
     private final int listLength = 10;
     private boolean stopMoving = false;
     private int seed = 0;
-    private Random randomiser = new Random(0);
+    private final Random randomizer = new Random(0);
 
     public Monster(Game game, MonsterType type) {
         super("sprites/" + type.getImageName());
@@ -32,12 +32,12 @@ public class Monster extends Actor
             public void run() {
                 monster.stopMoving = false;
             }
-        }, seconds * SECOND_TO_MILLISECONDS);
+        }, (long) seconds * SECOND_TO_MILLISECONDS);
     }
 
     public void setSeed(int seed) {
         this.seed = seed;
-        randomiser.setSeed(seed);
+        randomizer.setSeed(seed);
     }
 
     public void setStopMoving(boolean stopMoving) {
@@ -45,14 +45,10 @@ public class Monster extends Actor
     }
 
     public void act() {
-        if (stopMoving) {
-            return;
-        }
+        if (stopMoving) return;
         walkApproach();
-        if (getDirection() > 150 && getDirection() < 210)
-            setHorzMirror(false);
-        else
-            setHorzMirror(true);
+        boolean enable = getDirection() > 150 && getDirection() < 210;
+        setHorzMirror(!enable);
     }
 
     private void walkApproach() {
@@ -71,28 +67,24 @@ public class Monster extends Actor
         }
         else {
             // Random walk
-            int sign = randomiser.nextDouble() < 0.5 ? 1 : -1;
+            int sign = randomizer.nextDouble() < 0.5 ? 1 : -1;
             setDirection(oldDirection);
             turn(sign * 90);  // Try to turn left/right
             next = getNextMoveLocation();
-            if (canMove(next)) {
+            if (canMove(next))
                 setLocation(next);
-            }
             else {
                 setDirection(oldDirection);
                 next = getNextMoveLocation();
-                if (canMove(next)) { // Try to move forward
+                if (canMove(next))// Try to move forward
                     setLocation(next);
-                }
                 else {
                     setDirection(oldDirection);
                     turn(-sign * 90);  // Try to turn right/left
                     next = getNextMoveLocation();
-                    if (canMove(next)) {
+                    if (canMove(next))
                         setLocation(next);
-                    }
                     else {
-
                         setDirection(oldDirection);
                         turn(180);  // Turn backward
                         next = getNextMoveLocation();
@@ -124,10 +116,7 @@ public class Monster extends Actor
 
     private boolean canMove(Location location) {
         Color c = getBackground().getColor(location);
-        if (c.equals(Color.gray) || location.getX() >= game.getNumHorzCells()
-                || location.getX() < 0 || location.getY() >= game.getNumVertCells() || location.getY() < 0)
-            return false;
-        else
-            return true;
+        return !c.equals(Color.gray) && location.getX() < game.getNumHorzCells()
+                && location.getX() >= 0 && location.getY() < game.getNumVertCells() && location.getY() >= 0;
     }
 }

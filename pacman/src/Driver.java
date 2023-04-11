@@ -12,7 +12,7 @@ public class Driver {
      * @param args the command line arguments
      */
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         String propertiesPath = DEFAULT_PROPERTIES_PATH;
         if (args.length > 0) {
             propertiesPath = args[0];
