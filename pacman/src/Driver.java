@@ -1,10 +1,10 @@
 package src;
 
+import ch.aplu.jgamegrid.Location;
 import src.utility.GameCallback;
 import src.utility.PropertiesLoader;
 
-import java.util.Timer;
-
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class Driver {
