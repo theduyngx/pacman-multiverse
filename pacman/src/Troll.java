@@ -1,5 +1,7 @@
 package src;
 
+import ch.aplu.jgamegrid.*;
+
 public class Troll extends Monster
 {
     public Troll(Game game, String spriteName)
@@ -11,11 +13,12 @@ public class Troll extends Monster
     protected void walkApproach()
     {
         double oldDirection = this.getDirection();
-        int sign = this.randomiser.nextDouble();
+        // Should be int but I don't know what happened
+        double sign = this.getRandomiser().nextDouble();
         this.setDirection(oldDirection);
         this.turn(sign*90);
 
-        next = getNextMoveLocation();
+        Location next = getNextMoveLocation();
 
         // First get a random direction to go to (left or right)
         if (this.canMove(next))
@@ -50,7 +53,7 @@ public class Troll extends Monster
 
         // Tell game to change monster's location and store
         // this as visited
-        game.getGameCallback().monsterLocationChanged(this);
+        this.getGame().getGameCallback().monsterLocationChanged(this);
         this.addVisitedList(next);
     }
 }
