@@ -7,8 +7,8 @@ public class Ice extends Item {
     private static final int FREEZE_TIME = 3;
     private static final String directory = "sprites/ice.png";
 
-    public Ice(Location location) {
-        super(location);
+    public Ice(Game game, Location location) {
+        super(game, location);
     }
 
     @Override

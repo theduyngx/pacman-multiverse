@@ -46,9 +46,7 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
     }
 
     public void keyRepeated(int keyCode) {
-        if (isAuto) {
-            return;
-        }
+        if (isAuto) return;
         if (isRemoved())  // Already removed
             return;
         Location next = null;

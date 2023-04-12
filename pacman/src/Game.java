@@ -28,8 +28,24 @@ public class Game extends GameGrid {
         this.grid = new PacManGameGrid(numHorizontalCells, numVerticalCells);
         this.pacActor = new PacActor(this, manager);
         this.manager = new ObjectManager(pacActor);
-        manager.parseProperties(properties);
-        manager.instantiateItems(grid);
+        manager.parseProperties(this, properties);
+        manager.instantiateItems(grid, this);
+
+
+
+        /////////////
+        // temporarily initialize troll and tx5
+        String[] trollLocations = properties.getProperty("Troll.location").split(",");
+        String[] tx5Locations = properties.getProperty("TX5.location").split(",");
+        int trollX = Integer.parseInt(trollLocations[0]);
+        int trollY = Integer.parseInt(trollLocations[1]);
+
+        int tx5X = Integer.parseInt(tx5Locations[0]);
+        int tx5Y = Integer.parseInt(tx5Locations[1]);
+
+        addActor(troll, new Location(trollX, trollY), Location.NORTH);
+        addActor(tx5, new Location(tx5X, tx5Y), Location.NORTH);
+        /////////////
     }
 
     public void run() {
@@ -50,7 +66,6 @@ public class Game extends GameGrid {
         pacActor.setSlowDown(3);
         tx5.stopMoving(5);
         setupActorLocations();
-
 
 
         //Run the game
@@ -122,34 +137,10 @@ public class Game extends GameGrid {
             for (int x = 0; x < numHorizontalCells; x++) {
                 bg.setPaintColor(Color.white);
                 Location location = new Location(x, y);
-                int a = grid.getCell(location);
-                if (a > 0)
+                if (grid.getCell(location) != PacManGameGrid.BlockType.ERROR)
+                    bg.fillCell(location, Color.WHITE);
+                if (grid.getCell(location) == PacManGameGrid.BlockType.WALL)
                     bg.fillCell(location, Color.lightGray);
-                else {
-                    manager.putItems(bg, this);
-                }
-//                if (a == 1 && manager.getPills().size() == 0) {
-//
-////                    putPill(bg, location);
-//                }
-//                else if (a == 3 && manager.getGolds().size() == 0) {
-//
-////                    putGold(bg, location);
-//                }
-//                else if (a == 4) {
-//
-////                    putIce(bg, location);
-//                }
-//            }
-//        }
-//
-//        for (Location location : manager.getPills().keySet()) {
-////            putPill(bg, location);
-//        }
-//
-//        for (Location location : manager.getGolds().keySet()) {
-////            putGold(bg, location);
-//        }
             }
         }
     }
