@@ -6,11 +6,6 @@ import java.util.HashMap;
 import java.util.Properties;
 
 public class ObjectManager {
-    public final int WALL = 0;
-    public final int PILL = 1;
-    public final int SPACE = 2;
-    public final int GOLD = 3;
-    public final int ICE = 4;
     private final PacActor pacActor;
     private final HashMap<Location, Monster> monsters;
     private final HashMap<Location, Pill> pills;
@@ -23,11 +18,11 @@ public class ObjectManager {
         if (pacActor == null) {
             System.exit(1);
         }
-        this.monsters = new HashMap<>();
         this.pacActor = pacActor;
-        this.pills = new HashMap<>();
-        this.golds = new HashMap<>();
-        this.ices = new HashMap<>();
+        this.monsters = new HashMap<>();
+        this.pills    = new HashMap<>();
+        this.golds    = new HashMap<>();
+        this.ices     = new HashMap<>();
     }
 
     // getters
@@ -89,41 +84,28 @@ public class ObjectManager {
                 golds.put(location, gold);
             }
         }
-
-        // parse the ice locations if there is ice locations
-        if (properties.containsKey("Ices.location")) {
-            String[] iceLocations = properties.getProperty("Ice.location").split(";");
-            for (String iL : iceLocations) {
-                String[] pos = iL.split(",");
-                int posX = Integer.parseInt(pos[0]);
-                int posY = Integer.parseInt(pos[1]);
-                location = new Location(posX, posY);
-                Ice ice = new Ice(location);
-                ices.put(location, ice);
-            }
-        }
     }
 
     // instantiate the items in the grid and put them in their respective hashmaps
     public void instantiateItems(PacManGameGrid grid) {
 
-        for (int col = 0; col < grid.getNbVertCells(); col++) {
-            for (int row = 0; row < grid.getNbHorzCells(); row++) {
-
-                int itemValue = grid.getMazeArray()[col][row];
+        for (int col = 0; col < grid.getNumVerticalCells(); col++)
+            for (int row = 0; row < grid.getNumHorizontalCells(); row++) {
+                PacManGameGrid.BlockType itemType = grid.getMazeArray()[col][row];
                 Location location = new Location(col, row);
-                if (itemValue == PILL) {
+                if (itemType == PacManGameGrid.BlockType.PILL) {
                     Pill pill = new Pill(location);
                     pills.put(location, pill);
-                } else if (itemValue == GOLD) {
+                }
+                else if (itemType == PacManGameGrid.BlockType.GOLD) {
                     Gold gold = new Gold(location);
                     golds.put(location, gold);
-                } else if (itemValue == ICE) {
+                }
+                else if (itemType == PacManGameGrid.BlockType.ICE) {
                     Ice ice = new Ice(location);
                     ices.put(location, ice);
                 }
             }
-        }
     }
 
     public void putItems(GGBackground bg, Game game) {
@@ -142,9 +124,9 @@ public class ObjectManager {
     public void putActors(Game game) {
         // monsters
         for (Monster monster : monsters.values()) {
-            game.addActor(monster, monster.getLocation(), Location.NORTH);
+//            game.addActor(monster, monster.getLocation(), Location.NORTH);
         }
         // pacActor
-        game.addActor(pacActor, pacActor.getLocation());
+//        game.addActor(pacActor, pacActor.getLocation());
     }
 }
