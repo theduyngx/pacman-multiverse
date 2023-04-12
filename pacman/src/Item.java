@@ -3,16 +3,9 @@ import ch.aplu.jgamegrid.*;
 
 public abstract class Item extends Actor {
     public static final int radius = 5;
-    private Actor actor;
 
-    // getters
-    public Actor getActor() {
-        return actor;
-    }
-
-    // setters
-    public void setActor(Actor actor) {
-        this.actor = actor;
+    public Item(String src) {
+        super(src);
     }
 
 
@@ -33,7 +26,7 @@ public abstract class Item extends Actor {
             manager.getGolds().remove(getLocation());
         else if (this instanceof Ice)
             manager.getIces().remove(getLocation());
-        actor.removeSelf();
+//        this.removeSelf();
     }
 
     public abstract void putItem(GGBackground bg, Game game, Location location);
