@@ -6,16 +6,12 @@ public class Gold extends Item {
     private static final int AGGRAVATE_TIME = 3;
     private static final String directory = "sprites/gold.png";
 
-    public Gold(Game game, Location location) {
-        super(game, location);
-    }
-
     @Override
-    public void putItem(GGBackground bg, Game game) {
+    public void putItem(GGBackground bg, Game game, Location location) {
         bg.setPaintColor(Color.yellow);
-        bg.fillCircle(game.toPoint(getLocation()), radius);
+        bg.fillCircle(game.toPoint(location), radius);
         setActor(new Actor(directory));
-        game.addActor(getActor(), getLocation());
+        game.addActor(getActor(), location);
     }
 
     @Override
