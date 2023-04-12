@@ -15,18 +15,20 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
     private int idSprite = 0;
     private int nbPills = 0;
     private int score = 0;
-    private Game game;
-    private ArrayList<Location> visitedList = new ArrayList<Location>();
+    private final Game game;
     private List<String> propertyMoves = new ArrayList<>();
     private int propertyMoveIndex = 0;
-    private final int listLength = 10;
-    private int seed;
-    private Random randomiser = new Random();
-    public PacActor(Game game) {
+    private final Random randomizer = new Random();
+    private final ObjectManager manager;
+    private boolean isAuto = false;
+
+
+    public PacActor(Game game, ObjectManager manager) {
         super(true, "sprites/pacpix.gif", nbSprites);  // Rotatable
         this.game = game;
+        this.manager = manager;
     }
-    private boolean isAuto = false;
+
 
     public void setAuto(boolean auto) {
         isAuto = auto;
@@ -34,8 +36,7 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
 
 
     public void setSeed(int seed) {
-        this.seed = seed;
-        randomiser.setSeed(seed);
+        randomizer.setSeed(seed);
     }
 
     public void setPropertyMoves(String propertyMoveString) {
@@ -52,26 +53,26 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
             return;
         Location next = null;
         switch (keyCode) {
-            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_LEFT -> {
                 next = getLocation().getNeighbourLocation(Location.WEST);
                 setDirection(Location.WEST);
-                break;
-            case KeyEvent.VK_UP:
+            }
+            case KeyEvent.VK_UP -> {
                 next = getLocation().getNeighbourLocation(Location.NORTH);
                 setDirection(Location.NORTH);
-                break;
-            case KeyEvent.VK_RIGHT:
+            }
+            case KeyEvent.VK_RIGHT -> {
                 next = getLocation().getNeighbourLocation(Location.EAST);
                 setDirection(Location.EAST);
-                break;
-            case KeyEvent.VK_DOWN:
+            }
+            case KeyEvent.VK_DOWN -> {
                 next = getLocation().getNeighbourLocation(Location.SOUTH);
                 setDirection(Location.SOUTH);
-                break;
+            }
         }
         if (next != null && canMove(next)) {
             setLocation(next);
-            eatPill(next);
+            eatPill(manager, next);
         }
     }
 
@@ -104,20 +105,16 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
 
     private void followPropertyMoves() {
         String currentMove = propertyMoves.get(propertyMoveIndex);
-        switch(currentMove) {
-            case "R":
-                turn(90);
-                break;
-            case "L":
-                turn(-90);
-                break;
-            case "M":
+        switch (currentMove) {
+            case "R" -> turn(90);
+            case "L" -> turn(-90);
+            case "M" -> {
                 Location next = getNextMoveLocation();
                 if (canMove(next)) {
                     setLocation(next);
-                    eatPill(next);
+                    eatPill(manager, next);
                 }
-                break;
+            }
         }
         propertyMoveIndex++;
     }
@@ -134,12 +131,12 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
                 getLocation().get4CompassDirectionTo(closestPill);
         Location next = getLocation().getNeighbourLocation(compassDir);
         setDirection(compassDir);
-        if (!isVisited(next) && canMove(next)) {
+        if (canMove(next)) {
             setLocation(next);
         }
         else {
             // normal movement
-            int sign = randomiser.nextDouble() < 0.5 ? 1 : -1;
+            int sign = randomizer.nextDouble() < 0.5 ? 1 : -1;
             setDirection(oldDirection);
             turn(sign * 90);  // Try to turn left/right
             next = getNextMoveLocation();
@@ -168,52 +165,41 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
                 }
             }
         }
-        eatPill(next);
-        addVisitedList(next);
-    }
-
-    private void addVisitedList(Location location) {
-        visitedList.add(location);
-        if (visitedList.size() == listLength)
-            visitedList.remove(0);
-    }
-
-    private boolean isVisited(Location location) {
-        for (Location loc : visitedList)
-            if (loc.equals(location))
-                return true;
-        return false;
+        eatPill(manager, next);
     }
 
     private boolean canMove(Location location) {
         Color c = getBackground().getColor(location);
-        return !c.equals(Color.gray) && location.getX() < game.getNumHorzCells()
-                && location.getX() >= 0 && location.getY() < game.getNumVertCells() && location.getY() >= 0;
+        return !c.equals(Color.gray) && location.getX() < game.getNumHorizontalCells()
+                && location.getX() >= 0 && location.getY() < game.getNumVerticalCells() && location.getY() >= 0;
     }
 
     public int getNbPills() {
         return nbPills;
     }
 
-    private void eatPill(Location location) {
-        Color c = getBackground().getColor(location);
-        if (c.equals(Color.white)) {
+    private void eatPill(ObjectManager manager, Location location) {
+        if (manager.getPills().containsKey(location)) {
             nbPills++;
             score++;
             getBackground().fillCell(location, Color.lightGray);
             game.getGameCallback().pacManEatPillsAndItems(location, "pills");
+            Pill pill = manager.getPills().get(location);
+            pill.removeItem(manager);
         }
-        else if (c.equals(Color.yellow)) {
+        else if (manager.getGolds().containsKey(location)) {
             nbPills++;
             score+= 5;
             getBackground().fillCell(location, Color.lightGray);
             game.getGameCallback().pacManEatPillsAndItems(location, "gold");
-            game.removeItem("gold",location);
+            Gold gold = manager.getGolds().get(location);
+            gold.removeItem(manager);
         }
-        else if (c.equals(Color.blue)) {
+        else if (manager.getIces().containsKey(location)) {
             getBackground().fillCell(location, Color.lightGray);
             game.getGameCallback().pacManEatPillsAndItems(location, "ice");
-            game.removeItem("ice",location);
+            Ice ice = manager.getIces().get(location);
+            ice.removeItem(manager);
         }
         String title = "[PacMan in the Multiverse] Current score: " + score;
         gameGrid.setTitle(title);
