@@ -12,6 +12,7 @@ import java.util.Random;
 
 public class PacActor extends Actor implements GGKeyRepeatListener {
     private static final int nbSprites = 4;
+    private static final String directory = "sprites/pacpix.gif";
     private int idSprite = 0;
     private int nbPills = 0;
     private int score = 0;
@@ -20,14 +21,13 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
     private List<String> propertyMoves = new ArrayList<>();
     private int propertyMoveIndex = 0;
     private final Random randomizer = new Random();
-    private final ObjectManager manager;
     private boolean isAuto = false;
+    private ObjectManager manager;
 
 
-    public PacActor(Game game, ObjectManager manager) {
-        super(true, "sprites/pacpix.gif", nbSprites);  // Rotatable
+    public PacActor(Game game) {
+        super(true, directory, nbSprites);  // Rotatable
         this.game = game;
-        this.manager = manager;
     }
 
     public Location getInitLocation() {
@@ -50,6 +50,10 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
         if (propertyMoveString != null) {
             this.propertyMoves = Arrays.asList(propertyMoveString.split(","));
         }
+    }
+
+    public void setManager(ObjectManager manager) {
+        this.manager = manager;
     }
 
     public void keyRepeated(int keyCode) {
@@ -132,35 +136,30 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
         Location closestPill = closestPillLocation();
         double oldDirection = getDirection();
 
-        Location.CompassDirection compassDir =
-                getLocation().get4CompassDirectionTo(closestPill);
+        Location.CompassDirection compassDir = getLocation().get4CompassDirectionTo(closestPill);
         Location next = getLocation().getNeighbourLocation(compassDir);
         setDirection(compassDir);
-        if (canMove(next)) {
+        if (canMove(next))
             setLocation(next);
-        }
         else {
             // normal movement
             int sign = randomizer.nextDouble() < 0.5 ? 1 : -1;
             setDirection(oldDirection);
             turn(sign * 90);  // Try to turn left/right
             next = getNextMoveLocation();
-            if (canMove(next)) {
+            if (canMove(next))
                 setLocation(next);
-            }
             else {
                 setDirection(oldDirection);
                 next = getNextMoveLocation();
-                if (canMove(next)) { // Try to move forward
+                if (canMove(next)) // Try to move forward
                     setLocation(next);
-                }
                 else {
                     setDirection(oldDirection);
                     turn(-sign * 90);  // Try to turn right/left
                     next = getNextMoveLocation();
-                    if (canMove(next)) {
+                    if (canMove(next))
                         setLocation(next);
-                    }
                     else {
                         setDirection(oldDirection);
                         turn(180);  // Turn backward

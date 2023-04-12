@@ -83,7 +83,6 @@ public class ObjectManager {
 
     // instantiate the items in the grid and put them in their respective hashmaps
     public void instantiateObjects(PacManGameGrid grid) {
-
         for (int col = 0; col < grid.getNumVerticalCells(); col++)
             for (int row = 0; row < grid.getNumHorizontalCells(); row++) {
                 PacManGameGrid.BlockType itemType = grid.getMazeArray()[col][row];

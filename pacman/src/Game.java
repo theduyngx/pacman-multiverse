@@ -27,10 +27,11 @@ public class Game extends GameGrid {
         super(numHorizontalCells, numVerticalCells, 50, false);
         this.gameCallback = gameCallback;
         this.grid = new PacManGameGrid(numHorizontalCells, numVerticalCells);
-        this.pacActor = new PacActor(this, manager);
+        this.pacActor = new PacActor(this);
         this.manager = new ObjectManager(pacActor);
         manager.parseProperties(properties);
         manager.instantiateObjects(grid);
+        pacActor.setManager(manager);
 
 
         /////////////
