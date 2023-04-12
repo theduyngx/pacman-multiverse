@@ -6,8 +6,7 @@ import ch.aplu.jgamegrid.*;
 import java.awt.Color;
 import java.util.*;
 
-public class Monster extends Actor
-{
+public class Monster extends Actor {
     private final Game game;
     private final MonsterType type;
     private final ArrayList<Location> visitedList = new ArrayList<>();
