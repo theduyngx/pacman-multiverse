@@ -4,9 +4,11 @@ import ch.aplu.jgamegrid.GGBackground;
 import ch.aplu.jgamegrid.Location;
 
 public class Pill extends Item {
-    private static final String directory = "sprites/gold.png";
+    private static final String directory = "sprites/ice.png";
+    private static final int PILL_SCORE = 1;
     public Pill() {
         super(directory);
+        setScore(PILL_SCORE);
     }
 
     @Override

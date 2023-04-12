@@ -6,9 +6,11 @@ import java.awt.*;
 public class Ice extends Item {
     private static final int FREEZE_TIME = 3;
     private static final String directory = "sprites/ice.png";
+    private static final int ICE_SCORE = 0;
 
     public Ice() {
         super(directory);
+        setScore(ICE_SCORE);
     }
 
     @Override

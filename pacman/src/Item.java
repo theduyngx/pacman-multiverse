@@ -2,8 +2,8 @@ package src;
 import ch.aplu.jgamegrid.*;
 
 public abstract class Item extends Actor {
+    private int score;
     public static final int radius = 5;
-
     public Item(String src) {
         super(src);
     }
@@ -18,15 +18,18 @@ public abstract class Item extends Actor {
         return (xItem == xPac || yItem == yPac);
     }
 
+    // get and set score
+    public int getScore() {
+        return score;
+    }
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     // remove item
     public void removeItem(ObjectManager manager) {
-        if (this instanceof Pill)
-            manager.getPills().remove(getLocation());
-        else if (this instanceof Gold)
-            manager.getGolds().remove(getLocation());
-        else if (this instanceof Ice)
-            manager.getIces().remove(getLocation());
-//        this.removeSelf();
+        manager.getItems().remove(getLocation());
+        this.removeSelf();
     }
 
     public abstract void putItem(GGBackground bg, Game game, Location location);

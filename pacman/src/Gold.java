@@ -5,9 +5,11 @@ import java.awt.*;
 public class Gold extends Item {
     private static final int AGGRAVATE_TIME = 3;
     private static final String directory = "sprites/gold.png";
+    private static final int GOLD_SCORE = 5;
 
     public Gold() {
         super(directory);
+        setScore(GOLD_SCORE);
     }
 
     @Override
