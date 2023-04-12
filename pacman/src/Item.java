@@ -1,18 +1,15 @@
 package src;
 import ch.aplu.jgamegrid.*;
 
-public abstract class Item {
+public abstract class Item extends Actor {
     public static final int radius = 5;
     private Actor actor;
-    private final Location location;
-    public Item(Location location) {
-        this.location = location;
+    public Item(Game game, Location location) {
+        game.addActor(this, location);
+        setLocation(location);
     }
 
     // getters
-    public Location getLocation() {
-        return location;
-    }
     public Actor getActor() {
         return actor;
     }
@@ -20,13 +17,6 @@ public abstract class Item {
     // setters
     public void setActor(Actor actor) {
         this.actor = actor;
-    }
-
-    public int getX() {
-        return location.getX();
-    }
-    public int getY() {
-        return location.getY();
     }
 
 
@@ -42,11 +32,11 @@ public abstract class Item {
     // remove item
     public void removeItem(ObjectManager manager) {
         if (this instanceof Pill)
-            manager.getPills().remove(location);
+            manager.getPills().remove(getLocation());
         else if (this instanceof Gold)
-            manager.getGolds().remove(location);
+            manager.getGolds().remove(getLocation());
         else if (this instanceof Ice)
-            manager.getIces().remove(location);
+            manager.getIces().remove(getLocation());
         actor.removeSelf();
     }
 

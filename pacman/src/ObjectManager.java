@@ -47,7 +47,7 @@ public class ObjectManager {
     }
 
     // parsing properties
-    public void parseProperties(Properties properties) {
+    public void parseProperties(Game game, Properties properties) {
         seed = Integer.parseInt(properties.getProperty("seed"));
 
         // parse pacman
@@ -57,6 +57,7 @@ public class ObjectManager {
         int pacManX = Integer.parseInt(pacManLocations[0]);
         int pacManY = Integer.parseInt(pacManLocations[1]);
         Location location = new Location(pacManX, pacManY);
+        game.addActor(pacActor, location);
         pacActor.setLocation(location);
 
         // parse the pill locations if there is pill location
@@ -67,7 +68,7 @@ public class ObjectManager {
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 location = new Location(posX, posY);
-                Pill pill = new Pill(location);
+                Pill pill = new Pill(game, location);
                 pills.put(location, pill);
             }
         }
@@ -80,29 +81,29 @@ public class ObjectManager {
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 location = new Location(posX, posY);
-                Gold gold = new Gold(location);
+                Gold gold = new Gold(game, location);
                 golds.put(location, gold);
             }
         }
     }
 
     // instantiate the items in the grid and put them in their respective hashmaps
-    public void instantiateItems(PacManGameGrid grid) {
+    public void instantiateItems(PacManGameGrid grid, Game game) {
 
         for (int col = 0; col < grid.getNumVerticalCells(); col++)
             for (int row = 0; row < grid.getNumHorizontalCells(); row++) {
                 PacManGameGrid.BlockType itemType = grid.getMazeArray()[col][row];
                 Location location = new Location(col, row);
                 if (itemType == PacManGameGrid.BlockType.PILL) {
-                    Pill pill = new Pill(location);
+                    Pill pill = new Pill(game, location);
                     pills.put(location, pill);
                 }
                 else if (itemType == PacManGameGrid.BlockType.GOLD) {
-                    Gold gold = new Gold(location);
+                    Gold gold = new Gold(game, location);
                     golds.put(location, gold);
                 }
                 else if (itemType == PacManGameGrid.BlockType.ICE) {
-                    Ice ice = new Ice(location);
+                    Ice ice = new Ice(game, location);
                     ices.put(location, ice);
                 }
             }

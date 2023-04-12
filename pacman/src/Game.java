@@ -28,8 +28,8 @@ public class Game extends GameGrid {
         this.grid = new PacManGameGrid(numHorizontalCells, numVerticalCells);
         this.pacActor = new PacActor(this, manager);
         this.manager = new ObjectManager(pacActor);
-        manager.parseProperties(properties);
-        manager.instantiateItems(grid);
+        manager.parseProperties(this, properties);
+        manager.instantiateItems(grid, this);
 
 
 
@@ -45,7 +45,6 @@ public class Game extends GameGrid {
 
         addActor(troll, new Location(trollX, trollY), Location.NORTH);
         addActor(tx5, new Location(tx5X, tx5Y), Location.NORTH);
-//        addActor(pacActor, pacActor.getLocation());
         /////////////
     }
 
