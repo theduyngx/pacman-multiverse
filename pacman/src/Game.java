@@ -26,9 +26,10 @@ public class Game extends GameGrid {
         super(numHorizontalCells, numVerticalCells, 50, false);
         this.gameCallback = gameCallback;
         this.grid = new PacManGameGrid(numHorizontalCells, numVerticalCells);
-        this.manager = new ObjectManager(pacActor);
         this.pacActor = new PacActor(this, manager);
+        this.manager = new ObjectManager(pacActor);
         manager.parseProperties(properties);
+        manager.instantiateItems(grid);
     }
 
     public void run() {
@@ -112,8 +113,11 @@ public class Game extends GameGrid {
     }
 
     private void drawGrid(GGBackground bg) {
+        // set the background
         bg.clear(Color.gray);
         bg.setPaintColor(Color.white);
+
+        // draw the maze (its border and items)
         for (int y = 0; y < numVerticalCells; y++) {
             for (int x = 0; x < numHorizontalCells; x++) {
                 bg.setPaintColor(Color.white);
@@ -121,24 +125,32 @@ public class Game extends GameGrid {
                 int a = grid.getCell(location);
                 if (a > 0)
                     bg.fillCell(location, Color.lightGray);
-                if (a == 1 && manager.getPills().size() == 0) {
-                    putPill(bg, location);
+                else {
+                    manager.putItems(bg, this);
                 }
-                else if (a == 3 && manager.getGolds().size() == 0) {
-                    putGold(bg, location);
-                }
-                else if (a == 4) {
-                    putIce(bg, location);
-                }
+//                if (a == 1 && manager.getPills().size() == 0) {
+//
+////                    putPill(bg, location);
+//                }
+//                else if (a == 3 && manager.getGolds().size() == 0) {
+//
+////                    putGold(bg, location);
+//                }
+//                else if (a == 4) {
+//
+////                    putIce(bg, location);
+//                }
+//            }
+//        }
+//
+//        for (Location location : manager.getPills().keySet()) {
+////            putPill(bg, location);
+//        }
+//
+//        for (Location location : manager.getGolds().keySet()) {
+////            putGold(bg, location);
+//        }
             }
-        }
-
-        for (Location location : manager.getPills().keySet()) {
-            putPill(bg, location);
-        }
-
-        for (Location location : manager.getGolds().keySet()) {
-            putGold(bg, location);
         }
     }
 

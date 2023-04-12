@@ -6,6 +6,11 @@ import java.util.HashMap;
 import java.util.Properties;
 
 public class ObjectManager {
+    public final int WALL = 0;
+    public final int PILL = 1;
+    public final int SPACE = 2;
+    public final int GOLD = 3;
+    public final int ICE = 4;
     private final PacActor pacActor;
     private final HashMap<Location, Monster> monsters;
     private final HashMap<Location, Pill> pills;
@@ -48,38 +53,76 @@ public class ObjectManager {
 
     // parsing properties
     public void parseProperties(Properties properties) {
-        pacActor.setPropertyMoves(properties.getProperty("PacMan.move"));
-        pacActor.setAuto(Boolean.parseBoolean(properties.getProperty("PacMan.isAuto")));
         seed = Integer.parseInt(properties.getProperty("seed"));
 
-        String[] pillLocations = properties.getProperty("Pills.location").split(";");
-        for (String pL : pillLocations) {
-            String[] pos = pL.split(",");
-            int posX = Integer.parseInt(pos[0]);
-            int posY = Integer.parseInt(pos[1]);
-            Location location = new Location(posX, posY);
-            Pill pill = new Pill(location);
-            pills.put(location, pill);
+        // parse pacman
+        pacActor.setPropertyMoves(properties.getProperty("PacMan.move"));
+        pacActor.setAuto(Boolean.parseBoolean(properties.getProperty("PacMan.isAuto")));
+        String[] pacManLocations = properties.getProperty("PacMan.location").split(",");
+        int pacManX = Integer.parseInt(pacManLocations[0]);
+        int pacManY = Integer.parseInt(pacManLocations[1]);
+        Location location = new Location(pacManX, pacManY);
+        pacActor.setLocation(location);
+
+        // parse the pill locations if there is pill location
+        if (properties.containsKey("Pills.location")) {
+            String[] pillLocations = properties.getProperty("Pills.location").split(";");
+            for (String pL : pillLocations) {
+                String[] pos = pL.split(",");
+                int posX = Integer.parseInt(pos[0]);
+                int posY = Integer.parseInt(pos[1]);
+                location = new Location(posX, posY);
+                Pill pill = new Pill(location);
+                pills.put(location, pill);
+            }
         }
 
-        String[] goldLocations = properties.getProperty("Gold.location").split(";");
-        for (String gL : goldLocations) {
-            String[] pos = gL.split(",");
-            int posX = Integer.parseInt(pos[0]);
-            int posY = Integer.parseInt(pos[1]);
-            Location location = new Location(posX, posY);
-            Gold gold = new Gold(location);
-            golds.put(location, gold);
+        // parse the gold locations if there is gold location
+        if (properties.containsKey("Golds.location")) {
+            String[] goldLocations = properties.getProperty("Gold.location").split(";");
+            for (String gL : goldLocations) {
+                String[] pos = gL.split(",");
+                int posX = Integer.parseInt(pos[0]);
+                int posY = Integer.parseInt(pos[1]);
+                location = new Location(posX, posY);
+                Gold gold = new Gold(location);
+                golds.put(location, gold);
+            }
         }
 
-        String[] iceLocations = properties.getProperty("Ice.location").split(";");
-        for (String iL : iceLocations) {
-            String[] pos = iL.split(",");
-            int posX = Integer.parseInt(pos[0]);
-            int posY = Integer.parseInt(pos[1]);
-            Location location = new Location(posX, posY);
-            Ice ice = new Ice(location);
-            ices.put(location, ice);
+        // parse the ice locations if there is ice locations
+        if (properties.containsKey("Ices.location")) {
+            String[] iceLocations = properties.getProperty("Ice.location").split(";");
+            for (String iL : iceLocations) {
+                String[] pos = iL.split(",");
+                int posX = Integer.parseInt(pos[0]);
+                int posY = Integer.parseInt(pos[1]);
+                location = new Location(posX, posY);
+                Ice ice = new Ice(location);
+                ices.put(location, ice);
+            }
+        }
+    }
+
+    // instantiate the items in the grid and put them in their respective hashmaps
+    public void instantiateItems(PacManGameGrid grid) {
+
+        for (int col = 0; col < grid.getNbVertCells(); col++) {
+            for (int row = 0; row < grid.getNbHorzCells(); row++) {
+
+                int itemValue = grid.getMazeArray()[col][row];
+                Location location = new Location(col, row);
+                if (itemValue == PILL) {
+                    Pill pill = new Pill(location);
+                    pills.put(location, pill);
+                } else if (itemValue == GOLD) {
+                    Gold gold = new Gold(location);
+                    golds.put(location, gold);
+                } else if (itemValue == ICE) {
+                    Ice ice = new Ice(location);
+                    ices.put(location, ice);
+                }
+            }
         }
     }
 
