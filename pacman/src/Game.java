@@ -45,7 +45,7 @@ public class Game extends GameGrid {
 
         addActor(troll, new Location(trollX, trollY), Location.NORTH);
         addActor(tx5, new Location(tx5X, tx5Y), Location.NORTH);
-        addActor(pacActor, pacActor.getLocation());
+//        addActor(pacActor, pacActor.getLocation());
         /////////////
     }
 
@@ -67,7 +67,6 @@ public class Game extends GameGrid {
         pacActor.setSlowDown(3);
         tx5.stopMoving(5);
         setupActorLocations();
-
 
 
         //Run the game
