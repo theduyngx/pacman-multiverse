@@ -93,7 +93,7 @@ public class ObjectManager {
         for (int col = 0; col < grid.getNumVerticalCells(); col++)
             for (int row = 0; row < grid.getNumHorizontalCells(); row++) {
                 PacManGameGrid.BlockType itemType = grid.getMazeArray()[col][row];
-                Location location = new Location(col, row);
+                Location location = new Location(row, col);
                 if (itemType == PacManGameGrid.BlockType.PILL) {
                     Pill pill = new Pill(game, location);
                     pills.put(location, pill);
