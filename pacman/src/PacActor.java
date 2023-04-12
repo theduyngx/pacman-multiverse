@@ -16,6 +16,7 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
     private int nbPills = 0;
     private int score = 0;
     private final Game game;
+    private Location initLocation;
     private List<String> propertyMoves = new ArrayList<>();
     private int propertyMoveIndex = 0;
     private final Random randomizer = new Random();
@@ -29,11 +30,17 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
         this.manager = manager;
     }
 
+    public Location getInitLocation() {
+        return initLocation;
+    }
 
     public void setAuto(boolean auto) {
         isAuto = auto;
     }
 
+    public void setInitLocation(Location initLocation) {
+        this.initLocation = initLocation;
+    }
 
     public void setSeed(int seed) {
         randomizer.setSeed(seed);
