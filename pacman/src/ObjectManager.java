@@ -7,10 +7,10 @@ import java.util.Properties;
 public class ObjectManager {
     private final PacActor pacActor;
     private final HashMap<Location, Monster> monsters;
-    private final HashMap<Location, Pill> pills;
-    private final HashMap<Location, Gold> golds;
-    private final HashMap<Location, Ice> ices;
-    private int seed = 30006;
+    private final HashMap<Location, Item> items;
+    private final HashMap<Location, Integer> walls;
+    private final static int INIT_SEED = 30006;
+    private int seed = INIT_SEED;
 
     // constructor
     public ObjectManager(PacActor pacActor) {
@@ -19,9 +19,8 @@ public class ObjectManager {
         }
         this.pacActor = pacActor;
         this.monsters = new HashMap<>();
-        this.pills    = new HashMap<>();
-        this.golds    = new HashMap<>();
-        this.ices     = new HashMap<>();
+        this.items    = new HashMap<>();
+        this.walls    = new HashMap<>();
     }
 
     // getters
@@ -31,14 +30,11 @@ public class ObjectManager {
     public HashMap<Location, Monster> getMonsters() {
         return monsters;
     }
-    public HashMap<Location, Pill> getPills() {
-        return pills;
+    public HashMap<Location, Item> getItems() {
+        return items;
     }
-    public HashMap<Location, Gold> getGolds() {
-        return golds;
-    }
-    public HashMap<Location, Ice> getIces() {
-        return ices;
+    public int getSeed() {
+        return seed;
     }
 
     // parsing properties
@@ -62,7 +58,7 @@ public class ObjectManager {
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
                 Pill pill = new Pill();
-                pills.put(location, pill);
+                items.put(location, pill);
             }
         }
 
@@ -75,7 +71,7 @@ public class ObjectManager {
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
                 Gold gold = new Gold();
-                golds.put(location, gold);
+                items.put(location, gold);
             }
         }
     }
@@ -87,17 +83,19 @@ public class ObjectManager {
             for (int row = 0; row < grid.getNumHorizontalCells(); row++) {
                 PacManGameGrid.BlockType itemType = grid.getMazeArray()[col][row];
                 Location location = new Location(row, col);
-                if (itemType == PacManGameGrid.BlockType.PILL) {
-                    Pill pill = new Pill();
-                    pills.put(location, pill);
-                }
-                else if (itemType == PacManGameGrid.BlockType.GOLD) {
-                    Gold gold = new Gold();
-                    golds.put(location, gold);
-                }
-                else if (itemType == PacManGameGrid.BlockType.ICE) {
-                    Ice ice = new Ice();
-                    ices.put(location, ice);
+                switch(itemType) {
+                    case PILL -> {
+                        Pill pill = new Pill();
+                        items.put(location, pill);
+                    }
+                    case GOLD -> {
+                        Gold gold = new Gold();
+                        items.put(location, gold);
+                    }
+                    case ICE  -> {
+                        Ice ice = new Ice();
+                        items.put(location, ice);
+                    }
                 }
             }
     }

@@ -20,7 +20,6 @@ public class Game extends GameGrid {
     private final Monster troll = new Monster(this, MonsterType.Troll);
     private final Monster tx5 = new Monster(this, MonsterType.TX5);
     private final GameCallback gameCallback;
-    private int seed = 30006;
 
     public Game(GameCallback gameCallback, Properties properties) {
         //Setup game
@@ -54,7 +53,7 @@ public class Game extends GameGrid {
     }
 
     private int getNumItems() {
-        return manager.getPills().size() + manager.getIces().size() + manager.getGolds().size();
+        return manager.getItems().size();
     }
 
     public void run() {
@@ -65,6 +64,7 @@ public class Game extends GameGrid {
         drawGrid(bg);
 
         //Setup Random seeds
+        int seed = manager.getSeed();
         pacActor.setSeed(seed);
         troll.setSeed(seed);
         tx5.setSeed(seed);
@@ -117,12 +117,7 @@ public class Game extends GameGrid {
     }
 
     public ArrayList<Location> getPillAndItemLocations() {
-        ArrayList<Location> pillLocations = new ArrayList<>(manager.getPills().keySet());
-        ArrayList<Location> iceLocations  = new ArrayList<>(manager.getIces ().keySet());
-        ArrayList<Location> collectibles  = new ArrayList<>(manager.getGolds().keySet());
-        collectibles.addAll(iceLocations);
-        collectibles.addAll(pillLocations);
-        return collectibles;
+        return new ArrayList<>(manager.getItems().keySet());
     }
 
     private void drawGrid(GGBackground bg) {
@@ -143,23 +138,11 @@ public class Game extends GameGrid {
     }
 
     public void putItems(GGBackground bg) {
-        // golds
-        for (Map.Entry<Location, Gold> entry : manager.getGolds().entrySet()) {
+        // putting all items
+        for (Map.Entry<Location, Item> entry : manager.getItems().entrySet()) {
             Location location = entry.getKey();
-            Gold gold = entry.getValue();
-            gold.putItem(bg, this, location);
-        }
-        // ices
-        for (Map.Entry<Location, Ice> entry : manager.getIces().entrySet()) {
-            Location location = entry.getKey();
-            Ice ice = entry.getValue();
-            ice.putItem(bg, this, location);
-        }
-        // pills
-        for (Map.Entry<Location, Pill> entry : manager.getPills().entrySet()) {
-            Location location = entry.getKey();
-            Pill pill = entry.getValue();
-            pill.putItem(bg, this, location);
+            Item item = entry.getValue();
+            item.putItem(bg, this, location);
         }
     }
 

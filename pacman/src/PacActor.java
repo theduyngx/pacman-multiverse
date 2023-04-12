@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 
 public class PacActor extends Actor implements GGKeyRepeatListener {
+    private static final int INF = 1000;
     private static final int nbSprites = 4;
     private static final String directory = "sprites/pacpix.gif";
     private int idSprite = 0;
@@ -90,15 +91,13 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
         idSprite++;
         if (idSprite == nbSprites)
             idSprite = 0;
-
-        if (isAuto) {
+        if (isAuto)
             moveInAutoMode();
-        }
         this.game.getGameCallback().pacManLocationChanged(getLocation(), score, nbPills);
     }
 
     private Location closestPillLocation() {
-        int currentDistance = 1000;
+        int currentDistance = INF;
         Location currentLocation = null;
         List<Location> pillAndItemLocations = game.getPillAndItemLocations();
         for (Location location: pillAndItemLocations) {
@@ -108,7 +107,6 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
                 currentDistance = distanceToPill;
             }
         }
-
         return currentLocation;
     }
 
@@ -139,36 +137,29 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
         Location.CompassDirection compassDir = getLocation().get4CompassDirectionTo(closestPill);
         Location next = getLocation().getNeighbourLocation(compassDir);
         setDirection(compassDir);
-        if (canMove(next))
-            setLocation(next);
-        else {
+        if (! canMove(next)) {
             // normal movement
             int sign = randomizer.nextDouble() < 0.5 ? 1 : -1;
             setDirection(oldDirection);
-            turn(sign * 90);  // Try to turn left/right
+            turn(sign * 90);            // Try to turn left/right
             next = getNextMoveLocation();
-            if (canMove(next))
-                setLocation(next);
-            else {
+            if (! canMove(next)) {
                 setDirection(oldDirection);
+                turn(-180);             // Try to move forward
                 next = getNextMoveLocation();
-                if (canMove(next)) // Try to move forward
-                    setLocation(next);
-                else {
+                if (! canMove(next)) {
                     setDirection(oldDirection);
-                    turn(-sign * 90);  // Try to turn right/left
+                    turn(-sign * 90);   // Try to turn right/left
                     next = getNextMoveLocation();
-                    if (canMove(next))
-                        setLocation(next);
-                    else {
+                    if (! canMove(next)) {
                         setDirection(oldDirection);
-                        turn(180);  // Turn backward
+                        turn(180);      // Turn backward
                         next = getNextMoveLocation();
-                        setLocation(next);
                     }
                 }
             }
         }
+        setLocation(next);
         eatPill(manager, next);
     }
 
@@ -183,27 +174,16 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
     }
 
     private void eatPill(ObjectManager manager, Location location) {
-        if (manager.getPills().containsKey(location)) {
-            nbPills++;
-            score++;
+        if (manager.getItems().containsKey(location)) {
+            Item item = manager.getItems().get(location);
+            String itemType = (item instanceof Pill) ? "pills" :
+                              (item instanceof Gold) ? "gold"  :
+                              "ice";
+            if (! (item instanceof Ice)) nbPills++;
+            score += item.getScore();
             getBackground().fillCell(location, Color.lightGray);
-            game.getGameCallback().pacManEatPillsAndItems(location, "pills");
-            Pill pill = manager.getPills().get(location);
-            pill.removeItem(manager);
-        }
-        else if (manager.getGolds().containsKey(location)) {
-            nbPills++;
-            score+= 5;
-            getBackground().fillCell(location, Color.lightGray);
-            game.getGameCallback().pacManEatPillsAndItems(location, "gold");
-            Gold gold = manager.getGolds().get(location);
-            gold.removeItem(manager);
-        }
-        else if (manager.getIces().containsKey(location)) {
-            getBackground().fillCell(location, Color.lightGray);
-            game.getGameCallback().pacManEatPillsAndItems(location, "ice");
-            Ice ice = manager.getIces().get(location);
-            ice.removeItem(manager);
+            game.getGameCallback().pacManEatPillsAndItems(location, itemType);
+            item.removeItem(manager);
         }
         String title = "[PacMan in the Multiverse] Current score: " + score;
         gameGrid.setTitle(title);
