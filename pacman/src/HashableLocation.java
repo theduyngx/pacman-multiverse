@@ -1,15 +1,10 @@
 package src;
 
 import ch.aplu.jgamegrid.Location;
-
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class HashableLocation {
-    private final Location location;
-    public HashableLocation(Location location) {
-        this.location = location;
-    }
+public record HashableLocation(Location location) {
 
     public int getX() {
         return location.getX();
@@ -38,16 +33,9 @@ public class HashableLocation {
         return new int[]{location.getX(), location.getY()};
     }
 
-    // get location from hashed location
-    public Location getLocation() {
-        return location;
-    }
-
     // put entry to hashmap with HashableLocation as key
     public static <T> void putLocationHash(HashMap<HashableLocation, T> map, Location location, T object) {
         HashableLocation hashLocation = new HashableLocation(location);
         map.put(hashLocation, object);
     }
-
-    //
 }
