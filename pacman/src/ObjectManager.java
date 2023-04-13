@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.*;
 
 public class ObjectManager {
-    public final static Color COLOR_WALL = Color.lightGray;
+    public final static Color COLOR_WALL = Color.gray;
     private final static int INIT_SEED = 30006;
 
     private final PacActor pacActor;
@@ -14,6 +14,7 @@ public class ObjectManager {
     private final HashMap<HashableLocation, Item> items;
     private final HashMap<HashableLocation, Integer> walls;
     private int seed = INIT_SEED;
+    private int numPillsAndGold = 0;
 
     // constructor
     public ObjectManager(PacActor pacActor) {
@@ -66,6 +67,7 @@ public class ObjectManager {
                 Location location = new Location(posX, posY);
                 Pill pill = new Pill();
                 HashableLocation.putLocationHash(items, location, pill);
+                numPillsAndGold++;
             }
         }
 
@@ -79,6 +81,7 @@ public class ObjectManager {
                 Location location = new Location(posX, posY);
                 Gold gold = new Gold();
                 HashableLocation.putLocationHash(items, location, gold);
+                numPillsAndGold++;
             }
         }
     }
@@ -94,10 +97,12 @@ public class ObjectManager {
                     case PILL -> {
                         Pill pill = new Pill();
                         HashableLocation.putLocationHash(items, location, pill);
+                        numPillsAndGold++;
                     }
                     case GOLD -> {
                         Gold gold = new Gold();
                         HashableLocation.putLocationHash(items, location, gold);
+                        numPillsAndGold++;
                     }
                     case ICE  -> {
                         Ice ice = new Ice();
@@ -105,5 +110,9 @@ public class ObjectManager {
                     }
                 }
             }
+    }
+
+    public int getNumPillsAndGold() {
+        return numPillsAndGold;
     }
 }

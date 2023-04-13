@@ -90,7 +90,7 @@ public class Game extends GameGrid {
         boolean hasPacmanBeenHit;
         boolean hasPacmanEatAllPills;
         putItems(bg);
-        int maxPillsAndItems = getNumItems();
+        int maxPillsAndItems = manager.getNumPillsAndGold();
 
         do {
             hasPacmanBeenHit = troll.getLocation().equals(pacActor.getLocation()) ||
@@ -126,15 +126,16 @@ public class Game extends GameGrid {
         bg.setPaintColor(COLOR_BACKGROUND);
 
         // draw the maze (its border and items)
-        for (int y = 0; y < numVerticalCells; y++)
+        for (int y = 0; y < numVerticalCells; y++) {
             for (int x = 0; x < numHorizontalCells; x++) {
                 bg.setPaintColor(COLOR_BACKGROUND);
                 Location location = new Location(x, y);
                 if (grid.getCell(location) != PacManGameGrid.BlockType.ERROR)
-                    bg.fillCell(location, COLOR_BACKGROUND);
+                    bg.fillCell(location, Color.lightGray);
                 if (grid.getCell(location) == PacManGameGrid.BlockType.WALL)
                     bg.fillCell(location, ObjectManager.COLOR_WALL);
             }
+        }
     }
 
     public void putItems(GGBackground bg) {

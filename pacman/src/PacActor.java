@@ -167,11 +167,15 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
                               "ice";
             if (! (item instanceof Ice)) nbPills++;
             score += item.getScore();
-            getBackground().fillCell(location, Color.white);
+            getBackground().fillCell(location, Color.lightGray);
             getGame().getGameCallback().pacManEatPillsAndItems(location, itemType);
             item.removeItem(manager);
         }
         String title = "[PacMan in the Multiverse] Current score: " + score;
         gameGrid.setTitle(title);
+    }
+
+    public int getNbPills() {
+        return nbPills;
     }
 }
