@@ -10,7 +10,6 @@ public class Monster extends Actor {
     private final Game game;
     private final MonsterType type;
     private final ArrayList<Location> visitedList = new ArrayList<>();
-    private final int listLength = 10;
     private boolean stopMoving = false;
     private int seed = 0;
     private final Random randomizer = new Random(0);
@@ -102,6 +101,7 @@ public class Monster extends Actor {
 
     private void addVisitedList(Location location) {
         visitedList.add(location);
+        int listLength = 10;
         if (visitedList.size() == listLength)
             visitedList.remove(0);
     }

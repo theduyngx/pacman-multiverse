@@ -1,14 +1,15 @@
 package src;
 
 import ch.aplu.jgamegrid.Location;
-import java.util.HashMap;
-import java.util.Properties;
+
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class ObjectManager {
     private final PacActor pacActor;
-    private final HashMap<Location, Monster> monsters;
-    private final HashMap<Location, Item> items;
-    private final HashMap<Location, Integer> walls;
+    private final HashMap<HashableLocation, Monster> monsters;
+    private final HashMap<HashableLocation, Item> items;
+    private final HashMap<HashableLocation, Integer> walls;
     private final static int INIT_SEED = 30006;
     private int seed = INIT_SEED;
 
@@ -27,14 +28,18 @@ public class ObjectManager {
     public PacActor getPacActor() {
         return pacActor;
     }
-    public HashMap<Location, Monster> getMonsters() {
+    public HashMap<HashableLocation, Monster> getMonsters() {
         return monsters;
     }
-    public HashMap<Location, Item> getItems() {
+    public HashMap<HashableLocation, Item> getItems() {
         return items;
     }
     public int getSeed() {
         return seed;
+    }
+    // get locations of all items
+    public ArrayList<Location> getItemLocations() {
+        return new ArrayList<>(items.keySet().stream().map(HashableLocation::getLocation).toList());
     }
 
     // parsing properties
@@ -58,7 +63,7 @@ public class ObjectManager {
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
                 Pill pill = new Pill();
-                items.put(location, pill);
+                HashableLocation.putLocationHash(items, location, pill);
             }
         }
 
@@ -71,7 +76,7 @@ public class ObjectManager {
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
                 Gold gold = new Gold();
-                items.put(location, gold);
+                HashableLocation.putLocationHash(items, location, gold);
             }
         }
     }
@@ -86,15 +91,15 @@ public class ObjectManager {
                 switch(itemType) {
                     case PILL -> {
                         Pill pill = new Pill();
-                        items.put(location, pill);
+                        HashableLocation.putLocationHash(items, location, pill);
                     }
                     case GOLD -> {
                         Gold gold = new Gold();
-                        items.put(location, gold);
+                        HashableLocation.putLocationHash(items, location, gold);
                     }
                     case ICE  -> {
                         Ice ice = new Ice();
-                        items.put(location, ice);
+                        HashableLocation.putLocationHash(items, location, ice);
                     }
                 }
             }

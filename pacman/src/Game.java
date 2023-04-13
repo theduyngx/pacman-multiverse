@@ -116,10 +116,6 @@ public class Game extends GameGrid {
         doPause();
     }
 
-    public ArrayList<Location> getPillAndItemLocations() {
-        return new ArrayList<>(manager.getItems().keySet());
-    }
-
     private void drawGrid(GGBackground bg) {
         // set the background
         bg.clear(Color.gray);
@@ -139,8 +135,8 @@ public class Game extends GameGrid {
 
     public void putItems(GGBackground bg) {
         // putting all items
-        for (Map.Entry<Location, Item> entry : manager.getItems().entrySet()) {
-            Location location = entry.getKey();
+        for (Map.Entry<HashableLocation, Item> entry : manager.getItems().entrySet()) {
+            Location location = entry.getKey().getLocation();
             Item item = entry.getValue();
             item.putItem(bg, this, location);
         }
@@ -148,8 +144,8 @@ public class Game extends GameGrid {
 
     // putting all monsters to grid
     public void putMonsters() {
-        for (Map.Entry<Location, Monster> entry : manager.getMonsters().entrySet()) {
-            Location location = entry.getKey();
+        for (Map.Entry<HashableLocation, Monster> entry : manager.getMonsters().entrySet()) {
+            Location location = entry.getKey().getLocation();
             Monster monster = entry.getValue();
             addActor(monster, location, Location.NORTH);
         }

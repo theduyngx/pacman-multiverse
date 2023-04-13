@@ -28,7 +28,8 @@ public abstract class Item extends Actor {
 
     // remove item
     public void removeItem(ObjectManager manager) {
-        manager.getItems().remove(getLocation());
+        HashableLocation hashLocation = new HashableLocation(getLocation());
+        manager.getItems().remove(hashLocation);
         this.removeSelf();
     }
 

@@ -99,7 +99,7 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
     private Location closestPillLocation() {
         int currentDistance = INF;
         Location currentLocation = null;
-        List<Location> pillAndItemLocations = game.getPillAndItemLocations();
+        List<Location> pillAndItemLocations = manager.getItemLocations();
         for (Location location: pillAndItemLocations) {
             int distanceToPill = location.getDistanceTo(getLocation());
             if (distanceToPill < currentDistance) {
@@ -174,8 +174,9 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
     }
 
     private void eatPill(ObjectManager manager, Location location) {
-        if (manager.getItems().containsKey(location)) {
-            Item item = manager.getItems().get(location);
+        HashableLocation hashLocation = new HashableLocation(location);
+        if (manager.getItems().containsKey(hashLocation)) {
+            Item item = manager.getItems().get(hashLocation);
             String itemType = (item instanceof Pill) ? "pills" :
                               (item instanceof Gold) ? "gold"  :
                               "ice";
