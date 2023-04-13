@@ -2,8 +2,6 @@ package src.utility;
 
 import ch.aplu.jgamegrid.Location;
 import src.Monster;
-
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -16,7 +14,7 @@ public class GameCallback {
 
     public GameCallback() {
         try {
-            fileWriter = new FileWriter(new File(logFilePath));
+            fileWriter = new FileWriter(logFilePath);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

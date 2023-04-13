@@ -95,7 +95,10 @@ public class Game extends GameGrid {
         do {
             hasPacmanBeenHit = troll.getLocation().equals(pacActor.getLocation()) ||
                     tx5.getLocation().equals(pacActor.getLocation());
-            hasPacmanEatAllPills = pacActor.getNbPills() >= maxPillsAndItems;
+
+            /// NOTE: not yet correct since pacman doesn't have to eat all Ice cubes
+            hasPacmanEatAllPills = manager.getItems().size() == 0;
+
             delay(10);
         } while(!hasPacmanBeenHit && !hasPacmanEatAllPills);
         delay(120);

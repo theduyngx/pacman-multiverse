@@ -128,34 +128,14 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         }
         Location closestPill = closestPillLocation();
         double oldDirection = getDirection();
-
         Location.CompassDirection compassDir = getLocation().get4CompassDirectionTo(closestPill);
         Location next = getLocation().getNeighbourLocation(compassDir);
         setDirection(compassDir);
-        if (! canMove(next)) {
-            // normal movement
-            int sign = randomizer.nextDouble() < 0.5 ? 1 : -1;
-            setDirection(oldDirection);
-            turn(sign * 90);            // Try to turn left/right
-            next = getNextMoveLocation();
-            if (! canMove(next)) {
-                setDirection(oldDirection);
-                turn(-180);             // Try to move forward
-                next = getNextMoveLocation();
-                if (! canMove(next)) {
-                    setDirection(oldDirection);
-                    turn(-sign * 90);   // Try to turn right/left
-                    next = getNextMoveLocation();
-                    if (! canMove(next)) {
-                        setDirection(oldDirection);
-                        turn(180);      // Turn backward
-                        next = getNextMoveLocation();
-                    }
-                }
-            }
-        }
-        setLocation(next);
-        eatPill(getManager(), next);
+        if (canMove(next))
+            setLocation(next);
+        else
+            moveApproach(oldDirection);
+        eatPill(getManager(), getLocation());
     }
 
     private void eatPill(ObjectManager manager, Location location) {
@@ -173,9 +153,5 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         }
         String title = "[PacMan in the Multiverse] Current score: " + score;
         gameGrid.setTitle(title);
-    }
-
-    public int getNbPills() {
-        return nbPills;
     }
 }

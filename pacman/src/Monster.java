@@ -41,53 +41,22 @@ public class Monster extends LiveActor {
     @Override
     public void act() {
         if (stopMoving) return;
-        walkApproach();
+        moveNext();
         boolean enable = getDirection() > 150 && getDirection() < 210;
         setHorzMirror(!enable);
     }
 
-    private void walkApproach() {
+    private void moveNext() {
         Location pacLocation = getGame().manager.getPacActor().getLocation();
         double oldDirection = getDirection();
-
-        // Walking approach:
-        // TX5: Determine direction to pacActor and try to move in that direction. Otherwise, random walk.
-        // Troll: Random walk.
-        Location.CompassDirection compassDir =
-                getLocation().get4CompassDirectionTo(pacLocation);
+        Location.CompassDirection compassDir = getLocation().get4CompassDirectionTo(pacLocation);
         Location next = getLocation().getNeighbourLocation(compassDir);
         setDirection(compassDir);
-        if (type == MonsterType.TX5 && !isVisited(next) && canMove(next)) {
+
+        if (type == MonsterType.TX5 && !isVisited(next) && canMove(next))
             setLocation(next);
-        }
-        else {
-            // Random walk
-            int sign = randomizer.nextDouble() < 0.5 ? 1 : -1;
-            setDirection(oldDirection);
-            turn(sign * 90);  // Try to turn left/right
-            next = getNextMoveLocation();
-            if (canMove(next))
-                setLocation(next);
-            else {
-                setDirection(oldDirection);
-                next = getNextMoveLocation();
-                if (canMove(next))// Try to move forward
-                    setLocation(next);
-                else {
-                    setDirection(oldDirection);
-                    turn(-sign * 90);  // Try to turn right/left
-                    next = getNextMoveLocation();
-                    if (canMove(next))
-                        setLocation(next);
-                    else {
-                        setDirection(oldDirection);
-                        turn(180);  // Turn backward
-                        next = getNextMoveLocation();
-                        setLocation(next);
-                    }
-                }
-            }
-        }
+        else
+            moveApproach(oldDirection);
         getGame().getGameCallback().monsterLocationChanged(this);
         addVisitedList(next);
     }
