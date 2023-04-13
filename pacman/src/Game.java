@@ -21,9 +21,8 @@ public class Game extends GameGrid {
     protected PacActor pacActor;
     protected ObjectManager manager;
     private final GameCallback gameCallback;
-
-    private final Monster troll = new Monster(this, MonsterType.Troll);
-    private final Monster tx5 = new Monster(this, MonsterType.TX5);
+    private final Monster troll = new Troll(this);
+    private final Monster tx5 = new TX5(this);
 
     public Game(GameCallback gameCallback, Properties properties) {
         //Setup game
@@ -56,10 +55,6 @@ public class Game extends GameGrid {
         return gameCallback;
     }
 
-    private int getNumItems() {
-        return manager.getItems().size();
-    }
-
     public void run() {
         setSimulationPeriod(100);
         setTitle("[PacMan in the Multiverse]");
@@ -67,7 +62,7 @@ public class Game extends GameGrid {
         GGBackground bg = getBg();
         drawGrid(bg);
 
-        //Setup Random seeds
+        // Setup Random seeds
         int seed = manager.getSeed();
         pacActor.setSeed(seed);
         troll.setSeed(seed);
@@ -82,7 +77,7 @@ public class Game extends GameGrid {
         putMonsters();
 
 
-        //Run the game
+        // Run the game
         doRun();
         show();
         // Loop to look for collision in the application thread
@@ -90,7 +85,6 @@ public class Game extends GameGrid {
         boolean hasPacmanBeenHit;
         boolean hasPacmanEatAllPills;
         putItems(bg);
-        int maxPillsAndItems = manager.getNumPillsAndGold();
 
         do {
             hasPacmanBeenHit = troll.getLocation().equals(pacActor.getLocation()) ||

@@ -5,15 +5,23 @@ package src;
 import ch.aplu.jgamegrid.*;
 import java.util.*;
 
-public class Monster extends LiveActor {
-    private final MonsterType type;
+
+public abstract class Monster extends LiveActor {
+    private String name;
     private final ArrayList<Location> visitedList = new ArrayList<>();
     private boolean stopMoving = false;
-    private final Random randomizer = new Random(0);
+    protected final Random randomizer = new Random(0);
 
-    public Monster(Game game, MonsterType type) {
-        super(game, false, "sprites/" + type.getImageName(), 1);
-        this.type = type;
+    public Monster(Game game, boolean isRotatable, String directory, int numSprites) {
+        super(game, isRotatable, directory, numSprites);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    protected void setName(String name) {
+        this.name = name;
     }
 
     public void stopMoving(int seconds) {
@@ -41,38 +49,22 @@ public class Monster extends LiveActor {
     @Override
     public void act() {
         if (stopMoving) return;
-        moveNext();
+        walkApproach();
         boolean enable = getDirection() > 150 && getDirection() < 210;
         setHorzMirror(!enable);
     }
 
-    private void moveNext() {
-        Location pacLocation = getGame().manager.getPacActor().getLocation();
-        double oldDirection = getDirection();
-        Location.CompassDirection compassDir = getLocation().get4CompassDirectionTo(pacLocation);
-        Location next = getLocation().getNeighbourLocation(compassDir);
-        setDirection(compassDir);
+    // Abstract move approach that changes depending on the monster
+    public abstract void walkApproach();
 
-        if (type == MonsterType.TX5 && !isVisited(next) && canMove(next))
-            setLocation(next);
-        else
-            moveApproach(oldDirection);
-        getGame().getGameCallback().monsterLocationChanged(this);
-        addVisitedList(next);
-    }
-
-    public MonsterType getType() {
-        return type;
-    }
-
-    private void addVisitedList(Location location) {
+    protected void addVisitedList(Location location) {
         visitedList.add(location);
         int listLength = 10;
         if (visitedList.size() == listLength)
             visitedList.remove(0);
     }
 
-    private boolean isVisited(Location location) {
+    protected boolean isVisited(Location location) {
         for (Location loc : visitedList)
             if (loc.equals(location))
                 return true;

@@ -23,23 +23,27 @@ public class ObjectManager {
         }
         this.pacActor = pacActor;
         this.monsters = new HashMap<>();
-        this.items    = new HashMap<>();
-        this.walls    = new HashMap<>();
+        this.items = new HashMap<>();
+        this.walls = new HashMap<>();
     }
 
     // getters
     public PacActor getPacActor() {
         return pacActor;
     }
+
     public HashMap<HashableLocation, Monster> getMonsters() {
         return monsters;
     }
+
     public HashMap<HashableLocation, Item> getItems() {
         return items;
     }
+
     public int getSeed() {
         return seed;
     }
+
     // get locations of all items
     public ArrayList<Location> getItemLocations() {
         return new ArrayList<>(items.keySet().stream().map(HashableLocation::location).toList());
@@ -93,7 +97,7 @@ public class ObjectManager {
             for (int row = 0; row < grid.getNumHorizontalCells(); row++) {
                 PacManGameGrid.BlockType itemType = grid.getMazeArray()[col][row];
                 Location location = new Location(row, col);
-                switch(itemType) {
+                switch (itemType) {
                     case PILL -> {
                         Pill pill = new Pill();
                         HashableLocation.putLocationHash(items, location, pill);
@@ -104,7 +108,7 @@ public class ObjectManager {
                         HashableLocation.putLocationHash(items, location, gold);
                         numPillsAndGold++;
                     }
-                    case ICE  -> {
+                    case ICE -> {
                         Ice ice = new Ice();
                         HashableLocation.putLocationHash(items, location, ice);
                     }
