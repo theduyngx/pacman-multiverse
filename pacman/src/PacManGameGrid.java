@@ -11,8 +11,7 @@ public class PacManGameGrid {
     private final int numVerticalCells;
     private final BlockType[][] mazeArray;
 
-    public PacManGameGrid(int numHorizontalCells, int numVerticalCells)
-    {
+    public PacManGameGrid(int numHorizontalCells, int numVerticalCells) {
         this.numHorizontalCells = numHorizontalCells;
         this.numVerticalCells = numVerticalCells;
         mazeArray = new BlockType[numVerticalCells][numHorizontalCells];

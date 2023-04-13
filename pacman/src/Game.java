@@ -6,20 +6,24 @@ import ch.aplu.jgamegrid.*;
 import src.utility.GameCallback;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 
 public class Game extends GameGrid {
+    public final static Color COLOR_LOSE = Color.red;
+    public final static Color COLOR_WIN = Color.yellow;
+    public final static Color COLOR_BACKGROUND = Color.white;
+    public final static String LOSE_MESSAGE = "GAME OVER";
+    public final static String WIN_MESSAGE = "YOU WIN";
     private final static int numHorizontalCells = 20;
     private final static int numVerticalCells = 11;
     protected PacManGameGrid grid;
-
     protected PacActor pacActor;
     protected ObjectManager manager;
+    private final GameCallback gameCallback;
+
     private final Monster troll = new Monster(this, MonsterType.Troll);
     private final Monster tx5 = new Monster(this, MonsterType.TX5);
-    private final GameCallback gameCallback;
 
     public Game(GameCallback gameCallback, Properties properties) {
         //Setup game
@@ -103,13 +107,13 @@ public class Game extends GameGrid {
 
         String title = "";
         if (hasPacmanBeenHit) {
-            bg.setPaintColor(Color.red);
-            title = "GAME OVER";
+            bg.setPaintColor(COLOR_LOSE);
+            title = LOSE_MESSAGE;
             addActor(new Actor("sprites/explosion3.gif"), loc);
         }
         else if (hasPacmanEatAllPills) {
-            bg.setPaintColor(Color.yellow);
-            title = "YOU WIN";
+            bg.setPaintColor(COLOR_WIN);
+            title = WIN_MESSAGE;
         }
         setTitle(title);
         gameCallback.endOfGame(title);
@@ -119,24 +123,24 @@ public class Game extends GameGrid {
     private void drawGrid(GGBackground bg) {
         // set the background
         bg.clear(Color.gray);
-        bg.setPaintColor(Color.white);
+        bg.setPaintColor(COLOR_BACKGROUND);
 
         // draw the maze (its border and items)
         for (int y = 0; y < numVerticalCells; y++)
             for (int x = 0; x < numHorizontalCells; x++) {
-                bg.setPaintColor(Color.white);
+                bg.setPaintColor(COLOR_BACKGROUND);
                 Location location = new Location(x, y);
                 if (grid.getCell(location) != PacManGameGrid.BlockType.ERROR)
-                    bg.fillCell(location, Color.WHITE);
+                    bg.fillCell(location, COLOR_BACKGROUND);
                 if (grid.getCell(location) == PacManGameGrid.BlockType.WALL)
-                    bg.fillCell(location, Color.lightGray);
+                    bg.fillCell(location, ObjectManager.COLOR_WALL);
             }
     }
 
     public void putItems(GGBackground bg) {
         // putting all items
         for (Map.Entry<HashableLocation, Item> entry : manager.getItems().entrySet()) {
-            Location location = entry.getKey().getLocation();
+            Location location = entry.getKey().location();
             Item item = entry.getValue();
             item.putItem(bg, this, location);
         }
@@ -145,7 +149,7 @@ public class Game extends GameGrid {
     // putting all monsters to grid
     public void putMonsters() {
         for (Map.Entry<HashableLocation, Monster> entry : manager.getMonsters().entrySet()) {
-            Location location = entry.getKey().getLocation();
+            Location location = entry.getKey().location();
             Monster monster = entry.getValue();
             addActor(monster, location, Location.NORTH);
         }

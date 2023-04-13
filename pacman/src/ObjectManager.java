@@ -2,15 +2,17 @@ package src;
 
 import ch.aplu.jgamegrid.Location;
 
-import java.lang.reflect.Array;
+import java.awt.*;
 import java.util.*;
 
 public class ObjectManager {
+    public final static Color COLOR_WALL = Color.lightGray;
+    private final static int INIT_SEED = 30006;
+
     private final PacActor pacActor;
     private final HashMap<HashableLocation, Monster> monsters;
     private final HashMap<HashableLocation, Item> items;
     private final HashMap<HashableLocation, Integer> walls;
-    private final static int INIT_SEED = 30006;
     private int seed = INIT_SEED;
 
     // constructor
@@ -39,7 +41,7 @@ public class ObjectManager {
     }
     // get locations of all items
     public ArrayList<Location> getItemLocations() {
-        return new ArrayList<>(items.keySet().stream().map(HashableLocation::getLocation).toList());
+        return new ArrayList<>(items.keySet().stream().map(HashableLocation::location).toList());
     }
 
     // parsing properties

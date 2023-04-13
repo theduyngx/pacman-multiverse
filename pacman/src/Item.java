@@ -15,7 +15,7 @@ public abstract class Item extends Actor {
         int yItem = this.getY();
         int xPac  = manager.getPacActor().getX();
         int yPac  = manager.getPacActor().getY();
-        return (xItem == xPac || yItem == yPac);
+        return (xItem == xPac && yItem == yPac);
     }
 
     // get and set score
@@ -30,7 +30,7 @@ public abstract class Item extends Actor {
     public void removeItem(ObjectManager manager) {
         HashableLocation hashLocation = new HashableLocation(getLocation());
         manager.getItems().remove(hashLocation);
-        this.removeSelf();
+        removeSelf();
     }
 
     public abstract void putItem(GGBackground bg, Game game, Location location);
