@@ -165,7 +165,7 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
 
     private boolean canMove(Location location) {
         Color c = getBackground().getColor(location);
-        return !c.equals(Color.gray) && location.getX() < game.getNumHorizontalCells()
+        return !c.equals(ObjectManager.COLOR_WALL) && location.getX() < game.getNumHorizontalCells()
                 && location.getX() >= 0 && location.getY() < game.getNumVerticalCells() && location.getY() >= 0;
     }
 
@@ -182,7 +182,7 @@ public class PacActor extends Actor implements GGKeyRepeatListener {
                               "ice";
             if (! (item instanceof Ice)) nbPills++;
             score += item.getScore();
-            getBackground().fillCell(location, Color.lightGray);
+            getBackground().fillCell(location, Color.white);
             game.getGameCallback().pacManEatPillsAndItems(location, itemType);
             item.removeItem(manager);
         }
