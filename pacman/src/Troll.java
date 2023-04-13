@@ -4,17 +4,20 @@ import ch.aplu.jgamegrid.*;
 
 public class Troll extends Monster
 {
-    public Troll(Game game, String spriteName)
+    public static final int numTrollImages = 1;
+    public static final String directory = "sprites/m_troll.gif";
+
+    public Troll(Game game)
     {
-        super(game, spriteName);
+        super(game, false, directory, numTrollImages);
     }
 
     @Override
-    protected void walkApproach()
+    public void walkApproach()
     {
         double oldDirection = this.getDirection();
         // Should be int but I don't know what happened
-        double sign = this.getRandomiser().nextDouble();
+        double sign = this.randomizer.nextDouble();
         this.setDirection(oldDirection);
         this.turn(sign*90);
 
@@ -26,7 +29,7 @@ public class Troll extends Monster
             this.setLocation(next);
         }
 
-        // Collision occurs going first given driection
+        // Collision occurs going first given direction
         else
         {
             // Check if you can go the opposite turn,
