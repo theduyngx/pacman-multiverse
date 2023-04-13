@@ -3,20 +3,16 @@
 package src;
 
 import ch.aplu.jgamegrid.*;
-import java.awt.Color;
 import java.util.*;
 
-public class Monster extends Actor {
-    private final Game game;
+public class Monster extends LiveActor {
     private final MonsterType type;
     private final ArrayList<Location> visitedList = new ArrayList<>();
     private boolean stopMoving = false;
-    private int seed = 0;
     private final Random randomizer = new Random(0);
 
     public Monster(Game game, MonsterType type) {
-        super("sprites/" + type.getImageName());
-        this.game = game;
+        super(game, false, "sprites/" + type.getImageName(), 1);
         this.type = type;
     }
 
@@ -33,8 +29,8 @@ public class Monster extends Actor {
         }, (long) seconds * SECOND_TO_MILLISECONDS);
     }
 
+    @Override
     public void setSeed(int seed) {
-        this.seed = seed;
         randomizer.setSeed(seed);
     }
 
@@ -42,6 +38,7 @@ public class Monster extends Actor {
         this.stopMoving = stopMoving;
     }
 
+    @Override
     public void act() {
         if (stopMoving) return;
         walkApproach();
@@ -50,7 +47,7 @@ public class Monster extends Actor {
     }
 
     private void walkApproach() {
-        Location pacLocation = game.manager.getPacActor().getLocation();
+        Location pacLocation = getGame().manager.getPacActor().getLocation();
         double oldDirection = getDirection();
 
         // Walking approach:
@@ -91,7 +88,7 @@ public class Monster extends Actor {
                 }
             }
         }
-        game.getGameCallback().monsterLocationChanged(this);
+        getGame().getGameCallback().monsterLocationChanged(this);
         addVisitedList(next);
     }
 
@@ -111,11 +108,5 @@ public class Monster extends Actor {
             if (loc.equals(location))
                 return true;
         return false;
-    }
-
-    private boolean canMove(Location location) {
-        Color c = getBackground().getColor(location);
-        return !c.equals(ObjectManager.COLOR_WALL) && location.getX() < game.getNumHorizontalCells()
-                && location.getX() >= 0 && location.getY() < game.getNumVerticalCells() && location.getY() >= 0;
     }
 }
