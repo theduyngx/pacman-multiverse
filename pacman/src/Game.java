@@ -6,31 +6,35 @@ import ch.aplu.jgamegrid.*;
 import src.utility.GameCallback;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.Map;
 import java.util.Properties;
 
 public class Game extends GameGrid {
+    public final static Color COLOR_LOSE = Color.red;
+    public final static Color COLOR_WIN = Color.yellow;
+    public final static Color COLOR_BACKGROUND = Color.white;
+    public final static String LOSE_MESSAGE = "GAME OVER";
+    public final static String WIN_MESSAGE = "YOU WIN";
     private final static int numHorizontalCells = 20;
     private final static int numVerticalCells = 11;
     protected PacManGameGrid grid;
-
     protected PacActor pacActor;
     protected ObjectManager manager;
+    private final GameCallback gameCallback;
+
     private final Monster troll = new Monster(this, MonsterType.Troll);
     private final Monster tx5 = new Monster(this, MonsterType.TX5);
-    private final GameCallback gameCallback;
-    private int seed = 30006;
 
     public Game(GameCallback gameCallback, Properties properties) {
         //Setup game
         super(numHorizontalCells, numVerticalCells, 50, false);
         this.gameCallback = gameCallback;
         this.grid = new PacManGameGrid(numHorizontalCells, numVerticalCells);
-        this.pacActor = new PacActor(this, manager);
+        this.pacActor = new PacActor(this);
         this.manager = new ObjectManager(pacActor);
-        manager.parseProperties(this, properties);
-        manager.instantiateItems(grid, this);
-
+        manager.parseProperties(properties);
+        manager.instantiateObjects(grid);
+        pacActor.setManager(manager);
 
 
         /////////////
@@ -48,6 +52,14 @@ public class Game extends GameGrid {
         /////////////
     }
 
+    public GameCallback getGameCallback() {
+        return gameCallback;
+    }
+
+    private int getNumItems() {
+        return manager.getItems().size();
+    }
+
     public void run() {
         setSimulationPeriod(100);
         setTitle("[PacMan in the Multiverse]");
@@ -56,6 +68,7 @@ public class Game extends GameGrid {
         drawGrid(bg);
 
         //Setup Random seeds
+        int seed = manager.getSeed();
         pacActor.setSeed(seed);
         troll.setSeed(seed);
         tx5.setSeed(seed);
@@ -65,7 +78,8 @@ public class Game extends GameGrid {
         tx5.setSlowDown(3);
         pacActor.setSlowDown(3);
         tx5.stopMoving(5);
-        setupActorLocations();
+        putPacActor();
+        putMonsters();
 
 
         //Run the game
@@ -75,8 +89,8 @@ public class Game extends GameGrid {
         // This makes it improbable that we miss a hit
         boolean hasPacmanBeenHit;
         boolean hasPacmanEatAllPills;
-        manager.putItems(bg, this);
-        int maxPillsAndItems = countPillsAndItems();
+        putItems(bg);
+        int maxPillsAndItems = manager.getNumPillsAndGold();
 
         do {
             hasPacmanBeenHit = troll.getLocation().equals(pacActor.getLocation()) ||
@@ -93,56 +107,58 @@ public class Game extends GameGrid {
 
         String title = "";
         if (hasPacmanBeenHit) {
-            bg.setPaintColor(Color.red);
-            title = "GAME OVER";
+            bg.setPaintColor(COLOR_LOSE);
+            title = LOSE_MESSAGE;
             addActor(new Actor("sprites/explosion3.gif"), loc);
         }
         else if (hasPacmanEatAllPills) {
-            bg.setPaintColor(Color.yellow);
-            title = "YOU WIN";
+            bg.setPaintColor(COLOR_WIN);
+            title = WIN_MESSAGE;
         }
         setTitle(title);
         gameCallback.endOfGame(title);
         doPause();
     }
 
-    public GameCallback getGameCallback() {
-        return gameCallback;
-    }
-
-    private void setupActorLocations() {
-        manager.putActors(this);
-    }
-
-    private int countPillsAndItems() {
-        return manager.getPills().size() + manager.getIces().size() + manager.getGolds().size();
-    }
-
-    public ArrayList<Location> getPillAndItemLocations() {
-        ArrayList<Location> pillLocations = new ArrayList<>(manager.getPills().keySet());
-        ArrayList<Location> iceLocations  = new ArrayList<>(manager.getIces ().keySet());
-        ArrayList<Location> collectibles  = new ArrayList<>(manager.getGolds().keySet());
-        collectibles.addAll(iceLocations);
-        collectibles.addAll(pillLocations);
-        return collectibles;
-    }
-
     private void drawGrid(GGBackground bg) {
         // set the background
         bg.clear(Color.gray);
-        bg.setPaintColor(Color.white);
+        bg.setPaintColor(COLOR_BACKGROUND);
 
         // draw the maze (its border and items)
         for (int y = 0; y < numVerticalCells; y++) {
             for (int x = 0; x < numHorizontalCells; x++) {
-                bg.setPaintColor(Color.white);
+                bg.setPaintColor(COLOR_BACKGROUND);
                 Location location = new Location(x, y);
                 if (grid.getCell(location) != PacManGameGrid.BlockType.ERROR)
-                    bg.fillCell(location, Color.WHITE);
-                if (grid.getCell(location) == PacManGameGrid.BlockType.WALL)
                     bg.fillCell(location, Color.lightGray);
+                if (grid.getCell(location) == PacManGameGrid.BlockType.WALL)
+                    bg.fillCell(location, ObjectManager.COLOR_WALL);
             }
         }
+    }
+
+    public void putItems(GGBackground bg) {
+        // putting all items
+        for (Map.Entry<HashableLocation, Item> entry : manager.getItems().entrySet()) {
+            Location location = entry.getKey().location();
+            Item item = entry.getValue();
+            item.putItem(bg, this, location);
+        }
+    }
+
+    // putting all monsters to grid
+    public void putMonsters() {
+        for (Map.Entry<HashableLocation, Monster> entry : manager.getMonsters().entrySet()) {
+            Location location = entry.getKey().location();
+            Monster monster = entry.getValue();
+            addActor(monster, location, Location.NORTH);
+        }
+    }
+
+    // putting PacMan
+    public void putPacActor() {
+        addActor(pacActor, pacActor.getInitLocation());
     }
 
     public int getNumHorizontalCells() {

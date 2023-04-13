@@ -1,17 +1,20 @@
 package src;
 
-import ch.aplu.jgamegrid.GGBackground;
 import ch.aplu.jgamegrid.Location;
-import java.util.HashMap;
-import java.util.Properties;
+
+import java.awt.*;
+import java.util.*;
 
 public class ObjectManager {
+    public final static Color COLOR_WALL = Color.gray;
+    private final static int INIT_SEED = 30006;
+
     private final PacActor pacActor;
-    private final HashMap<Location, Monster> monsters;
-    private final HashMap<Location, Pill> pills;
-    private final HashMap<Location, Gold> golds;
-    private final HashMap<Location, Ice> ices;
-    private int seed = 30006;
+    private final HashMap<HashableLocation, Monster> monsters;
+    private final HashMap<HashableLocation, Item> items;
+    private final HashMap<HashableLocation, Integer> walls;
+    private int seed = INIT_SEED;
+    private int numPillsAndGold = 0;
 
     // constructor
     public ObjectManager(PacActor pacActor) {
@@ -20,34 +23,30 @@ public class ObjectManager {
         }
         this.pacActor = pacActor;
         this.monsters = new HashMap<>();
-        this.pills    = new HashMap<>();
-        this.golds    = new HashMap<>();
-        this.ices     = new HashMap<>();
+        this.items    = new HashMap<>();
+        this.walls    = new HashMap<>();
     }
 
     // getters
     public PacActor getPacActor() {
         return pacActor;
     }
-
-    public HashMap<Location, Monster> getMonsters() {
+    public HashMap<HashableLocation, Monster> getMonsters() {
         return monsters;
     }
-
-    public HashMap<Location, Pill> getPills() {
-        return pills;
+    public HashMap<HashableLocation, Item> getItems() {
+        return items;
     }
-
-    public HashMap<Location, Gold> getGolds() {
-        return golds;
+    public int getSeed() {
+        return seed;
     }
-
-    public HashMap<Location, Ice> getIces() {
-        return ices;
+    // get locations of all items
+    public ArrayList<Location> getItemLocations() {
+        return new ArrayList<>(items.keySet().stream().map(HashableLocation::location).toList());
     }
 
     // parsing properties
-    public void parseProperties(Game game, Properties properties) {
+    public void parseProperties(Properties properties) {
         seed = Integer.parseInt(properties.getProperty("seed"));
 
         // parse pacman
@@ -56,9 +55,7 @@ public class ObjectManager {
         String[] pacManLocations = properties.getProperty("PacMan.location").split(",");
         int pacManX = Integer.parseInt(pacManLocations[0]);
         int pacManY = Integer.parseInt(pacManLocations[1]);
-        Location location = new Location(pacManX, pacManY);
-        game.addActor(pacActor, location);
-        pacActor.setLocation(location);
+        pacActor.setInitLocation(new Location(pacManX, pacManY));
 
         // parse the pill locations if there is pill location
         if (properties.containsKey("Pills.location")) {
@@ -67,9 +64,10 @@ public class ObjectManager {
                 String[] pos = pL.split(",");
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
-                location = new Location(posX, posY);
-                Pill pill = new Pill(game, location);
-                pills.put(location, pill);
+                Location location = new Location(posX, posY);
+                Pill pill = new Pill();
+                HashableLocation.putLocationHash(items, location, pill);
+                numPillsAndGold++;
             }
         }
 
@@ -80,54 +78,41 @@ public class ObjectManager {
                 String[] pos = gL.split(",");
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
-                location = new Location(posX, posY);
-                Gold gold = new Gold(game, location);
-                golds.put(location, gold);
+                Location location = new Location(posX, posY);
+                Gold gold = new Gold();
+                HashableLocation.putLocationHash(items, location, gold);
+                numPillsAndGold++;
             }
         }
     }
 
-    // instantiate the items in the grid and put them in their respective hashmaps
-    public void instantiateItems(PacManGameGrid grid, Game game) {
 
+    // instantiate the items in the grid and put them in their respective hashmaps
+    public void instantiateObjects(PacManGameGrid grid) {
         for (int col = 0; col < grid.getNumVerticalCells(); col++)
             for (int row = 0; row < grid.getNumHorizontalCells(); row++) {
                 PacManGameGrid.BlockType itemType = grid.getMazeArray()[col][row];
                 Location location = new Location(row, col);
-                if (itemType == PacManGameGrid.BlockType.PILL) {
-                    Pill pill = new Pill(game, location);
-                    pills.put(location, pill);
-                }
-                else if (itemType == PacManGameGrid.BlockType.GOLD) {
-                    Gold gold = new Gold(game, location);
-                    golds.put(location, gold);
-                }
-                else if (itemType == PacManGameGrid.BlockType.ICE) {
-                    Ice ice = new Ice(game, location);
-                    ices.put(location, ice);
+                switch(itemType) {
+                    case PILL -> {
+                        Pill pill = new Pill();
+                        HashableLocation.putLocationHash(items, location, pill);
+                        numPillsAndGold++;
+                    }
+                    case GOLD -> {
+                        Gold gold = new Gold();
+                        HashableLocation.putLocationHash(items, location, gold);
+                        numPillsAndGold++;
+                    }
+                    case ICE  -> {
+                        Ice ice = new Ice();
+                        HashableLocation.putLocationHash(items, location, ice);
+                    }
                 }
             }
     }
 
-    public void putItems(GGBackground bg, Game game) {
-        // golds
-        for (Gold gold : golds.values())
-            gold.putItem(bg, game);
-        // ices
-        for (Ice ice : ices.values())
-            ice.putItem(bg, game);
-        // pills
-        for (Pill pill : pills.values())
-            pill.putItem(bg, game);
-    }
-
-    // putting all actors to grid
-    public void putActors(Game game) {
-        // monsters
-        for (Monster monster : monsters.values()) {
-//            game.addActor(monster, monster.getLocation(), Location.NORTH);
-        }
-        // pacActor
-//        game.addActor(pacActor, pacActor.getLocation());
+    public int getNumPillsAndGold() {
+        return numPillsAndGold;
     }
 }

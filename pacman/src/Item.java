@@ -2,21 +2,10 @@ package src;
 import ch.aplu.jgamegrid.*;
 
 public abstract class Item extends Actor {
+    private int score;
     public static final int radius = 5;
-    private Actor actor;
-    public Item(Game game, Location location) {
-        game.addActor(this, location);
-        setLocation(location);
-    }
-
-    // getters
-    public Actor getActor() {
-        return actor;
-    }
-
-    // setters
-    public void setActor(Actor actor) {
-        this.actor = actor;
+    public Item(String src) {
+        super(src);
     }
 
 
@@ -26,21 +15,25 @@ public abstract class Item extends Actor {
         int yItem = this.getY();
         int xPac  = manager.getPacActor().getX();
         int yPac  = manager.getPacActor().getY();
-        return (xItem == xPac || yItem == yPac);
+        return (xItem == xPac && yItem == yPac);
+    }
+
+    // get and set score
+    public int getScore() {
+        return score;
+    }
+    public void setScore(int score) {
+        this.score = score;
     }
 
     // remove item
     public void removeItem(ObjectManager manager) {
-        if (this instanceof Pill)
-            manager.getPills().remove(getLocation());
-        else if (this instanceof Gold)
-            manager.getGolds().remove(getLocation());
-        else if (this instanceof Ice)
-            manager.getIces().remove(getLocation());
-        actor.removeSelf();
+        HashableLocation hashLocation = new HashableLocation(getLocation());
+        manager.getItems().remove(hashLocation);
+        removeSelf();
     }
 
-    public abstract void putItem(GGBackground bg, Game game);
+    public abstract void putItem(GGBackground bg, Game game, Location location);
 
     public abstract void signalManager(ObjectManager manager);
 }
