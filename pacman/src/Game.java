@@ -91,7 +91,7 @@ public class Game extends GameGrid {
                     tx5.getLocation().equals(pacActor.getLocation());
 
             /// NOTE: not yet correct since pacman doesn't have to eat all Ice cubes
-            hasPacmanEatAllPills = manager.getItems().size() == 0;
+            hasPacmanEatAllPills = manager.getNumPillsAndGold() <= 0;
 
             delay(10);
         } while(!hasPacmanBeenHit && !hasPacmanEatAllPills);

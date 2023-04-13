@@ -13,7 +13,7 @@ public class Wizard extends Monster {
     }
 
     @Override
-    public void walkApproach() {
+    public void moveApproach() {
         int[] movesUsed = new int[8];
         int minDistance = Integer.MAX_VALUE;
         Location pacmanLocation = getManager().getPacActor().getLocation();

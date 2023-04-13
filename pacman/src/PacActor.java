@@ -87,7 +87,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         if (idSprite == nbSprites)
             idSprite = 0;
         if (isAuto)
-            moveInAutoMode();
+            moveApproach();
         getGame().getGameCallback().pacManLocationChanged(getLocation(), score, nbPills);
     }
 
@@ -121,7 +121,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         propertyMoveIndex++;
     }
 
-    private void moveInAutoMode() {
+    protected void moveApproach() {
         if (propertyMoves.size() > propertyMoveIndex) {
             followPropertyMoves();
             return;
@@ -133,8 +133,27 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         setDirection(compassDir);
         if (canMove(next))
             setLocation(next);
-        else
-            moveApproach(oldDirection);
+        else {
+            int sign = randomizer.nextDouble() < 0.5 ? 1 : -1;
+            setDirection(oldDirection);
+            turn(sign * 90);                // Try to turn left/right
+            next = getNextMoveLocation();
+            if (! canMove(next)) {
+                setDirection(oldDirection);
+                next = getNextMoveLocation();     // Try to move forward
+                if (! canMove(next)) {
+                    setDirection(oldDirection);
+                    turn(-sign * 90);       // Try to turn right/left
+                    next = getNextMoveLocation();
+                    if (! canMove(next)) {
+                        setDirection(oldDirection);
+                        turn(180);          // Turn backward
+                        next = getNextMoveLocation();
+                    }
+                }
+            }
+            setLocation(next);
+        }
         eatPill(getManager(), getLocation());
     }
 

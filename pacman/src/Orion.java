@@ -12,7 +12,7 @@ public class Orion extends Monster {
 
     private Location currDestination = null;
     private boolean hasDestination = false;
-    private ArrayList<Location> visited = new ArrayList<>();
+    private final ArrayList<Location> visited = new ArrayList<>();
     private boolean allEaten = false;
 
 
@@ -22,7 +22,7 @@ public class Orion extends Monster {
     }
 
     @Override
-    public void walkApproach() {
+    public void moveApproach() {
         // Always check first if we are already at the current destination
         // If we already are, or a destination has not been defined, we
         // want to ensure we find a new destination to walk towards
@@ -63,14 +63,12 @@ public class Orion extends Monster {
             }
         }
 
-        // Now when the move has been decided, can move Orion to the desired
-        // piece
+        // Now when the move has been decided, can move Orion to the desired piece
         this.setLocation(toMove);
     }
 
     public void findNewGold() {
-        // Idea is that we need to somehow keep track of the
-        // gold coins that have and have not been visited
+        // Idea is that we need to somehow keep track of the gold coins that have and have not been visited
         HashMap<Item, Integer> notTaken = new HashMap<>();
         int minDistance = Integer.MAX_VALUE;
         int numGolds = 0;

@@ -10,10 +10,14 @@ public abstract class Monster extends LiveActor {
     private String name;
     private final ArrayList<Location> visitedList = new ArrayList<>();
     private boolean stopMoving = false;
-    protected final Random randomizer = new Random(0);
 
     public Monster(Game game, boolean isRotatable, String directory, int numSprites) {
         super(game, isRotatable, directory, numSprites);
+    }
+
+    @Override
+    public ObjectManager getManager() {
+        return getGame().manager;
     }
 
     public String getName() {
@@ -49,13 +53,10 @@ public abstract class Monster extends LiveActor {
     @Override
     public void act() {
         if (stopMoving) return;
-        walkApproach();
+        moveApproach();
         boolean enable = getDirection() > 150 && getDirection() < 210;
         setHorzMirror(!enable);
     }
-
-    // Abstract move approach that changes depending on the monster
-    public abstract void walkApproach();
 
     protected void addVisitedList(Location location) {
         visitedList.add(location);

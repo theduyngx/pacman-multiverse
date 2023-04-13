@@ -13,7 +13,7 @@ public class Troll extends Monster {
     }
 
     @Override
-    public void walkApproach() {
+    public void moveApproach() {
         double oldDirection = this.getDirection();
         // Should be int but I don't know what happened
         double sign = this.randomizer.nextDouble();

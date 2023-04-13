@@ -14,7 +14,7 @@ public class Alien extends Monster {
     }
 
     @Override
-    public void walkApproach() {
+    public void moveApproach() {
         // Aliens pick from 8 of the different directions it can walk towards,
         // need to find the direction that is closest to pacman
         ArrayList<Location> possibleMoves = new ArrayList<>();

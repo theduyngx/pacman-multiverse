@@ -12,7 +12,7 @@ public class TX5 extends Monster {
     }
 
     @Override
-    public void walkApproach() {
+    public void moveApproach() {
         // With TX5, need to base direction to move on the relative position of pacman
         Location pacLocation = getManager().getPacActor().getLocation();
         double oldDirection = this.getDirection();
