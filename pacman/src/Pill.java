@@ -14,6 +14,8 @@ public class Pill extends Item {
     @Override
     public void putItem(GGBackground bg, Game game, Location location) {
         bg.fillCircle(game.toPoint(location), radius);
+        game.addActor(this, location);
+        hide();
     }
 
     @Override
