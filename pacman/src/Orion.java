@@ -121,6 +121,7 @@ public class Orion extends Monster
 
         else
         {
+            this.allEaten = true;
             goldDistances = this.visited;
         }
 
