@@ -6,8 +6,9 @@ public class Troll extends Monster {
     public static final int numTrollImages = 1;
     public static final String directory = "sprites/m_troll.gif";
 
-    public Troll() {
-        super(false, directory, numTrollImages);
+    public Troll(ObjectManager manager) {
+        super(manager, false, directory, numTrollImages);
+        assert manager != null;
         setName(TROLL_NAME);
     }
 

@@ -26,8 +26,9 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     /**
      * (WIP should not have game as property) PacMan constructor.
      */
-    public PacActor() {
-        super(true, directory, nbSprites);
+    public PacActor(ObjectManager manager) {
+        super(manager, true, directory, nbSprites);
+        assert manager != null;
     }
 
     /**

@@ -154,8 +154,7 @@ public class ObjectManager {
     }
 
     public void instantiatePacActor() {
-        this.pacActor = new PacActor();
-        pacActor.setManager(this);
+        this.pacActor = new PacActor(this);
         pacActor.setSeed(seed);
         pacActor.setSlowDown(3);
     }
@@ -206,7 +205,7 @@ public class ObjectManager {
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
-                TX5 tx5 = new TX5();
+                TX5 tx5 = new TX5(this);
                 HashableLocation.putLocationHash(monsters, location, tx5);
             }
         }
@@ -217,7 +216,7 @@ public class ObjectManager {
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
-                Troll troll = new Troll();
+                Troll troll = new Troll(this);
                 HashableLocation.putLocationHash(monsters, location, troll);
             }
         }
@@ -228,7 +227,7 @@ public class ObjectManager {
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
-                Orion orion = new Orion();
+                Orion orion = new Orion(this);
                 HashableLocation.putLocationHash(monsters, location, orion);
             }
         }
@@ -239,7 +238,7 @@ public class ObjectManager {
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
-                Alien alien = new Alien();
+                Alien alien = new Alien(this);
                 HashableLocation.putLocationHash(monsters, location, alien);
             }
         }
@@ -250,14 +249,13 @@ public class ObjectManager {
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
-                Wizard wizard = new Wizard();
+                Wizard wizard = new Wizard(this);
                 HashableLocation.putLocationHash(monsters, location, wizard);
             }
         }
 
         /// TEMPORARY SET SEED AND SLOW DOWN
         for (Monster monster : monsters.values()) {
-            monster.setManager(this);
             monster.setSeed(seed);
             monster.setSlowDown(3);
             if (monster instanceof TX5)

@@ -25,8 +25,9 @@ public abstract class Monster extends LiveActor {
      * @param directory     sprite image directory
      * @param numSprites    number of sprites
      */
-    public Monster(boolean isRotatable, String directory, int numSprites) {
-        super(isRotatable, directory, numSprites);
+    public Monster(ObjectManager manager, boolean isRotatable, String directory, int numSprites) {
+        super(manager, isRotatable, directory, numSprites);
+        assert manager != null;
     }
 
     /**

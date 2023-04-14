@@ -6,8 +6,9 @@ public class TX5 extends Monster {
     public static final int numTX5Images = 1;
     public static final String directory = "sprites/m_tx5.gif";
 
-    public TX5() {
-        super(false, directory, numTX5Images);
+    public TX5(ObjectManager manager) {
+        super(manager, false, directory, numTX5Images);
+        assert manager != null;
         setName(TX5_NAME);
     }
 

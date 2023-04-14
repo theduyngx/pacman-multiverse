@@ -9,7 +9,7 @@ import java.util.Random;
  */
 public abstract class LiveActor extends Actor {
     // properties
-    private ObjectManager manager;
+    private final ObjectManager manager;
     protected final Random randomizer = new Random(0);
 
     /**
@@ -18,8 +18,10 @@ public abstract class LiveActor extends Actor {
      * @param directory     directory that contains sprite image for the actor
      * @param numSprites    number of sprites the actor has
      */
-    public LiveActor(boolean isRotatable, String directory, int numSprites) {
+    public LiveActor(ObjectManager manager, boolean isRotatable, String directory, int numSprites) {
         super(isRotatable, directory, numSprites);
+        assert manager != null;
+        this.manager = manager;
     }
 
     /**
@@ -62,15 +64,6 @@ public abstract class LiveActor extends Actor {
      * different enemies may have each distinctive move approach.
      */
     protected abstract void moveApproach();
-
-    /**
-     * Set the live actor's object manager.
-     * @param manager the object manager
-     */
-    protected void setManager(ObjectManager manager) {
-        assert manager != null;
-        this.manager = manager;
-    }
 
 
     /**

@@ -16,8 +16,9 @@ public class Orion extends Monster {
     private boolean allEaten = false;
 
 
-    public Orion() {
-        super(false, directory, numOrionImages);
+    public Orion(ObjectManager manager) {
+        super(manager, false, directory, numOrionImages);
+        assert manager != null;
         setName(ORION_NAME);
     }
 
