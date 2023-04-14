@@ -35,8 +35,6 @@ public class Game extends GameGrid {
     protected PacActor pacActor;
     protected ObjectManager manager;
     private final GameCallback gameCallback;
-    private final Monster troll = new Troll(this);
-    private final Monster tx5 = new TX5(this);
 
     public Game(GameCallback gameCallback, Properties properties) {
         // Setup game
@@ -57,17 +55,7 @@ public class Game extends GameGrid {
 
 
         /////////////
-        // temporarily initialize troll and tx5
-        String[] trollLocations = properties.getProperty("Troll.location").split(",");
-        String[] tx5Locations = properties.getProperty("TX5.location").split(",");
-        int trollX = Integer.parseInt(trollLocations[0]);
-        int trollY = Integer.parseInt(trollLocations[1]);
-
-        int tx5X = Integer.parseInt(tx5Locations[0]);
-        int tx5Y = Integer.parseInt(tx5Locations[1]);
-
-        addActor(troll, new Location(trollX, trollY), Location.NORTH);
-        addActor(tx5, new Location(tx5X, tx5Y), Location.NORTH);
+        manager.instantiateMonsters(this, properties);
         /////////////
     }
 
@@ -101,14 +89,9 @@ public class Game extends GameGrid {
         // Setup Random seeds
         int seed = manager.getSeed();
         pacActor.setSeed(seed);
-        troll.setSeed(seed);
-        tx5.setSeed(seed);
         addKeyRepeatListener(pacActor);
         setKeyRepeatPeriod(150);
-        troll.setSlowDown(3);
-        tx5.setSlowDown(3);
         pacActor.setSlowDown(3);
-        tx5.stopMoving(5);
         putPacActor();
         putMonsters();
 
@@ -123,17 +106,14 @@ public class Game extends GameGrid {
         putItems(bg);
 
         do {
-            hasPacmanBeenHit = troll.getLocation().equals(pacActor.getLocation()) ||
-                    tx5.getLocation().equals(pacActor.getLocation());
+            hasPacmanBeenHit = pacActor.collideMonster();
             hasPacmanEatAllPills = manager.getNumPillsAndGold() <= 0;
-
             delay(10);
         } while(!hasPacmanBeenHit && !hasPacmanEatAllPills);
         delay(120);
 
         Location loc = pacActor.getLocation();
-        troll.setStopMoving(true);
-        tx5.setStopMoving(true);
+        manager.setMonstersStopMoving();
         pacActor.removeSelf();
 
         String title;
@@ -192,12 +172,5 @@ public class Game extends GameGrid {
     // putting PacMan
     public void putPacActor() {
         addActor(pacActor, pacActor.getInitLocation());
-    }
-
-    public int getNumHorizontalCells() {
-        return numHorizontalCells;
-    }
-    public int getNumVerticalCells() {
-        return numVerticalCells;
     }
 }

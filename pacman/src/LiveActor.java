@@ -38,4 +38,8 @@ public abstract class LiveActor extends Actor {
         return (! getManager().getWalls().containsKey(hashLocation)) && x < getGame().getXRight() &&
                 x >= getGame().getXLeft() && y < getGame().getYBottom() && y >= getGame().getYTop();
     }
+
+    public boolean checkCollision(LiveActor other) {
+        return (this.getLocation().equals(other.getLocation()));
+    }
 }

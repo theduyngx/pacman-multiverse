@@ -4,7 +4,6 @@ package src;
 
 import ch.aplu.jgamegrid.*;
 import java.awt.event.KeyEvent;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -159,18 +158,36 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
 
     private void eatPill(ObjectManager manager, Location location) {
         HashableLocation hashLocation = new HashableLocation(location);
+
+        // item exists
         if (manager.getItems().containsKey(hashLocation)) {
             Item item = manager.getItems().get(hashLocation);
+
+            // check of which type
             String itemType = (item instanceof Pill) ? "pills" :
                               (item instanceof Gold) ? "gold"  :
                               "ice";
             if (! (item instanceof Ice)) nbPills++;
             score += item.getScore();
-            getBackground().fillCell(location, Color.lightGray);
+
+            // signals the manager and removes itself
+            item.signalManager(manager);
+            getBackground().fillCell(location, Game.COLOR_SPACE);
             getGame().getGameCallback().pacManEatPillsAndItems(location, itemType);
             item.removeItem(manager);
         }
         String title = "[PacMan in the Multiverse] Current score: " + score;
         gameGrid.setTitle(title);
+    }
+
+    /**
+     * Game over checking - whether PacMan has collided with a monster or not.
+     * @return true if collided, false if otherwise.
+     */
+    public boolean collideMonster() {
+        for (Monster monster : getManager().getMonsters().values())
+            if (checkCollision(monster))
+                return true;
+        return false;
     }
 }
