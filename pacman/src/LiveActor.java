@@ -30,15 +30,25 @@ public abstract class LiveActor extends Actor {
         this.manager = manager;
     }
 
-    /// FOR NOW: it still checks based on color, we'd prefer to check based on Location instead
+
+    /**
+     * Check whether a live actor can move to a specified location.
+     * @param location specified location
+     * @return         boolean indicating whether actor can move there.
+     */
     protected boolean canMove(Location location) {
-        HashableLocation hashLocation = new HashableLocation(location);
         int x = location.getX();
         int y = location.getY();
-        return (! getManager().getWalls().containsKey(hashLocation)) && x < getGame().getXRight() &&
-                x >= getGame().getXLeft() && y < getGame().getYBottom() && y >= getGame().getYTop();
+        return (! HashableLocation.containLocationHash(getManager().getWalls(), location)) &&
+                x < getGame().getXRight() && x >= getGame().getXLeft() &&
+                y < getGame().getYBottom() && y >= getGame().getYTop();
     }
 
+    /**
+     * Check if 'this' live actor collides with a specified other or not.
+     * @param other specified other live actor
+     * @return      if live actor collides with the other or not
+     */
     public boolean checkCollision(LiveActor other) {
         return (this.getLocation().equals(other.getLocation()));
     }
