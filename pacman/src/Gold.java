@@ -7,7 +7,6 @@ import java.awt.*;
  */
 public class Gold extends Item {
     // properties
-    private static final int AGGRAVATE_TIME = 3;
     private static final String directory = "sprites/gold.png";
     private static final int GOLD_SCORE = 5;
 
@@ -34,7 +33,7 @@ public class Gold extends Item {
     }
 
     /**
-     * (WIP) Overridden method signalling object manager to aggravate monsters.
+     * Overridden method signalling object manager to aggravate monsters.
      * @param manager object manager
      */
     @Override
@@ -43,7 +42,6 @@ public class Gold extends Item {
         if (matchPacmanLocation(manager))
             // trigger signal
             for (Monster monster : manager.getMonsters().values())
-                // NOTE: gold is supposed to aggravate
-                monster.stopMoving(AGGRAVATE_TIME);
+                monster.speedUp(Monster.AGGRAVATE_TIME);
     }
 }

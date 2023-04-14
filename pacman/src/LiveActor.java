@@ -29,7 +29,17 @@ public abstract class LiveActor extends Actor {
      * @return the game
      */
     public Game getGame() {
+        assert this.game != null;
         return game;
+    }
+
+    /**
+     * Get the game grid.
+     * @return the game grid
+     */
+    public GameGrid getGameGrid() {
+        assert this.gameGrid != null;
+        return gameGrid;
     }
 
     /**
@@ -38,6 +48,7 @@ public abstract class LiveActor extends Actor {
      * @return the object manager
      */
     public ObjectManager getManager() {
+        assert this.manager != null;
         return manager;
     }
 
@@ -58,6 +69,7 @@ public abstract class LiveActor extends Actor {
      * @param manager the object manager
      */
     protected void setManager(ObjectManager manager) {
+        assert manager != null;
         this.manager = manager;
     }
 

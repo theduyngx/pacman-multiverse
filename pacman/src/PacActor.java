@@ -178,7 +178,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             item.removeItem(manager);
         }
         String title = "[PacMan in the Multiverse] Current score: " + score;
-        gameGrid.setTitle(title);
+        getGameGrid().setTitle(title);
     }
 
     /**

@@ -1,55 +1,112 @@
-// Monster.java
-// Used for PacMan
 package src;
-
 import ch.aplu.jgamegrid.*;
 import java.util.*;
 
-
+/**
+ * Monster abstract class extended from abstract LiveActor class.
+ */
 public abstract class Monster extends LiveActor {
+    // time-related constants
+    public static final int SECOND_TO_MILLISECONDS = 1000;
+    public static final int AGGRAVATE_TIME = 3;
+    private static final int AGGRAVATE_SPEED_FACTOR = 2;
+
+    // monster's name
     private String name;
+    // visited locations
     private final ArrayList<Location> visitedList = new ArrayList<>();
+    // if it has stopped moving or not
     private boolean stopMoving = false;
 
+    /**
+     * Monster constructor.
+     * @param game          the game
+     * @param isRotatable   if monster is rotatable
+     * @param directory     sprite image directory
+     * @param numSprites    number of sprites
+     */
     public Monster(Game game, boolean isRotatable, String directory, int numSprites) {
         super(game, isRotatable, directory, numSprites);
     }
 
+    /**
+     * Get the object manager.
+     * @return the object manager
+     */
     @Override
     public ObjectManager getManager() {
+        assert getGame().manager != null;
         return getGame().manager;
     }
 
+    /**
+     * Get monster's name; used for GameCallBack to write monster's names to log.
+     * @return monster's name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set monster's name.
+     * @param name monster's name
+     */
     protected void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Stops monster's movement for a specified number of seconds.
+     * @param seconds number of seconds monster stops moving
+     */
     public void stopMoving(int seconds) {
-        this.stopMoving = true;
+        setStopMoving(true);
         Timer timer = new Timer(); // Instantiate Timer Object
-        int SECOND_TO_MILLISECONDS = 1000;
         final Monster monster = this;
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                monster.stopMoving = false;
+                monster.setStopMoving(false);
             }
         }, (long) seconds * SECOND_TO_MILLISECONDS);
     }
 
+    /**
+     * Speed up monster's movement by a constant factor for a specified number of seconds.
+     * @param seconds number of seconds monster speeds up
+     */
+    public void speedUp(int seconds) {
+        this.setSlowDown(1/AGGRAVATE_SPEED_FACTOR);
+        Timer timer = new Timer();
+        final Monster monster = this;
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                monster.setSlowDown(AGGRAVATE_SPEED_FACTOR);
+            }
+        }, (long) seconds * SECOND_TO_MILLISECONDS);
+    }
+
+    /**
+     * Overridden method for setting monster's seed.
+     * @param seed specified seed
+     */
     @Override
     public void setSeed(int seed) {
         randomizer.setSeed(seed);
     }
 
+    /**
+     * Set monster to either stop or continue/start moving.
+     * @param stopMoving boolean indicating if monster stops moving or not
+     */
     public void setStopMoving(boolean stopMoving) {
         this.stopMoving = stopMoving;
     }
 
+    /**
+     * Overridden act method from Actor class for monster to act within the game.
+     */
     @Override
     public void act() {
         if (stopMoving) return;
@@ -61,6 +118,10 @@ public abstract class Monster extends LiveActor {
         getGame().getGameCallback().monsterLocationChanged(this);
     }
 
+    /**
+     * (WIP: should be HashMap<HashableLocation, Monster>) Add location to visited list.
+     * @param location current location of monster
+     */
     protected void addVisitedList(Location location) {
         visitedList.add(location);
         int listLength = 10;
@@ -68,6 +129,12 @@ public abstract class Monster extends LiveActor {
             visitedList.remove(0);
     }
 
+    /**
+     * Check if monster has visited a specific location or not.
+     * (WIP: should be HashMap<HashableLocation, Monster>)
+     * @param location specified location to check if monster has visited
+     * @return         true if monster has, false if otherwise
+     */
     protected boolean isVisited(Location location) {
         for (Location loc : visitedList)
             if (loc.equals(location))
