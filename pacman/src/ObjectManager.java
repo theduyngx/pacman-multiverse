@@ -54,6 +54,17 @@ public class ObjectManager {
         return numPillsAndGold;
     }
 
+    /**
+     * Decrementing the number of pill and gold pieces when PacMan eats one of the pieces.
+     * Hence, used in eatItem of PacActor. It will also check if a specified item is of instance
+     * Gold or Pill, and if not then it will not decrement.
+     * @param item specified eaten item
+     */
+    protected void decrementNumPillAndGold(Item item) {
+        if (item instanceof Gold || item instanceof Pill)
+            numPillsAndGold--;
+    }
+
     // parsing properties that do not require an Actor instantiation
     public void parseProperties(Properties properties) {
         seed = Integer.parseInt(properties.getProperty("seed"));
@@ -74,9 +85,11 @@ public class ObjectManager {
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
-                Pill pill = new Pill();
-                HashableLocation.putLocationHash(items, location, pill);
-                numPillsAndGold++;
+                if (! HashableLocation.containLocationHash(items, location)) {
+                    Pill pill = new Pill();
+                    HashableLocation.putLocationHash(items, location, pill);
+                    numPillsAndGold++;
+                }
             }
         }
 
@@ -88,9 +101,11 @@ public class ObjectManager {
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
-                Gold gold = new Gold();
-                HashableLocation.putLocationHash(items, location, gold);
-                numPillsAndGold++;
+                if (! HashableLocation.containLocationHash(items, location)) {
+                    Gold gold = new Gold();
+                    HashableLocation.putLocationHash(items, location, gold);
+                    numPillsAndGold++;
+                }
             }
         }
     }
@@ -101,7 +116,12 @@ public class ObjectManager {
         for (int col = 0; col < grid.getNumVerticalCells(); col++)
             for (int row = 0; row < grid.getNumHorizontalCells(); row++) {
                 PacManGameGrid.BlockType itemType = grid.getMazeArray()[col][row];
+
+                // ignore if location is already occupied
                 Location location = new Location(row, col);
+                if (HashableLocation.containLocationHash(items, location)) continue;
+
+                // otherwise add
                 switch (itemType) {
                     case PILL -> {
                         Pill pill = new Pill();
@@ -136,7 +156,6 @@ public class ObjectManager {
                 Location location = new Location(posX, posY);
                 TX5 tx5 = new TX5(game);
                 HashableLocation.putLocationHash(monsters, location, tx5);
-                numPillsAndGold++;
             }
         }
         if (properties.containsKey("Troll.location")) {
@@ -148,7 +167,6 @@ public class ObjectManager {
                 Location location = new Location(posX, posY);
                 Troll troll = new Troll(game);
                 HashableLocation.putLocationHash(monsters, location, troll);
-                numPillsAndGold++;
             }
         }
         if (properties.containsKey("Orion.location")) {
@@ -160,7 +178,6 @@ public class ObjectManager {
                 Location location = new Location(posX, posY);
                 Orion orion = new Orion(game);
                 HashableLocation.putLocationHash(monsters, location, orion);
-                numPillsAndGold++;
             }
         }
         if (properties.containsKey("Alien.location")) {
@@ -172,7 +189,6 @@ public class ObjectManager {
                 Location location = new Location(posX, posY);
                 Alien alien = new Alien(game);
                 HashableLocation.putLocationHash(monsters, location, alien);
-                numPillsAndGold++;
             }
         }
         if (properties.containsKey("Wizard.location")) {
@@ -184,7 +200,6 @@ public class ObjectManager {
                 Location location = new Location(posX, posY);
                 Wizard wizard = new Wizard(game);
                 HashableLocation.putLocationHash(monsters, location, wizard);
-                numPillsAndGold++;
             }
         }
 

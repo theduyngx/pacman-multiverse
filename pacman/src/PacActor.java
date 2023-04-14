@@ -75,7 +75,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         }
         if (next != null && canMove(next)) {
             setLocation(next);
-            eatPill(getManager(), next);
+            eatItem(getManager(), next);
         }
     }
 
@@ -113,7 +113,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
                 Location next = getNextMoveLocation();
                 if (canMove(next)) {
                     setLocation(next);
-                    eatPill(getManager(), next);
+                    eatItem(getManager(), next);
                 }
             }
         }
@@ -153,10 +153,10 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             }
             setLocation(next);
         }
-        eatPill(getManager(), getLocation());
+        eatItem(getManager(), getLocation());
     }
 
-    private void eatPill(ObjectManager manager, Location location) {
+    private void eatItem(ObjectManager manager, Location location) {
         HashableLocation hashLocation = new HashableLocation(location);
 
         // item exists
@@ -169,6 +169,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
                               "ice";
             if (! (item instanceof Ice)) nbPills++;
             score += item.getScore();
+            getManager().decrementNumPillAndGold(item);
 
             // signals the manager and removes itself
             item.signalManager(manager);
