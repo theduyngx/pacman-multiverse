@@ -46,7 +46,6 @@ public class Troll extends Monster {
         }
 
         // Tell game to change monster's location and store this as visited
-        this.getGame().getGameCallback().monsterLocationChanged(this);
         this.addVisitedList(next);
     }
 }

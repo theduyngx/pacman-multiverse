@@ -1,12 +1,9 @@
 package src;
 
 import ch.aplu.jgamegrid.Location;
-
-import java.awt.*;
 import java.util.*;
 
 public class ObjectManager {
-    public final static Color COLOR_WALL = Color.gray;
     private final static int INIT_SEED = 30006;
 
     private final PacActor pacActor;
@@ -40,6 +37,10 @@ public class ObjectManager {
         return items;
     }
 
+    public HashMap<HashableLocation, Integer> getWalls() {
+        return walls;
+    }
+
     public int getSeed() {
         return seed;
     }
@@ -49,7 +50,11 @@ public class ObjectManager {
         return new ArrayList<>(items.keySet().stream().map(HashableLocation::location).toList());
     }
 
-    // parsing properties
+    public int getNumPillsAndGold() {
+        return numPillsAndGold;
+    }
+
+    // parsing properties that do not require an Actor instantiation
     public void parseProperties(Properties properties) {
         seed = Integer.parseInt(properties.getProperty("seed"));
 
@@ -91,6 +96,22 @@ public class ObjectManager {
     }
 
 
+//    public void instantiateMonsters(Game game, Properties properties) {
+//        if (properties.containsKey("Pills.location")) {
+//            String[] TX5Locations = properties.getProperty("TX5.location").split(";");
+//            for (String loc : TX5Locations) {
+//                String[] pos = loc.split(",");
+//                int posX = Integer.parseInt(pos[0]);
+//                int posY = Integer.parseInt(pos[1]);
+//                Location location = new Location(posX, posY);
+//                TX5 tx5 = new TX5(game);
+//                HashableLocation.putLocationHash(items, location, pill);
+//                numPillsAndGold++;
+//            }
+//        }
+//    }
+
+
     // instantiate the items in the grid and put them in their respective hashmaps
     public void instantiateObjects(PacManGameGrid grid) {
         for (int col = 0; col < grid.getNumVerticalCells(); col++)
@@ -114,9 +135,5 @@ public class ObjectManager {
                     }
                 }
             }
-    }
-
-    public int getNumPillsAndGold() {
-        return numPillsAndGold;
     }
 }

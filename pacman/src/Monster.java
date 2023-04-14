@@ -56,6 +56,9 @@ public abstract class Monster extends LiveActor {
         moveApproach();
         boolean enable = getDirection() > 150 && getDirection() < 210;
         setHorzMirror(!enable);
+
+        // Record changes in position to game
+        getGame().getGameCallback().monsterLocationChanged(this);
     }
 
     protected void addVisitedList(Location location) {

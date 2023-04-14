@@ -10,14 +10,23 @@ import java.util.Map;
 import java.util.Properties;
 
 public class Game extends GameGrid {
+    // draw grid colors
     public final static Color COLOR_LOSE = Color.red;
     public final static Color COLOR_WIN = Color.yellow;
     public final static Color COLOR_BACKGROUND = Color.white;
+    public final static Color COLOR_WALL = Color.gray;
+    public final static Color COLOR_SPACE = Color.lightGray;
+
+    // win/lose messages
     public final static String LOSE_MESSAGE = "GAME OVER";
     public final static String WIN_MESSAGE = "YOU WIN";
+
+    // game grid
     private final static int numHorizontalCells = 20;
     private final static int numVerticalCells = 11;
     protected PacManGameGrid grid;
+
+    // actors and callback
     protected PacActor pacActor;
     protected ObjectManager manager;
     private final GameCallback gameCallback;
@@ -89,8 +98,6 @@ public class Game extends GameGrid {
         do {
             hasPacmanBeenHit = troll.getLocation().equals(pacActor.getLocation()) ||
                     tx5.getLocation().equals(pacActor.getLocation());
-
-            /// NOTE: not yet correct since pacman doesn't have to eat all Ice cubes
             hasPacmanEatAllPills = manager.getNumPillsAndGold() <= 0;
 
             delay(10);
@@ -102,13 +109,13 @@ public class Game extends GameGrid {
         tx5.setStopMoving(true);
         pacActor.removeSelf();
 
-        String title = "";
+        String title;
         if (hasPacmanBeenHit) {
             bg.setPaintColor(COLOR_LOSE);
             title = LOSE_MESSAGE;
             addActor(new Actor("sprites/explosion3.gif"), loc);
         }
-        else if (hasPacmanEatAllPills) {
+        else {
             bg.setPaintColor(COLOR_WIN);
             title = WIN_MESSAGE;
         }
@@ -119,7 +126,7 @@ public class Game extends GameGrid {
 
     private void drawGrid(GGBackground bg) {
         // set the background
-        bg.clear(Color.gray);
+        bg.clear(COLOR_WALL);
         bg.setPaintColor(COLOR_BACKGROUND);
 
         // draw the maze (its border and items)
@@ -127,10 +134,12 @@ public class Game extends GameGrid {
             for (int x = 0; x < numHorizontalCells; x++) {
                 bg.setPaintColor(COLOR_BACKGROUND);
                 Location location = new Location(x, y);
-                if (grid.getCell(location) != PacManGameGrid.BlockType.ERROR)
-                    bg.fillCell(location, Color.lightGray);
+                if (grid.getCell(location) != PacManGameGrid.BlockType.ERROR) {
+                    HashableLocation.putLocationHash(manager.getWalls(), location, 1);
+                    bg.fillCell(location, COLOR_SPACE);
+                }
                 if (grid.getCell(location) == PacManGameGrid.BlockType.WALL)
-                    bg.fillCell(location, ObjectManager.COLOR_WALL);
+                    bg.fillCell(location, COLOR_WALL);
             }
         }
     }

@@ -34,7 +34,7 @@ public abstract class LiveActor extends Actor {
     /// FOR NOW: it still checks based on color, we'd prefer to check based on Location instead
     protected boolean canMove(Location location) {
         Color c = getBackground().getColor(location);
-        return !c.equals(ObjectManager.COLOR_WALL) && location.getX() < game.getNumHorizontalCells()
+        return !c.equals(Game.COLOR_WALL) && location.getX() < game.getNumHorizontalCells()
                 && location.getX() >= 0 && location.getY() < game.getNumVerticalCells() && location.getY() >= 0;
     }
 }
