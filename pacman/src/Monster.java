@@ -3,6 +3,7 @@ import ch.aplu.jgamegrid.*;
 import java.util.*;
 
 /**
+ * Based on skeleton code for SWEN20003 Project, Semester 2, 2022, The University of Melbourne.
  * Monster abstract class extended from abstract LiveActor class.
  */
 public abstract class Monster extends LiveActor {

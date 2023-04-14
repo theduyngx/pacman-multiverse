@@ -1,14 +1,14 @@
-// PacActor.java
-// Used for PacMan
 package src;
-
 import ch.aplu.jgamegrid.*;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
+
+/**
+ * Based on skeleton code for SWEN20003 Project, Semester 2, 2022, The University of Melbourne.
+ * PacActor class extended from abstract LiveActor class, implementing a key repeat listener interface.
+ * (WIP) - too messy and poorly coded for not. Need some work done.
+ */
 public class PacActor extends LiveActor implements GGKeyRepeatListener {
     private static final int INF = 1000;
     private static final int nbSprites = 4;
@@ -23,22 +23,42 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     private boolean isAuto = false;
 
 
+    /**
+     * (WIP should not have game as property) PacMan constructor.
+     * @param game the game
+     */
     public PacActor(Game game) {
         super(game, true, directory, nbSprites);
     }
 
+    /**
+     * Get PacMan's initial location to add to game.
+     * @return the initial location
+     */
     public Location getInitLocation() {
         return initLocation;
     }
 
+    /**
+     * Set whether PacMan runs in auto mode or player mode.
+     * @param auto
+     */
     public void setAuto(boolean auto) {
         isAuto = auto;
     }
 
+    /**
+     * Set initial location for PacMan.
+     * @param initLocation
+     */
     public void setInitLocation(Location initLocation) {
         this.initLocation = initLocation;
     }
 
+    /**
+     * Set the random seed for PacMan.
+     * @param seed specified seed
+     */
     @Override
     protected void setSeed(int seed) {
         randomizer.setSeed(seed);
@@ -75,10 +95,13 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         }
         if (next != null && canMove(next)) {
             setLocation(next);
-            eatItem(getManager(), next);
+            eatItem(getManager());
         }
     }
 
+    /**
+     * Overridden act method from Actor class to act within the game.
+     */
     @Override
     public void act() {
         show(idSprite);
@@ -90,36 +113,10 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         getGame().getGameCallback().pacManLocationChanged(getLocation(), score, nbPills);
     }
 
-    private Location closestPillLocation() {
-        int currentDistance = INF;
-        Location currentLocation = null;
-        List<Location> pillAndItemLocations = getManager().getItemLocations();
-        for (Location location: pillAndItemLocations) {
-            int distanceToPill = location.getDistanceTo(getLocation());
-            if (distanceToPill < currentDistance) {
-                currentLocation = location;
-                currentDistance = distanceToPill;
-            }
-        }
-        return currentLocation;
-    }
-
-    private void followPropertyMoves() {
-        String currentMove = propertyMoves.get(propertyMoveIndex);
-        switch (currentMove) {
-            case "R" -> turn(90);
-            case "L" -> turn(-90);
-            case "M" -> {
-                Location next = getNextMoveLocation();
-                if (canMove(next)) {
-                    setLocation(next);
-                    eatItem(getManager(), next);
-                }
-            }
-        }
-        propertyMoveIndex++;
-    }
-
+    /**
+     * Overridden move approach method for PacMan which is only used when in auto movement mode.
+     */
+    @Override
     protected void moveApproach() {
         if (propertyMoves.size() > propertyMoveIndex) {
             followPropertyMoves();
@@ -153,10 +150,16 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             }
             setLocation(next);
         }
-        eatItem(getManager(), getLocation());
+        eatItem(getManager());
     }
 
-    private void eatItem(ObjectManager manager, Location location) {
+    /**
+     * Method for handling PacMan eating an item. Each item will have a different effect upon acquired, and
+     * this method will handle that as well.
+     * @param manager  object manager
+     */
+    private void eatItem(ObjectManager manager) {
+        Location location = getLocation();
         HashableLocation hashLocation = new HashableLocation(location);
 
         // item exists
@@ -165,8 +168,8 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
 
             // check of which type
             String itemType = (item instanceof Pill) ? "pills" :
-                              (item instanceof Gold) ? "gold"  :
-                              "ice";
+                    (item instanceof Gold) ? "gold"  :
+                            "ice";
             if (! (item instanceof Ice)) nbPills++;
             score += item.getScore();
             getManager().decrementNumPillAndGold(item);
@@ -190,5 +193,42 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             if (checkCollision(monster))
                 return true;
         return false;
+    }
+
+    /**
+     * Get the closest location of an item that is either a pill or gold. Used only when in auto mode.
+     * @return said closest location
+     */
+    private Location closestPillLocation() {
+        int currentDistance = INF;
+        Location currentLocation = null;
+        for (Map.Entry<HashableLocation, Item> entry : getManager().getItems().entrySet()) {
+            Item item = entry.getValue();
+            if (item instanceof Pill || item instanceof Gold) {
+                Location location = entry.getKey().location();
+                int distanceToPill = location.getDistanceTo(getLocation());
+                if (distanceToPill < currentDistance) {
+                    currentLocation = location;
+                    currentDistance = distanceToPill;
+                }
+            }
+        }
+        return currentLocation;
+    }
+
+    private void followPropertyMoves() {
+        String currentMove = propertyMoves.get(propertyMoveIndex);
+        switch (currentMove) {
+            case "R" -> turn(90);
+            case "L" -> turn(-90);
+            case "M" -> {
+                Location next = getNextMoveLocation();
+                if (canMove(next)) {
+                    setLocation(next);
+                    eatItem(getManager());
+                }
+            }
+        }
+        propertyMoveIndex++;
     }
 }
