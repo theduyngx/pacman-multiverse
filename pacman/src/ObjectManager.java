@@ -96,22 +96,6 @@ public class ObjectManager {
     }
 
 
-//    public void instantiateMonsters(Game game, Properties properties) {
-//        if (properties.containsKey("Pills.location")) {
-//            String[] TX5Locations = properties.getProperty("TX5.location").split(";");
-//            for (String loc : TX5Locations) {
-//                String[] pos = loc.split(",");
-//                int posX = Integer.parseInt(pos[0]);
-//                int posY = Integer.parseInt(pos[1]);
-//                Location location = new Location(posX, posY);
-//                TX5 tx5 = new TX5(game);
-//                HashableLocation.putLocationHash(items, location, pill);
-//                numPillsAndGold++;
-//            }
-//        }
-//    }
-
-
     // instantiate the items in the grid and put them in their respective hashmaps
     public void instantiateObjects(PacManGameGrid grid) {
         for (int col = 0; col < grid.getNumVerticalCells(); col++)
@@ -135,5 +119,89 @@ public class ObjectManager {
                     }
                 }
             }
+    }
+
+    /**
+     * (WIP) Instantiating monsters, for now this is clunky and needs plenty of work done
+     * @param game       the game
+     * @param properties properties to parse for monsters
+     */
+    public void instantiateMonsters(Game game, Properties properties) {
+        if (properties.containsKey("TX5.location")) {
+            String[] TX5Locations = properties.getProperty("TX5.location").split(";");
+            for (String loc : TX5Locations) {
+                String[] pos = loc.split(",");
+                int posX = Integer.parseInt(pos[0]);
+                int posY = Integer.parseInt(pos[1]);
+                Location location = new Location(posX, posY);
+                TX5 tx5 = new TX5(game);
+                HashableLocation.putLocationHash(monsters, location, tx5);
+                numPillsAndGold++;
+            }
+        }
+        if (properties.containsKey("Troll.location")) {
+            String[] trollLocations = properties.getProperty("Troll.location").split(";");
+            for (String loc : trollLocations) {
+                String[] pos = loc.split(",");
+                int posX = Integer.parseInt(pos[0]);
+                int posY = Integer.parseInt(pos[1]);
+                Location location = new Location(posX, posY);
+                Troll troll = new Troll(game);
+                HashableLocation.putLocationHash(monsters, location, troll);
+                numPillsAndGold++;
+            }
+        }
+        if (properties.containsKey("Orion.location")) {
+            String[] orionLocations = properties.getProperty("Orion.location").split(";");
+            for (String loc : orionLocations) {
+                String[] pos = loc.split(",");
+                int posX = Integer.parseInt(pos[0]);
+                int posY = Integer.parseInt(pos[1]);
+                Location location = new Location(posX, posY);
+                Orion orion = new Orion(game);
+                HashableLocation.putLocationHash(monsters, location, orion);
+                numPillsAndGold++;
+            }
+        }
+        if (properties.containsKey("Alien.location")) {
+            String[] alienLocations = properties.getProperty("Alien.location").split(";");
+            for (String loc : alienLocations) {
+                String[] pos = loc.split(",");
+                int posX = Integer.parseInt(pos[0]);
+                int posY = Integer.parseInt(pos[1]);
+                Location location = new Location(posX, posY);
+                Alien alien = new Alien(game);
+                HashableLocation.putLocationHash(monsters, location, alien);
+                numPillsAndGold++;
+            }
+        }
+        if (properties.containsKey("Wizard.location")) {
+            String[] wizardLocations = properties.getProperty("Wizard.location").split(";");
+            for (String loc : wizardLocations) {
+                String[] pos = loc.split(",");
+                int posX = Integer.parseInt(pos[0]);
+                int posY = Integer.parseInt(pos[1]);
+                Location location = new Location(posX, posY);
+                Wizard wizard = new Wizard(game);
+                HashableLocation.putLocationHash(monsters, location, wizard);
+                numPillsAndGold++;
+            }
+        }
+
+        /// TEMPORARY SET SEED AND SLOW DOWN
+        for (Monster monster : monsters.values()) {
+            monster.setSeed(seed);
+            monster.setSlowDown(3);
+            if (monster instanceof TX5)
+                monster.stopMoving(5);
+        }
+    }
+
+    /**
+     * Set all monsters to stop moving.
+     */
+    protected void setMonstersStopMoving() {
+        for (Monster monster : getMonsters().values())
+            monster.setStopMoving(true);
     }
 }
