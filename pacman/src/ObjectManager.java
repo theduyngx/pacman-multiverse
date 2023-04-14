@@ -84,14 +84,6 @@ public class ObjectManager {
     }
 
     /**
-     * (WIP - should be removed) Retrieve all locations with items; used in PacActor.
-     * @return the list of all items' locations that are still left in the game
-     */
-    public ArrayList<Location> getItemLocations() {
-        return new ArrayList<>(items.keySet().stream().map(HashableLocation::location).toList());
-    }
-
-    /**
      * Get the number of pills and gold pieces left in the game. Hence, used to detect winning condition.
      * @return the number of pills and gold pieces left in the game
      */
