@@ -38,4 +38,17 @@ public record HashableLocation(Location location) {
         HashableLocation hashLocation = new HashableLocation(location);
         map.put(hashLocation, object);
     }
+
+
+    /**
+     * Check if hashmap of HashableLocation contains a key corresponding to a specified Location object.
+     * @param map       the hashmap
+     * @param location  specified location
+     * @return          boolean value indicating whether key is contained
+     * @param <T>       generic Object class
+     */
+    public static <T> boolean containLocationHash(HashMap<HashableLocation, T> map, Location location) {
+        HashableLocation hashLocation = new HashableLocation(location);
+        return map.containsKey(hashLocation);
+    }
 }
