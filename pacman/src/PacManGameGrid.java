@@ -12,6 +12,12 @@ public class PacManGameGrid {
         WALL, PILL, SPACE, GOLD, ICE, ERROR
     }
 
+    // grid constants
+    private final int xLeft;
+    private final int yTop;
+    private final int xRight;
+    private final int yBottom;
+
     // number of horizontal cells of the grid
     private final int numHorizontalCells;
     // number of vertical cells of the grid
@@ -28,6 +34,12 @@ public class PacManGameGrid {
     public PacManGameGrid(int numHorizontalCells, int numVerticalCells) {
         this.numHorizontalCells = numHorizontalCells;
         this.numVerticalCells = numVerticalCells;
+
+        // Setup grid border
+        xLeft   = 0;
+        yTop    = 0;
+        xRight  = numHorizontalCells;
+        yBottom = numVerticalCells;
         mazeArray = new BlockType[numVerticalCells][numHorizontalCells];
         String maze =
                         "xxxxxxxxxxxxxxxxxxxx" + // 0
@@ -82,6 +94,38 @@ public class PacManGameGrid {
      */
     public BlockType[][] getMazeArray() {
         return mazeArray;
+    }
+
+    /**
+     * Get leftmost x-coordinate of the grid; used for border checking when initiating movement.
+     * @return leftmost x-coordinate
+     */
+    public int getXLeft() {
+        return xLeft;
+    }
+
+    /**
+     * Get topmost y-coordinate of the grid; used for border checking when initiating movement.
+     * @return leftmost y-coordinate
+     */
+    public int getYTop() {
+        return yTop;
+    }
+
+    /**
+     * Get rightmost x-coordinate of the grid; used for border checking when initiating movement.
+     * @return rightmost x-coordinate
+     */
+    public int getXRight() {
+        return xRight;
+    }
+
+    /**
+     * Get bottommost y-coordinate of the grid; used for border checking when initiating movement.
+     * @return bottommost y-coordinate
+     */
+    public int getYBottom() {
+        return yBottom;
     }
 
     /**

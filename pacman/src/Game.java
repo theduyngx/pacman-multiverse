@@ -31,10 +31,6 @@ public class Game extends GameGrid {
     public final static int CELL_SIZE = 20 * STRETCH_RATE;
     private final static int numHorizontalCells = 20;
     private final static int numVerticalCells = 11;
-    private final int xLeft;
-    private final int yTop;
-    private final int xRight;
-    private final int yBottom;
     private final PacManGameGrid grid;
 
     // object manager
@@ -56,46 +52,16 @@ public class Game extends GameGrid {
         manager.parseProperties(properties);
         manager.instantiateObjects(grid);
 
-        // Setup grid border
-        xLeft   = 0;
-        yTop    = 0;
-        xRight  = numHorizontalCells;
-        yBottom = numVerticalCells;
-
         // instantiate actors
         manager.instantiateMonsters(properties);
     }
 
     /**
-     * Get leftmost x-coordinate of the grid; used for border checking when initiating movement.
-     * @return leftmost x-coordinate
+     * Get the game grid.
+     * @return the game grid
      */
-    public int getXLeft() {
-        return xLeft;
-    }
-
-    /**
-     * Get topmost y-coordinate of the grid; used for border checking when initiating movement.
-     * @return leftmost y-coordinate
-     */
-    public int getYTop() {
-        return yTop;
-    }
-
-    /**
-     * Get rightmost x-coordinate of the grid; used for border checking when initiating movement.
-     * @return rightmost x-coordinate
-     */
-    public int getXRight() {
-        return xRight;
-    }
-
-    /**
-     * Get bottommost y-coordinate of the grid; used for border checking when initiating movement.
-     * @return bottommost y-coordinate
-     */
-    public int getYBottom() {
-        return yBottom;
+    public PacManGameGrid getGrid() {
+        return grid;
     }
 
     /**

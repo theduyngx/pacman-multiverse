@@ -73,10 +73,10 @@ public abstract class LiveActor extends Actor {
      */
     protected boolean canMove(Location location) {
         int x = location.getX(), y = location.getY();
-        Game game = getManager().getGame();
-        assert game != null;
+        PacManGameGrid grid = getManager().getGame().getGrid();
+        assert grid != null;
         return (! HashableLocation.containLocationHash(getManager().getWalls(), location)) &&
-                x < game.getXRight() && x >= game.getXLeft() && y < game.getYBottom() && y >= game.getYTop();
+                x < grid.getXRight() && x >= grid.getXLeft() && y < grid.getYBottom() && y >= grid.getYTop();
     }
 
     /**
