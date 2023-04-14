@@ -1,7 +1,6 @@
 package src;
 
 import ch.aplu.jgamegrid.*;
-import java.awt.*;
 import java.util.Random;
 
 public abstract class LiveActor extends Actor {
@@ -33,8 +32,10 @@ public abstract class LiveActor extends Actor {
 
     /// FOR NOW: it still checks based on color, we'd prefer to check based on Location instead
     protected boolean canMove(Location location) {
-        Color c = getBackground().getColor(location);
-        return !c.equals(Game.COLOR_WALL) && location.getX() < game.getNumHorizontalCells()
-                && location.getX() >= 0 && location.getY() < game.getNumVerticalCells() && location.getY() >= 0;
+        HashableLocation hashLocation = new HashableLocation(location);
+        int x = location.getX();
+        int y = location.getY();
+        return (! getManager().getWalls().containsKey(hashLocation)) && x < getGame().getXRight() &&
+                x >= getGame().getXLeft() && y < getGame().getYBottom() && y >= getGame().getYTop();
     }
 }

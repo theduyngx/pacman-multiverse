@@ -22,9 +22,14 @@ public class Game extends GameGrid {
     public final static String WIN_MESSAGE = "YOU WIN";
 
     // game grid
+    public final static int CELL_SIZE = 50;
     private final static int numHorizontalCells = 20;
     private final static int numVerticalCells = 11;
-    protected PacManGameGrid grid;
+    private final int xLeft;
+    private final int yTop;
+    private final int xRight;
+    private final int yBottom;
+    private final PacManGameGrid grid;
 
     // actors and callback
     protected PacActor pacActor;
@@ -34,8 +39,8 @@ public class Game extends GameGrid {
     private final Monster tx5 = new TX5(this);
 
     public Game(GameCallback gameCallback, Properties properties) {
-        //Setup game
-        super(numHorizontalCells, numVerticalCells, 50, false);
+        // Setup game
+        super(numHorizontalCells, numVerticalCells, CELL_SIZE, false);
         this.gameCallback = gameCallback;
         this.grid = new PacManGameGrid(numHorizontalCells, numVerticalCells);
         this.pacActor = new PacActor(this);
@@ -43,6 +48,12 @@ public class Game extends GameGrid {
         manager.parseProperties(properties);
         manager.instantiateObjects(grid);
         pacActor.setManager(manager);
+
+        // Setup grid border
+        xLeft   = 0;
+        yTop    = 0;
+        xRight  = numHorizontalCells;
+        yBottom = numVerticalCells;
 
 
         /////////////
@@ -62,6 +73,22 @@ public class Game extends GameGrid {
 
     public GameCallback getGameCallback() {
         return gameCallback;
+    }
+
+    public int getXLeft() {
+        return xLeft;
+    }
+
+    public int getYTop() {
+        return yTop;
+    }
+
+    public int getXRight() {
+        return xRight;
+    }
+
+    public int getYBottom() {
+        return yBottom;
     }
 
     public void run() {
@@ -134,12 +161,12 @@ public class Game extends GameGrid {
             for (int x = 0; x < numHorizontalCells; x++) {
                 bg.setPaintColor(COLOR_BACKGROUND);
                 Location location = new Location(x, y);
-                if (grid.getCell(location) != PacManGameGrid.BlockType.ERROR) {
-                    HashableLocation.putLocationHash(manager.getWalls(), location, 1);
+                if (grid.getCell(location) != PacManGameGrid.BlockType.ERROR)
                     bg.fillCell(location, COLOR_SPACE);
-                }
-                if (grid.getCell(location) == PacManGameGrid.BlockType.WALL)
+                if (grid.getCell(location) == PacManGameGrid.BlockType.WALL) {
+                    HashableLocation.putLocationHash(manager.getWalls(), location, 1);
                     bg.fillCell(location, COLOR_WALL);
+                }
             }
         }
     }
