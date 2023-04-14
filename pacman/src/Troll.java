@@ -1,5 +1,4 @@
 package src;
-
 import ch.aplu.jgamegrid.*;
 
 public class Troll extends Monster {
@@ -7,8 +6,8 @@ public class Troll extends Monster {
     public static final int numTrollImages = 1;
     public static final String directory = "sprites/m_troll.gif";
 
-    public Troll(Game game) {
-        super(game, false, directory, numTrollImages);
+    public Troll() {
+        super(false, directory, numTrollImages);
         setName(TROLL_NAME);
     }
 

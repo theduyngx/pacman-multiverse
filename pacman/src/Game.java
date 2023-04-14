@@ -1,8 +1,6 @@
 package src;
 
 import ch.aplu.jgamegrid.*;
-import src.utility.GameCallback;
-
 import java.awt.*;
 import java.util.Map;
 import java.util.Properties;
@@ -39,29 +37,24 @@ public class Game extends GameGrid {
     private final int yBottom;
     private final PacManGameGrid grid;
 
-    // actors and callback
-    protected PacActor pacActor;
+    // object manager
     protected ObjectManager manager;
-    private final GameCallback gameCallback;
 
     /**
      * Game class constructor.
-     * @param gameCallback  GameCallBack object
      * @param properties    properties object read from properties file for instantiating actors and items
      */
-    public Game(GameCallback gameCallback, Properties properties) {
+    public Game(Properties properties) {
 
         // Setup game
         super(numHorizontalCells, numVerticalCells, CELL_SIZE, false);
-        this.gameCallback = gameCallback;
         this.grid = new PacManGameGrid(numHorizontalCells, numVerticalCells);
-        this.pacActor = new PacActor(this);
-        this.manager = new ObjectManager(pacActor);
+        this.manager = new ObjectManager(this);
 
         // parse properties and instantiate objects
+        manager.instantiatePacActor();
         manager.parseProperties(properties);
         manager.instantiateObjects(grid);
-        pacActor.setManager(manager);
 
         // Setup grid border
         xLeft   = 0;
@@ -69,16 +62,8 @@ public class Game extends GameGrid {
         xRight  = numHorizontalCells;
         yBottom = numVerticalCells;
 
-        // instantiate monsters
-        manager.instantiateMonsters(this, properties);
-    }
-
-    /**
-     * Get GameCallBack object; used when actors act and require game to signal the callback.
-     * @return the GameCallBack object
-     */
-    public GameCallback getGameCallback() {
-        return gameCallback;
+        // instantiate actors
+        manager.instantiateMonsters(properties);
     }
 
     /**
@@ -113,7 +98,6 @@ public class Game extends GameGrid {
         return yBottom;
     }
 
-
     /**
      * Run the game. Upon running, all actors and items will be put to the game, and it will continually
      * check for a winning / losing condition until either one is met.
@@ -126,15 +110,13 @@ public class Game extends GameGrid {
         drawGrid(bg);
 
         // Setup Random seeds
-        int seed = manager.getSeed();
-        pacActor.setSeed(seed);
-        addKeyRepeatListener(pacActor);
+        addKeyRepeatListener(manager.getPacActor());
         setKeyRepeatPeriod(150);
-        pacActor.setSlowDown(3);
         putPacActor();
         putMonsters();
 
         // Run the game
+        PacActor pacActor = manager.getPacActor();
         doRun();
         show();
 
@@ -145,7 +127,7 @@ public class Game extends GameGrid {
             hasPacmanBeenHit = pacActor.collideMonster();
             hasPacmanEatAllPills = manager.getNumPillsAndGold() <= 0;
             delay(10);
-        } while(!hasPacmanBeenHit && !hasPacmanEatAllPills);
+        } while (! hasPacmanBeenHit && ! hasPacmanEatAllPills);
         delay(120);
 
         // upon winning / losing
@@ -163,7 +145,7 @@ public class Game extends GameGrid {
             title = WIN_MESSAGE;
         }
         setTitle(title);
-        gameCallback.endOfGame(title);
+        manager.getGameCallback().endOfGame(title);
         doPause();
     }
 
@@ -221,6 +203,7 @@ public class Game extends GameGrid {
      * Putting PacMan to game.
      */
     public void putPacActor() {
+        PacActor pacActor = manager.getPacActor();
         addActor(pacActor, pacActor.getInitLocation());
     }
 }

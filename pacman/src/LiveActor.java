@@ -1,5 +1,7 @@
 package src;
 import ch.aplu.jgamegrid.*;
+import src.utility.GameCallback;
+
 import java.util.Random;
 
 /**
@@ -7,30 +9,17 @@ import java.util.Random;
  */
 public abstract class LiveActor extends Actor {
     // properties
-    private final Game game;
     private ObjectManager manager;
     protected final Random randomizer = new Random(0);
 
     /**
      * Constructor for LiveActor.
-     * @param game          the game object
      * @param isRotatable   whether the actor is rotatable or not - important if actor's direction changes
      * @param directory     directory that contains sprite image for the actor
      * @param numSprites    number of sprites the actor has
      */
-    public LiveActor(Game game, boolean isRotatable, String directory, int numSprites) {
+    public LiveActor(boolean isRotatable, String directory, int numSprites) {
         super(isRotatable, directory, numSprites);
-        this.game = game;
-    }
-
-    /**
-     * Get the game object; used when actor performs an action that requires the game to signal its
-     * GameCallBack.
-     * @return the game
-     */
-    public Game getGame() {
-        assert this.game != null;
-        return game;
     }
 
     /**
@@ -50,6 +39,16 @@ public abstract class LiveActor extends Actor {
     public ObjectManager getManager() {
         assert this.manager != null;
         return manager;
+    }
+
+    /**
+     * Get the GameCallBack to update log from object manager.
+     * @return the game callback object
+     */
+    public GameCallback getGameCallback() {
+        GameCallback gameCallback = getManager().getGameCallback();
+        assert gameCallback != null;
+        return gameCallback;
     }
 
     /**
@@ -80,11 +79,11 @@ public abstract class LiveActor extends Actor {
      * @return         boolean indicating whether actor can move there.
      */
     protected boolean canMove(Location location) {
-        int x = location.getX();
-        int y = location.getY();
+        int x = location.getX(), y = location.getY();
+        Game game = getManager().getGame();
+        assert game != null;
         return (! HashableLocation.containLocationHash(getManager().getWalls(), location)) &&
-                x < getGame().getXRight() && x >= getGame().getXLeft() &&
-                y < getGame().getYBottom() && y >= getGame().getYTop();
+                x < game.getXRight() && x >= game.getXLeft() && y < game.getYBottom() && y >= game.getYTop();
     }
 
     /**

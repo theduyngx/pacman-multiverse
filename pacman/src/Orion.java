@@ -16,8 +16,8 @@ public class Orion extends Monster {
     private boolean allEaten = false;
 
 
-    public Orion(Game game) {
-        super(game, false, directory, numOrionImages);
+    public Orion() {
+        super(false, directory, numOrionImages);
         setName(ORION_NAME);
     }
 

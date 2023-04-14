@@ -21,13 +21,12 @@ public abstract class Monster extends LiveActor {
 
     /**
      * Monster constructor.
-     * @param game          the game
      * @param isRotatable   if monster is rotatable
      * @param directory     sprite image directory
      * @param numSprites    number of sprites
      */
-    public Monster(Game game, boolean isRotatable, String directory, int numSprites) {
-        super(game, isRotatable, directory, numSprites);
+    public Monster(boolean isRotatable, String directory, int numSprites) {
+        super(isRotatable, directory, numSprites);
     }
 
     /**
@@ -36,8 +35,8 @@ public abstract class Monster extends LiveActor {
      */
     @Override
     public ObjectManager getManager() {
-        assert getGame().manager != null;
-        return getGame().manager;
+        assert super.getManager() != null;
+        return super.getManager();
     }
 
     /**
@@ -116,7 +115,7 @@ public abstract class Monster extends LiveActor {
         setHorzMirror(!enable);
 
         // Record changes in position to game
-        getGame().getGameCallback().monsterLocationChanged(this);
+        getGameCallback().monsterLocationChanged(this);
     }
 
     /**

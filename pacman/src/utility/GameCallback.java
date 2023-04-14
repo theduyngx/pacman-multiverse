@@ -10,7 +10,7 @@ import java.io.IOException;
  * output to pass the test
  */
 public class GameCallback {
-    private String logFilePath = "Log.txt";
+    private final String logFilePath = "Log.txt";
     private FileWriter fileWriter = null;
 
     public GameCallback() {

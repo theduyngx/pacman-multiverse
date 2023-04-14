@@ -7,8 +7,8 @@ public class Wizard extends Monster {
     public static final int numWizardImages = 1;
     public static final String directory = "sprites/m_wizard.gif";
 
-    public Wizard(Game game) {
-        super(game, false, directory, numWizardImages);
+    public Wizard() {
+        super(false, directory, numWizardImages);
         setName(WIZARD_NAME);
     }
 

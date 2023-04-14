@@ -25,10 +25,9 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
 
     /**
      * (WIP should not have game as property) PacMan constructor.
-     * @param game the game
      */
-    public PacActor(Game game) {
-        super(game, true, directory, nbSprites);
+    public PacActor() {
+        super(true, directory, nbSprites);
     }
 
     /**
@@ -110,7 +109,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             idSprite = 0;
         if (isAuto)
             moveApproach();
-        getGame().getGameCallback().pacManLocationChanged(getLocation(), score, nbPills);
+        getGameCallback().pacManLocationChanged(getLocation(), score, nbPills);
     }
 
     /**
@@ -177,7 +176,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             // signals the manager and removes itself
             item.signalManager(manager);
             getBackground().fillCell(location, Game.COLOR_SPACE);
-            getGame().getGameCallback().pacManEatPillsAndItems(location, itemType);
+            getGameCallback().pacManEatPillsAndItems(location, itemType);
             item.removeItem(manager);
         }
         String title = "[PacMan in the Multiverse] Current score: " + score;
