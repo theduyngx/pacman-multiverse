@@ -29,7 +29,8 @@ public class Game extends GameGrid {
     public final static String WIN_MESSAGE = "YOU WIN";
 
     // game grid
-    public final static int CELL_SIZE = 50;
+    public final static int STRETCH_RATE = 2;
+    public final static int CELL_SIZE = 20 * STRETCH_RATE;
     private final static int numHorizontalCells = 20;
     private final static int numVerticalCells = 11;
     private final int xLeft;

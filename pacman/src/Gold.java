@@ -40,7 +40,7 @@ public class Gold extends Item {
     @Override
     public void signalManager(ObjectManager manager) {
         // assert that player is in fact at the location of item
-        if (! matchPacmanLocation(manager))
+        if (matchPacmanLocation(manager))
             // trigger signal
             for (Monster monster : manager.getMonsters().values())
                 // NOTE: gold is supposed to aggravate

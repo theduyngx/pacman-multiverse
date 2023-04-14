@@ -1,5 +1,4 @@
 package src;
-
 import ch.aplu.jgamegrid.*;
 import java.util.Random;
 
