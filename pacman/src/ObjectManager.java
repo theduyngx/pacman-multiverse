@@ -1,4 +1,5 @@
 package src;
+import src.utility.GameCallback;
 import ch.aplu.jgamegrid.Location;
 import java.util.*;
 
@@ -16,7 +17,7 @@ public class ObjectManager {
     private final static int INIT_SEED = 30006;
 
     // PacMan
-    private final PacActor pacActor;
+    private PacActor pacActor;
     // hashmap of monsters with their initial location as key
     private final HashMap<HashableLocation, Monster> monsters;
     // hashmap of all items with their location as key
@@ -24,6 +25,10 @@ public class ObjectManager {
     // hashmap of all walls with their location as key
     private final HashMap<HashableLocation, Integer> walls;
 
+    // the game
+    private final Game game;
+    // game callback
+    private final GameCallback gameCallback;
     // random seed
     private int seed = INIT_SEED;
     // current number of pills and gold pieces, which indicate whether player has won or not
@@ -31,16 +36,22 @@ public class ObjectManager {
 
     /**
      * Constructor for ObjectManager.
-     * @param pacActor the player PacMan
      */
-    public ObjectManager(PacActor pacActor) {
-        if (pacActor == null) {
-            System.exit(1);
-        }
-        this.pacActor = pacActor;
+    public ObjectManager(Game game) {
+        assert game != null;
+        this.game = game;
+        this.gameCallback = new GameCallback();
         this.monsters = new HashMap<>();
         this.items = new HashMap<>();
         this.walls = new HashMap<>();
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public GameCallback getGameCallback() {
+        return gameCallback;
     }
 
     /**
@@ -73,14 +84,6 @@ public class ObjectManager {
      */
     public HashMap<HashableLocation, Integer> getWalls() {
         return walls;
-    }
-
-    /**
-     * Get the random seed of the actors.
-     * @return the seed
-     */
-    public int getSeed() {
-        return seed;
     }
 
     /**
@@ -150,6 +153,13 @@ public class ObjectManager {
         }
     }
 
+    public void instantiatePacActor() {
+        this.pacActor = new PacActor();
+        pacActor.setManager(this);
+        pacActor.setSeed(seed);
+        pacActor.setSlowDown(3);
+    }
+
 
     /**
      * Instantiate the items in the grid and put them in their respective hashmaps.
@@ -186,10 +196,9 @@ public class ObjectManager {
 
     /**
      * (WIP) Instantiating monsters, for now this is clunky and needs plenty of work done
-     * @param game       the game
      * @param properties properties to parse for monsters
      */
-    public void instantiateMonsters(Game game, Properties properties) {
+    public void instantiateMonsters(Properties properties) {
         if (properties.containsKey("TX5.location")) {
             String[] TX5Locations = properties.getProperty("TX5.location").split(";");
             for (String loc : TX5Locations) {
@@ -197,7 +206,7 @@ public class ObjectManager {
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
-                TX5 tx5 = new TX5(game);
+                TX5 tx5 = new TX5();
                 HashableLocation.putLocationHash(monsters, location, tx5);
             }
         }
@@ -208,7 +217,7 @@ public class ObjectManager {
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
-                Troll troll = new Troll(game);
+                Troll troll = new Troll();
                 HashableLocation.putLocationHash(monsters, location, troll);
             }
         }
@@ -219,7 +228,7 @@ public class ObjectManager {
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
-                Orion orion = new Orion(game);
+                Orion orion = new Orion();
                 HashableLocation.putLocationHash(monsters, location, orion);
             }
         }
@@ -230,7 +239,7 @@ public class ObjectManager {
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
-                Alien alien = new Alien(game);
+                Alien alien = new Alien();
                 HashableLocation.putLocationHash(monsters, location, alien);
             }
         }
@@ -241,13 +250,14 @@ public class ObjectManager {
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
-                Wizard wizard = new Wizard(game);
+                Wizard wizard = new Wizard();
                 HashableLocation.putLocationHash(monsters, location, wizard);
             }
         }
 
         /// TEMPORARY SET SEED AND SLOW DOWN
         for (Monster monster : monsters.values()) {
+            monster.setManager(this);
             monster.setSeed(seed);
             monster.setSlowDown(3);
             if (monster instanceof TX5)
