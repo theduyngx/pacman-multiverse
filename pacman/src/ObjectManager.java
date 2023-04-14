@@ -1,19 +1,38 @@
 package src;
-
 import ch.aplu.jgamegrid.Location;
 import java.util.*;
 
+
+/**
+ * ObjectManager class to manage all objects, animate or inanimate, especially their instantiations and
+ * locations. Anything that has to do with checking every actor for a specific task uniformly will be a
+ * responsibility of ObjectManager, since it has access to all Actors, as well as other grid-related
+ * objects.
+ * As such, ObjectManager can be frequently used to deal with a specific Actor checking the 'state' of
+ * every other actor.
+ */
 public class ObjectManager {
+    // constant initial seed
     private final static int INIT_SEED = 30006;
 
+    // PacMan
     private final PacActor pacActor;
+    // hashmap of monsters with their initial location as key
     private final HashMap<HashableLocation, Monster> monsters;
+    // hashmap of all items with their location as key
     private final HashMap<HashableLocation, Item> items;
+    // hashmap of all walls with their location as key
     private final HashMap<HashableLocation, Integer> walls;
+
+    // random seed
     private int seed = INIT_SEED;
+    // current number of pills and gold pieces, which indicate whether player has won or not
     private int numPillsAndGold = 0;
 
-    // constructor
+    /**
+     * Constructor for ObjectManager.
+     * @param pacActor the player PacMan
+     */
     public ObjectManager(PacActor pacActor) {
         if (pacActor == null) {
             System.exit(1);
@@ -24,32 +43,58 @@ public class ObjectManager {
         this.walls = new HashMap<>();
     }
 
-    // getters
+    /**
+     * Get the player PacMan.
+     * @return player PacMan
+     */
     public PacActor getPacActor() {
         return pacActor;
     }
 
+    /**
+     * Get all monsters.
+     * @return a hashmap where the key is monsters' initial location, and value being the monsters
+     */
     public HashMap<HashableLocation, Monster> getMonsters() {
         return monsters;
     }
 
+    /**
+     * Get all items currently still in the game.
+     * @return a hashmap where the key is the items' locations, and value being the items
+     */
     public HashMap<HashableLocation, Item> getItems() {
         return items;
     }
 
+    /**
+     * Get all walls.
+     * @return a hashmap where the key is the walls' locations, and value being the walls
+     */
     public HashMap<HashableLocation, Integer> getWalls() {
         return walls;
     }
 
+    /**
+     * Get the random seed of the actors.
+     * @return the seed
+     */
     public int getSeed() {
         return seed;
     }
 
-    // get locations of all items
+    /**
+     * (WIP - should be removed) Retrieve all locations with items; used in PacActor.
+     * @return the list of all items' locations that are still left in the game
+     */
     public ArrayList<Location> getItemLocations() {
         return new ArrayList<>(items.keySet().stream().map(HashableLocation::location).toList());
     }
 
+    /**
+     * Get the number of pills and gold pieces left in the game. Hence, used to detect winning condition.
+     * @return the number of pills and gold pieces left in the game
+     */
     public int getNumPillsAndGold() {
         return numPillsAndGold;
     }
@@ -65,7 +110,10 @@ public class ObjectManager {
             numPillsAndGold--;
     }
 
-    // parsing properties that do not require an Actor instantiation
+    /**
+     * Parse properties that do not require an Actor instantiation.
+     * @param properties the specified properties
+     */
     public void parseProperties(Properties properties) {
         seed = Integer.parseInt(properties.getProperty("seed"));
 
@@ -111,7 +159,10 @@ public class ObjectManager {
     }
 
 
-    // instantiate the items in the grid and put them in their respective hashmaps
+    /**
+     * Instantiate the items in the grid and put them in their respective hashmaps.
+     * @param grid the game grid so that the items can be drawn onto
+     */
     public void instantiateObjects(PacManGameGrid grid) {
         for (int col = 0; col < grid.getNumVerticalCells(); col++)
             for (int row = 0; row < grid.getNumHorizontalCells(); row++) {
@@ -213,7 +264,7 @@ public class ObjectManager {
     }
 
     /**
-     * Set all monsters to stop moving.
+     * Set all monsters to stop moving; used when game is over (win/lose condition is met).
      */
     protected void setMonstersStopMoving() {
         for (Monster monster : getMonsters().values())
