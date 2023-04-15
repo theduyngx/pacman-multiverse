@@ -67,7 +67,8 @@ public class Orion extends Monster {
             this.goldVisited.put(this.currDestination, true);
             // After Orion finishes walk cycle, reset its cycle
             // by setting all goldLocations values to false
-            if (this.checkIfAllVisited(new ArrayList<HashableLocation>(this.goldVisited.keySet()))) {
+            if (this.checkIfAllVisited(new ArrayList<HashableLocation>(
+                    this.goldVisited.keySet()))) {
                 goldVisited.replaceAll((l, v) -> false);
             }
         }
@@ -76,7 +77,8 @@ public class Orion extends Monster {
 
         // Now we go towards the direction of this new location
         Location orionLocation = this.getLocation();
-        Location.CompassDirection compassDir = this.getLocation().get4CompassDirectionTo(this.currDestination.location());
+        Location.CompassDirection compassDir = this.getLocation().get4CompassDirectionTo(
+                this.currDestination.location());
         this.setDirection(compassDir);
 
         // Orion monster can only go vertically and horizontally (it doesn't fly)
@@ -97,6 +99,21 @@ public class Orion extends Monster {
             }
         }
 
+        // In case every move has been visited already,
+        // just find the immediate place you can move to
+        if (toMove == null) {
+            Location.CompassDirection[] directions = Location.CompassDirection.values();
+            for (Location.CompassDirection dir : directions)
+            {
+                Location newLocation = this.getLocation().getNeighbourLocation(dir);
+                if (this.canMove(newLocation))
+                {
+                    toMove = newLocation;
+                    break;
+                }
+            }
+        }
+
         // Now when the move has been decided, can move Orion to the desired piece
         this.addVisitedList(toMove);
         this.setLocation(toMove);
@@ -113,12 +130,11 @@ public class Orion extends Monster {
         int numGolds = 0;
 
         // Loop through all the possible gold coins
-        // if there are some that aren't visited yet
-        for (HashableLocation loc : getManager().getItems().keySet()) {
-            // Any item that is still in the items hashmap
-            // is considered not visited yet
-            Item item = this.getManager().getItems().get(loc);
-            if (item instanceof Gold) {
+        // in the game
+        for (HashableLocation loc : this.goldPacmanAte.keySet()) {
+            // Want to prioritize any gold coin that
+            // pacman hasn't eaten yet
+            if (!this.goldVisited.get(loc)) {
                 // Now map each gold location onto a hashmap depending
                 // on whether that gold piece was taken already
                 HashableLocation.putLocationHash(notTaken, loc.location(), true);
@@ -147,7 +163,7 @@ public class Orion extends Monster {
         // Set this new location for Orion and set hasDestination to true
         this.hasDestination = true;
         this.currDestination = newLocation;
-         System.out.printf("Current Gold Location: %d %d", newLocation.getX(), newLocation.getY());
+        System.out.printf("Current Gold Location: %d %d\n", newLocation.getX(), newLocation.getY());
     }
 
     /**
