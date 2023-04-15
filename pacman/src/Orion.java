@@ -131,9 +131,9 @@ public class Orion extends Monster {
     // is a hashmap that tracks which gold pieces in Orion's walk
     // cycle have not been visited yet
     private void makeGoldLocations() {
-        for (Item item: this.getManager().getItems().values()) {
-            if (item instanceof Gold) {
-                this.goldLocations.put(item.getLocation(), false);
+        for (HashableLocation key : this.getManager().getItems().keySet()) {
+            if (this.getManager().getItems().get(key) instanceof Gold) {
+                this.goldLocations.put(new Location(key.getX(), key.getY()), false);
             }
         }
     }
