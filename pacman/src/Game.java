@@ -11,8 +11,8 @@ import java.util.Properties;
  * the game.
  *
  * @author The Duy Nguyen            - 1100548 (theduyn@student.unimelb.edu.au)
- * @author Ramon Javier L. Felipe VI - 1233281 (...)
- * @author Jonathan - ... (...)
+ * @author Ramon Javier L. Felipe VI - 1233281 (rfelipe@student.unimelb.edu.au)
+ * @author Jonathan Chen Jie Kong    - 1263651 (jonathanchen@student.unimelb.edu.au)
  */
 public class Game extends GameGrid {
     // draw grid colors

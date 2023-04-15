@@ -15,7 +15,7 @@ public class Orion extends Monster {
     private boolean allEaten = false;
 
     // Dictionary to store all gold locations on the map
-    private HashMap<Location, Boolean> goldLocations = new HashMap<>();
+    private HashMap<HashableLocation, Boolean> goldLocations = new HashMap<>();
     // Hashmap to
 
 
@@ -84,38 +84,36 @@ public class Orion extends Monster {
 
     public void findNewGold() {
         // Idea is that we need to somehow keep track of the gold coins that have and have not been visited
-        HashMap<Location, Integer> notTaken = new HashMap<>();
+        HashMap<HashableLocation, Boolean> notTaken = new HashMap<>();
         int minDistance = Integer.MAX_VALUE;
         int numGolds = 0;
 
         // Loop through all the possible gold coins
         // if there are some that aren't visited yet
-        for (Item item : getManager().getItems().values()) {
+        for (HashableLocation loc : getManager().getItems().keySet()) {
             // Any item that is still in the items hashmap
             // is considered not visited yet
+            Item item = this.getManager().getItems().get(loc);
             if (item instanceof Gold) {
-                // Check the distance of each coin
-                int currDistanceToOrion = item.getLocation().getDistanceTo(this.getLocation());
-
                 // Now map each gold location onto a hashmap depending
                 // on whether that gold piece was taken already
-                notTaken.put(item.getLocation(), currDistanceToOrion);
+                HashableLocation.putLocationHash(notTaken, loc.location(), true);
             }
         }
 
-        ArrayList<Location> goldsToIterate = new ArrayList<>();
+        ArrayList<HashableLocation> goldsToIterate = new ArrayList<>();
 
         // Need to first decide which golds we can iterate through:
         // either the golds pacman hasn't eaten yet, or just
         // to consider every location
-        if (!this.checkIfAllVisited(new ArrayList<Location>(notTaken.keySet())) && numGolds > 0)
+        if (!this.checkIfAllVisited(new ArrayList<HashableLocation>(notTaken.keySet())) && numGolds > 0)
         {
-            goldsToIterate = new ArrayList<Location>(notTaken.keySet());
+            goldsToIterate = new ArrayList<HashableLocation>(notTaken.keySet());
         }
 
         else
         {
-            goldsToIterate = new ArrayList<Location>(this.goldLocations.keySet());
+            goldsToIterate = new ArrayList<HashableLocation>(this.goldLocations.keySet());
         }
 
 
@@ -131,18 +129,18 @@ public class Orion extends Monster {
     // is a hashmap that tracks which gold pieces in Orion's walk
     // cycle have not been visited yet
     private void makeGoldLocations() {
-        for (HashableLocation key : this.getManager().getItems().keySet()) {
-            if (this.getManager().getItems().get(key) instanceof Gold) {
-                this.goldLocations.put(new Location(key.getX(), key.getY()), false);
+        for (HashableLocation loc: this.getManager().getItems().keySet()) {
+            if (this.getManager().getItems().get(loc) instanceof Gold) {
+                this.goldLocations.put(loc, false);
             }
         }
     }
 
     // Helper function that checks if all the golds found
     // from the current items hashmap are visited
-    private boolean checkIfAllVisited(ArrayList<Location> golds)
+    private boolean checkIfAllVisited(ArrayList<HashableLocation> golds)
     {
-        for (Location loc : golds) {
+        for (HashableLocation loc : golds) {
             if (this.goldLocations.get(loc) == false) {
                 return false;
             }
@@ -152,17 +150,17 @@ public class Orion extends Monster {
 
     // Helper function to generate a random location
     // from a given list
-    private Location getRandomLocation(ArrayList<Location> golds)
+    private Location getRandomLocation(ArrayList<HashableLocation> golds)
     {
         while (true)
         {
             int randomIndex = this.randomizer.nextInt(0, golds.size());
 
-            Location currentLocation = golds.get(randomIndex);
+            HashableLocation currentLocation = golds.get(randomIndex);
 
             if (!this.goldLocations.get(currentLocation))
             {
-                return currentLocation;
+                return currentLocation.location();
             }
         }
     }

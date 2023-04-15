@@ -64,6 +64,18 @@ public record HashableLocation(Location location) {
 
 
     /**
+     * Get hashmap value via specified location key.
+     * @param map       hash map
+     * @param location  specified location
+     * @return          the value
+     * @param <T>       generic type for value
+     */
+    public static <T> T getLocationHash(HashMap<HashableLocation, T> map, Location location) {
+        return map.get(new HashableLocation(location));
+    }
+
+
+    /**
      * Check if hashmap of HashableLocation contains a key corresponding to a specified Location object.
      * @param map       the hashmap
      * @param location  specified location
