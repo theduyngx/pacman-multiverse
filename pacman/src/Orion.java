@@ -87,7 +87,10 @@ public class Orion extends Monster {
             if (dir.getDirection()%10 == 0) {
                 Location currLocation = orionLocation.getNeighbourLocation(dir);
                 int distanceToGold = currLocation.getDistanceTo(this.currDestination.location());
-                if (this.canMove(currLocation) && distanceToGold < minDistance) {
+                // To prevent Orion from just going to the same 2 places constantly,
+                // need to track visited locations with visited list
+                if (this.canMove(currLocation) && !this.isVisited(currLocation) &&
+                        distanceToGold < minDistance) {
                     minDistance = distanceToGold;
                     toMove = currLocation;
                 }
@@ -95,6 +98,7 @@ public class Orion extends Monster {
         }
 
         // Now when the move has been decided, can move Orion to the desired piece
+        this.addVisitedList(toMove);
         this.setLocation(toMove);
     }
 
@@ -143,7 +147,7 @@ public class Orion extends Monster {
         // Set this new location for Orion and set hasDestination to true
         this.hasDestination = true;
         this.currDestination = newLocation;
-        // System.out.printf("Current Gold Location: %d %d", newLocation.getX(), newLocation.getY());
+         System.out.printf("Current Gold Location: %d %d", newLocation.getX(), newLocation.getY());
     }
 
     /**
@@ -195,10 +199,11 @@ public class Orion extends Monster {
             HashableLocation currentLocation = golds.get(randomIndex);
 
             if (!this.goldVisited.get(currentLocation) &&
-                // Need to check if the gold is NOT the one
-                // Orion is already in
-                currentLocation.location().getX() != this.getLocation().getX() &&
-                currentLocation.location().getY() != this.getLocation().getY())
+                  // Need to check if the gold is NOT the one
+                  // Orion is already in
+                  currentLocation.location().getX() != this.getLocation().getX() &&
+                  currentLocation.location().getY() != this.getLocation().getY()
+            )
             {
                 return currentLocation;
             }
