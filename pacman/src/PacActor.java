@@ -189,7 +189,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      * @return true if collided, false if otherwise.
      */
     public boolean collideMonster() {
-        for (Monster monster : getManager().getMonsters().values())
+        for (Monster monster : getManager().getMonsters())
             if (checkCollision(monster))
                 return true;
         return false;

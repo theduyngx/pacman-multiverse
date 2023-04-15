@@ -158,9 +158,9 @@ public class Game extends GameGrid {
      * Putting all monsters to game.
      */
     public void putMonsters() {
-        for (Map.Entry<HashableLocation, Monster> entry : manager.getMonsters().entrySet()) {
-            Location location = entry.getKey().location();
-            Monster monster = entry.getValue();
+        for (int i=0; i<manager.getMonsters().size(); i++) {
+            Location location = manager.getMonsterLocations().get(i);
+            Monster monster = manager.getMonsters().get(i);
             addActor(monster, location, Location.NORTH);
         }
     }
