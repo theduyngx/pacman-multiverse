@@ -41,7 +41,7 @@ public class Gold extends Item {
         // assert that player is in fact at the location of item
         if (matchPacmanLocation(manager))
             // trigger signal
-            for (Monster monster : manager.getMonsters().values()) {
+            for (Monster monster : manager.getMonsters()) {
                 monster.speedUp(Monster.AGGRAVATE_TIME);
                 // When the monster is Orion, we want Orion to
                 // know that this gold piece is already eaten
