@@ -3,21 +3,30 @@ package src;
 import ch.aplu.jgamegrid.Location;
 
 public class Wizard extends Monster {
+    // Name of class needed for GameCallback
     private static final String WIZARD_NAME = "Wizard";
+    // Need these variables for implementation with
+    // super constructor
     public static final int numWizardImages = 1;
     public static final String directory = "sprites/m_wizard.gif";
 
+    /**
+     * Wizard constructor
+     * @param manager    stores locations of all game objects
+     */
     public Wizard(ObjectManager manager) {
         super(manager, false, directory, numWizardImages);
         assert manager != null;
         setName(WIZARD_NAME);
     }
 
+    /**
+     * Moves Wizard to its next location, movement is
+     * randomly selected from its 8 neighboring locations
+     * But also has the ability to walk through walls
+     */
     @Override
     public void moveApproach() {
-        int[] movesUsed = new int[8];
-        int minDistance = Integer.MAX_VALUE;
-        Location pacmanLocation = getManager().getPacActor().getLocation();
         Location.CompassDirection[] possibleLocations = Location.CompassDirection.values();
 
         // This loop will keep on going until a location is set for the wizard
