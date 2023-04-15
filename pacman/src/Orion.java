@@ -22,7 +22,7 @@ public class Orion extends Monster {
     // logic as it needs to keep track of positions of gold pieces
     private HashableLocation currDestination = null;
     private boolean hasDestination = false;
-    private HashMap<HashableLocation, Boolean> goldVisited = new HashMap<>();
+    private final HashMap<HashableLocation, Boolean> goldVisited = new HashMap<>();
     protected HashMap<HashableLocation, Boolean> goldPacmanAte = new HashMap<>();
 
     /**
@@ -41,39 +41,41 @@ public class Orion extends Monster {
         }
     }
 
-    @Override
     /**
      * Moves Orion to its next location, based on walking through every
      * gold location randomly, prioritizing golds pacman has not eaten
-     *
      * Unlike other monsters, Orion has walk cycles
-     *
      * A walk cycle starts when Orion determines the first gold
      * location to walk to, and ends when it arrives at its last unvisited
      * gold location.
-     *
      * Afterwards, this cycle resets and Orion walks again
      * as if it hasn't visited any gold location
      */
+    @Override
     public void moveApproach() {
         // If we already are at destination or destination is null,
         // we want to ensure we find a new destination to walk towards
         if (this.currDestination != null &&
             // .equals() logic for Location is based on reference, so have
             // to compare location coordinates directly
-            this.currDestination.location().getX() == this.getLocation().getX() &&
-            this.currDestination.location().getY() == this.getLocation().getY()) {
+            // this.currDestination.location().getX() == this.getLocation().getX() &&
+            // this.currDestination.location().getY() == this.getLocation().getY()
+                this.currDestination.location().equals(this.getLocation())
+            ) {
             this.hasDestination = false;
             this.goldVisited.put(this.currDestination, true);
             // After Orion finishes walk cycle, reset its cycle
             // by setting all goldLocations values to false
-            if (this.checkIfAllVisited(new ArrayList<HashableLocation>(
+            if (this.checkIfAllVisited(new ArrayList<>(
                     this.goldVisited.keySet()))) {
                 goldVisited.replaceAll((l, v) -> false);
             }
         }
 
-        if (!hasDestination) this.findNewGold();
+        if (!hasDestination) {
+            System.out.println("Finding new gold piece");
+            this.findNewGold();
+        }
 
         // Now we go towards the direction of this new location
         Location orionLocation = this.getLocation();
@@ -103,10 +105,12 @@ public class Orion extends Monster {
         // just find the immediate place you can move to
         if (toMove == null) {
             Location.CompassDirection[] directions = Location.CompassDirection.values();
-            for (Location.CompassDirection dir : directions)
+            while(true)
             {
+                int currIndex = this.randomizer.nextInt(0, directions.length);
+                Location.CompassDirection dir = directions[currIndex];
                 Location newLocation = this.getLocation().getNeighbourLocation(dir);
-                if (this.canMove(newLocation))
+                if (this.canMove(newLocation) && dir.getDirection()%10 == 0)
                 {
                     toMove = newLocation;
                     break;
@@ -126,7 +130,6 @@ public class Orion extends Monster {
     public void findNewGold() {
         // Idea is that we need to somehow keep track of the gold coins that have and have not been visited
         HashMap<HashableLocation, Boolean> notTaken = new HashMap<>();
-        int minDistance = Integer.MAX_VALUE;
         int numGolds = 0;
 
         // Loop through all the possible gold coins
@@ -138,22 +141,23 @@ public class Orion extends Monster {
                 // Now map each gold location onto a hashmap depending
                 // on whether that gold piece was taken already
                 HashableLocation.putLocationHash(notTaken, loc.location(), true);
+                numGolds++;
             }
         }
 
-        ArrayList<HashableLocation> goldsToIterate = new ArrayList<>();
+        ArrayList<HashableLocation> goldsToIterate;
 
         // Need to first decide which golds we can iterate through:
         // If there are still golds pacman hasn't eaten yet and Orion hasn't visited
-        if (!this.checkIfAllVisited(new ArrayList<HashableLocation>(notTaken.keySet())) && numGolds > 0)
+        if (!this.checkIfAllVisited(new ArrayList<>(notTaken.keySet())) && numGolds > 0)
         {
-            goldsToIterate = new ArrayList<HashableLocation>(notTaken.keySet());
+            goldsToIterate = new ArrayList<>(notTaken.keySet());
         }
 
         // Otherwise randomly check from all possible gold locations
         else
         {
-            goldsToIterate = new ArrayList<HashableLocation>(this.goldVisited.keySet());
+            goldsToIterate = new ArrayList<>(this.goldVisited.keySet());
         }
 
 
@@ -191,7 +195,7 @@ public class Orion extends Monster {
     private boolean checkIfAllVisited(ArrayList<HashableLocation> golds)
     {
         for (HashableLocation loc : golds) {
-            if (this.goldVisited.get(loc) == false) {
+            if (!this.goldVisited.get(loc)) {
                 return false;
             }
         }
