@@ -20,7 +20,7 @@ public class Orion extends Monster {
 
     // These are additional variables to implement Orion movement
     // logic as it needs to keep track of positions of gold pieces
-    private Location currDestination = null;
+    private HashableLocation currDestination = null;
     private boolean hasDestination = false;
     private HashMap<HashableLocation, Boolean> goldVisited = new HashMap<>();
     protected HashMap<HashableLocation, Boolean> goldPacmanAte = new HashMap<>();
@@ -34,6 +34,7 @@ public class Orion extends Monster {
         assert manager != null;
         setName(ORION_NAME);
         // Just make sure there are actually items
+        // for Orion to store
         if (!this.getManager().getItems().isEmpty())
         {
             this.makeGoldMaps();
@@ -57,9 +58,13 @@ public class Orion extends Monster {
     public void moveApproach() {
         // If we already are at destination or destination is null,
         // we want to ensure we find a new destination to walk towards
-        if (this.currDestination != null && (this.getLocation().equals(this.currDestination))) {
+        if (this.currDestination != null &&
+            // .equals() logic for Location is based on reference, so have
+            // to compare location coordinates directly
+            this.currDestination.location().getX() == this.getLocation().getX() &&
+            this.currDestination.location().getY() == this.getLocation().getY()) {
             this.hasDestination = false;
-            HashableLocation.putLocationHash(this.goldVisited, this.currDestination, true);
+            this.goldVisited.put(this.currDestination, true);
             // After Orion finishes walk cycle, reset its cycle
             // by setting all goldLocations values to false
             if (this.checkIfAllVisited(new ArrayList<HashableLocation>(this.goldVisited.keySet()))) {
@@ -71,7 +76,7 @@ public class Orion extends Monster {
 
         // Now we go towards the direction of this new location
         Location orionLocation = this.getLocation();
-        Location.CompassDirection compassDir = this.getLocation().get4CompassDirectionTo(this.currDestination);
+        Location.CompassDirection compassDir = this.getLocation().get4CompassDirectionTo(this.currDestination.location());
         this.setDirection(compassDir);
 
         // Orion monster can only go vertically and horizontally (it doesn't fly)
@@ -81,7 +86,7 @@ public class Orion extends Monster {
         for (Location.CompassDirection dir : Location.CompassDirection.values()) {
             if (dir.getDirection()%10 == 0) {
                 Location currLocation = orionLocation.getNeighbourLocation(dir);
-                int distanceToGold = currLocation.getDistanceTo(this.currDestination);
+                int distanceToGold = currLocation.getDistanceTo(this.currDestination.location());
                 if (this.canMove(currLocation) && distanceToGold < minDistance) {
                     minDistance = distanceToGold;
                     toMove = currLocation;
@@ -133,11 +138,12 @@ public class Orion extends Monster {
 
 
         // Now randomly pick which gold you want to go to
-        Location newLocation = this.getRandomLocation(goldsToIterate);
+        HashableLocation newLocation = this.getRandomLocation(goldsToIterate);
 
         // Set this new location for Orion and set hasDestination to true
         this.hasDestination = true;
         this.currDestination = newLocation;
+        // System.out.printf("Current Gold Location: %d %d", newLocation.getX(), newLocation.getY());
     }
 
     /**
@@ -180,7 +186,7 @@ public class Orion extends Monster {
      *               piece locations
      * @return Random location from list of gold locations
      */
-    private Location getRandomLocation(ArrayList<HashableLocation> golds)
+    private HashableLocation getRandomLocation(ArrayList<HashableLocation> golds)
     {
         while (true)
         {
@@ -188,9 +194,13 @@ public class Orion extends Monster {
 
             HashableLocation currentLocation = golds.get(randomIndex);
 
-            if (!this.goldVisited.get(currentLocation))
+            if (!this.goldVisited.get(currentLocation) &&
+                // Need to check if the gold is NOT the one
+                // Orion is already in
+                currentLocation.location().getX() != this.getLocation().getX() &&
+                currentLocation.location().getY() != this.getLocation().getY())
             {
-                return currentLocation.location();
+                return currentLocation;
             }
         }
     }
