@@ -39,13 +39,11 @@ public class Orion extends Monster {
         // NOTE: This assumes that the .equals() function of Location class is correct
         if (this.currDestination != null && (this.getLocation().equals(this.currDestination))) {
             this.hasDestination = false;
-            this.goldLocations.put(this.currDestination, true);
+            HashableLocation.putLocationHash(this.goldLocations, this.currDestination, true);
             // Need to also check if this location was the last gold
             // location in the cycle; if so we need to reset the goldLocations dictionary
-            if (this.checkIfAllVisited(new ArrayList<Location>(this.goldLocations.keySet()))) {
-                for (Location loc : goldLocations.keySet()) {
-                    goldLocations.put(loc, false);
-                }
+            if (this.checkIfAllVisited(new ArrayList<HashableLocation>(this.goldLocations.keySet()))) {
+                goldLocations.replaceAll((l, v) -> false);
             }
         }
 
