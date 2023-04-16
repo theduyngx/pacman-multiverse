@@ -7,7 +7,7 @@ import java.awt.*;
  */
 public class Gold extends Item {
     // properties
-    private static final String directory = "sprites/gold.png";
+    private static final String DIRECTORY = "sprites/gold.png";
     private static final int GOLD_SCORE = 5;
 
     /**
@@ -15,7 +15,7 @@ public class Gold extends Item {
      * sprite image directory.
      */
     public Gold() {
-        super(directory);
+        super(DIRECTORY);
         setScore(GOLD_SCORE);
     }
 
@@ -28,7 +28,6 @@ public class Gold extends Item {
     @Override
     public void putItem(GGBackground bg, Game game, Location location) {
         bg.setPaintColor(Color.yellow);
-        bg.fillCircle(game.toPoint(location), radius);
         game.addActor(this, location);
     }
 
@@ -42,16 +41,18 @@ public class Gold extends Item {
         if (matchPacmanLocation(manager))
             // trigger signal
             for (Monster monster : manager.getMonsters()) {
+                if (manager.isMultiverse()) {
                 monster.speedUp(Monster.AGGRAVATE_TIME);
                 // When the monster is Orion, we want Orion to
                 // know that this gold piece is already eaten
                 if (monster instanceof Orion) {
-                    Orion orion = (Orion)monster;
+                    Orion orion = (Orion) monster;
                     HashableLocation.putLocationHash(
                             orion.goldPacmanAte,
                             this.getLocation(),
                             true
                     );
+                }
             }
         }
     }

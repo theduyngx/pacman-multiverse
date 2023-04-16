@@ -7,15 +7,15 @@ public class Wizard extends Monster {
     private static final String WIZARD_NAME = "Wizard";
     // Need these variables for implementation with
     // super constructor
-    public static final int numWizardImages = 1;
-    public static final String directory = "sprites/m_wizard.gif";
+    public static final int NUM_WIZARD_IMAGES = 1;
+    public static final String DIRECTORY = "sprites/m_wizard.gif";
 
     /**
      * Wizard constructor
      * @param manager    stores locations of all game objects
      */
     public Wizard(ObjectManager manager) {
-        super(manager, false, directory, numWizardImages);
+        super(manager, false, DIRECTORY, NUM_WIZARD_IMAGES);
         assert manager != null;
         setName(WIZARD_NAME);
     }
@@ -32,7 +32,7 @@ public class Wizard extends Monster {
         // This loop will keep on going until a location is set for the wizard
         // Randomly picks from the 8 possible directions
         while (true) {
-            int currIndex = this.randomizer.nextInt(0, possibleLocations.length);
+            int currIndex = this.RANDOMIZER.nextInt(0, possibleLocations.length);
             int currDirection = possibleLocations[currIndex].getDirection();
             Location currentLocation = this.getLocation().getNeighbourLocation(currDirection);
 

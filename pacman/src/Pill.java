@@ -8,7 +8,7 @@ import java.awt.*;
  */
 public class Pill extends Item {
     // properties
-    private static final String directory = "sprites/ice.png";
+    private static final String DIRECTORY = "sprites/ice.png";
     private static final int PILL_SCORE = 1;
 
     /**
@@ -16,7 +16,7 @@ public class Pill extends Item {
      * sprite image directory.
      */
     public Pill() {
-        super(directory);
+        super(DIRECTORY);
         setScore(PILL_SCORE);
     }
 
@@ -29,7 +29,7 @@ public class Pill extends Item {
     @Override
     public void putItem(GGBackground bg, Game game, Location location) {
         bg.setPaintColor(Color.white);
-        bg.fillCircle(game.toPoint(location), radius);
+        bg.fillCircle(game.toPoint(location), RADIUS);
         game.addActor(this, location);
         hide();
     }

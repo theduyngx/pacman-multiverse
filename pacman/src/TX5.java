@@ -11,15 +11,15 @@ public class TX5 extends Monster {
     private static final String TX5_NAME = "TX5";
     // Need these variables for implementation with
     // super constructor
-    public static final int numTX5Images = 1;
-    public static final String directory = "sprites/m_tx5.gif";
+    public static final int NUM_TX5_IMAGES = 1;
+    public static final String DIRECTORY = "sprites/m_tx5.gif";
 
     /**
      * TX5 Constructor
      * @param manager    stores locations of all game objects
      */
     public TX5(ObjectManager manager) {
-        super(manager, false, directory, numTX5Images);
+        super(manager, false, DIRECTORY, NUM_TX5_IMAGES);
         assert manager != null;
         setName(TX5_NAME);
     }
@@ -46,7 +46,7 @@ public class TX5 extends Monster {
         // If it can't move here, has to move to a random spot,
         // means either turn left, turn right, or move backwards
         else {
-            double sign = this.randomizer.nextDouble();
+            double sign = this.RANDOMIZER.nextDouble();
             this.setDirection(oldDirection);
             this.turn(sign*90);
             next = this.getNextMoveLocation();

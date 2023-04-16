@@ -13,15 +13,15 @@ public class Alien extends Monster {
     private static final String ALIEN_NAME = "Alien";
     // Need these variables for implementation with
     // super constructor
-    public static final int numAlienImages = 1;
-    public static final String directory = "sprites/m_alien.gif";
+    public static final int NUM_ALIEN_IMAGES = 1;
+    public static final String DIRECTORY = "sprites/m_alien.gif";
 
     /**
      * Alien constructor
      * @param manager    stores locations of all game objects
      */
     public Alien(ObjectManager manager) {
-        super(manager, false, directory, numAlienImages);
+        super(manager, false, DIRECTORY, NUM_ALIEN_IMAGES);
         assert manager != null;
         setName(ALIEN_NAME);
     }
@@ -56,7 +56,7 @@ public class Alien extends Monster {
 
         // Randomly pick a direction from all possible minimum
         // distance directions
-        int listIndex = this.randomizer.nextInt(0, possibleMoves.size());
+        int listIndex = this.RANDOMIZER.nextInt(0, possibleMoves.size());
         this.setLocation(possibleMoves.get(listIndex));
     }
 }

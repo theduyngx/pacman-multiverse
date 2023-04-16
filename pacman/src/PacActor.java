@@ -11,15 +11,15 @@ import java.util.*;
  */
 public class PacActor extends LiveActor implements GGKeyRepeatListener {
     private static final int INF = 1000;
-    private static final int nbSprites = 4;
-    private static final String directory = "sprites/pacpix.gif";
+    private static final int NB_SPRITES = 4;
+    private static final String DIRECTORY = "sprites/pacpix.gif";
+    private final Random RANDOMIZER = new Random();
     private int idSprite = 0;
     private int nbPills = 0;
     private int score = 0;
     private Location initLocation;
     private List<String> propertyMoves = new ArrayList<>();
     private int propertyMoveIndex = 0;
-    private final Random randomizer = new Random();
     private boolean isAuto = false;
 
 
@@ -27,7 +27,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      * (WIP should not have game as property) PacMan constructor.
      */
     public PacActor(ObjectManager manager) {
-        super(manager, true, directory, nbSprites);
+        super(manager, true, DIRECTORY, NB_SPRITES);
         assert manager != null;
     }
 
@@ -61,7 +61,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      */
     @Override
     protected void setSeed(int seed) {
-        randomizer.setSeed(seed);
+        RANDOMIZER.setSeed(seed);
     }
 
     public void setPropertyMoves(String propertyMoveString) {
@@ -106,7 +106,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     public void act() {
         show(idSprite);
         idSprite++;
-        if (idSprite == nbSprites)
+        if (idSprite == NB_SPRITES)
             idSprite = 0;
         if (isAuto)
             moveApproach();
@@ -130,7 +130,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         if (canMove(next))
             setLocation(next);
         else {
-            int sign = randomizer.nextDouble() < 0.5 ? 1 : -1;
+            int sign = RANDOMIZER.nextDouble() < 0.5 ? 1 : -1;
             setDirection(oldDirection);
             turn(sign * 90);                // Try to turn left/right
             next = getNextMoveLocation();
