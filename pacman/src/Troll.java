@@ -9,15 +9,15 @@ public class Troll extends Monster {
     private static final String TROLL_NAME = "Troll";
     // Need these variables for implementation with
     // super constructor
-    public static final int numTrollImages = 1;
-    public static final String directory = "sprites/m_troll.gif";
+    public static final int NUM_TROLL_IMAGES = 1;
+    public static final String DIRECTORY = "sprites/m_troll.gif";
 
     /**
      * Troll constructor
      * @param manager    stores locations of all game objects
      */
     public Troll(ObjectManager manager) {
-        super(manager, false, directory, numTrollImages);
+        super(manager, false, DIRECTORY, NUM_TROLL_IMAGES);
         assert manager != null;
         setName(TROLL_NAME);
     }
@@ -30,7 +30,7 @@ public class Troll extends Monster {
     public void moveApproach() {
         double oldDirection = this.getDirection();
         // Should be int but I don't know what happened
-        double sign = this.randomizer.nextDouble();
+        double sign = this.RANDOMIZER.nextDouble();
         this.setDirection(oldDirection);
         this.turn(sign*90);
 

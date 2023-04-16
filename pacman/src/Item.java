@@ -7,7 +7,7 @@ import ch.aplu.jgamegrid.*;
  */
 public abstract class Item extends Actor {
     // constant radius value when drawn
-    public static final int radius = 5 * Game.STRETCH_RATE;
+    public static final int RADIUS = 5 * Game.STRETCH_RATE;
     // the score that would be acquired if eaten by PacMan
     private int score;
 

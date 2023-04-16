@@ -13,17 +13,17 @@ public class PacManGameGrid {
     }
 
     // grid constants
-    private final int xLeft;
-    private final int yTop;
-    private final int xRight;
-    private final int yBottom;
+    private final int X_LEFT;
+    private final int Y_TOP;
+    private final int X_RIGHT;
+    private final int Y_BOTTOM;
 
     // number of horizontal cells of the grid
-    private final int numHorizontalCells;
+    private final int NUM_HORIZONTAL_CELLS;
     // number of vertical cells of the grid
-    private final int numVerticalCells;
+    private final int NUM_VERTICAL_CELLS;
     // the grid data structure, represented by a 2-dimensional array of blocks
-    private final BlockType[][] mazeArray;
+    private final BlockType[][] MAZE_ARRAY;
 
 
     /**
@@ -32,15 +32,15 @@ public class PacManGameGrid {
      * @param numVerticalCells   the number of vertical cells of the grid
      */
     public PacManGameGrid(int numHorizontalCells, int numVerticalCells) {
-        this.numHorizontalCells = numHorizontalCells;
-        this.numVerticalCells = numVerticalCells;
+        this.NUM_HORIZONTAL_CELLS = numHorizontalCells;
+        this.NUM_VERTICAL_CELLS = numVerticalCells;
 
         // Setup grid border
-        xLeft   = 0;
-        yTop    = 0;
-        xRight  = numHorizontalCells;
-        yBottom = numVerticalCells;
-        mazeArray = new BlockType[numVerticalCells][numHorizontalCells];
+        X_LEFT   = 0;
+        Y_TOP    = 0;
+        X_RIGHT  = numHorizontalCells;
+        Y_BOTTOM = numVerticalCells;
+        MAZE_ARRAY = new BlockType[numVerticalCells][numHorizontalCells];
         String maze =
                         "xxxxxxxxxxxxxxxxxxxx" + // 0
                         "x....x....g...x....x" + // 1
@@ -58,7 +58,7 @@ public class PacManGameGrid {
         for (int i = 0; i < numVerticalCells; i++)
             for (int k = 0; k < numHorizontalCells; k++) {
                 BlockType value = toType(maze.charAt(numHorizontalCells * i + k));
-                mazeArray[i][k] = value;
+                MAZE_ARRAY[i][k] = value;
             }
     }
 
@@ -69,7 +69,7 @@ public class PacManGameGrid {
      */
     public BlockType getCell(Location location)
     {
-        return mazeArray[location.y][location.x];
+        return MAZE_ARRAY[location.y][location.x];
     }
 
     /**
@@ -77,7 +77,7 @@ public class PacManGameGrid {
      * @return the number of horizontal cells
      */
     public int getNumHorizontalCells() {
-        return numHorizontalCells;
+        return NUM_HORIZONTAL_CELLS;
     }
 
     /**
@@ -85,7 +85,7 @@ public class PacManGameGrid {
      * @return the number of vertical cells
      */
     public int getNumVerticalCells() {
-        return numVerticalCells;
+        return NUM_VERTICAL_CELLS;
     }
 
     /**
@@ -93,7 +93,7 @@ public class PacManGameGrid {
      * @return the grid
      */
     public BlockType[][] getMazeArray() {
-        return mazeArray;
+        return MAZE_ARRAY;
     }
 
     /**
@@ -101,7 +101,7 @@ public class PacManGameGrid {
      * @return leftmost x-coordinate
      */
     public int getXLeft() {
-        return xLeft;
+        return X_LEFT;
     }
 
     /**
@@ -109,7 +109,7 @@ public class PacManGameGrid {
      * @return leftmost y-coordinate
      */
     public int getYTop() {
-        return yTop;
+        return Y_TOP;
     }
 
     /**
@@ -117,7 +117,7 @@ public class PacManGameGrid {
      * @return rightmost x-coordinate
      */
     public int getXRight() {
-        return xRight;
+        return X_RIGHT;
     }
 
     /**
@@ -125,7 +125,7 @@ public class PacManGameGrid {
      * @return bottommost y-coordinate
      */
     public int getYBottom() {
-        return yBottom;
+        return Y_BOTTOM;
     }
 
     /**

@@ -8,7 +8,7 @@ import java.awt.*;
 public class Ice extends Item {
     // properties
     private static final int FREEZE_TIME = 3;
-    private static final String directory = "sprites/ice.png";
+    private static final String DIRECTORY = "sprites/ice.png";
     private static final int ICE_SCORE = 0;
 
     /**
@@ -16,7 +16,7 @@ public class Ice extends Item {
      * sprite image directory.
      */
     public Ice() {
-        super(directory);
+        super(DIRECTORY);
         setScore(ICE_SCORE);
     }
 
@@ -29,7 +29,7 @@ public class Ice extends Item {
     @Override
     public void putItem(GGBackground bg, Game game, Location location) {
         bg.setPaintColor(Color.blue);
-        bg.fillCircle(game.toPoint(location), radius);
+        bg.fillCircle(game.toPoint(location), RADIUS);
         game.addActor(this, location);
     }
 
