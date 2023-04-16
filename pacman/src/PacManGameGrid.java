@@ -72,6 +72,11 @@ public class PacManGameGrid {
         return MAZE_ARRAY[location.y][location.x];
     }
 
+    /**
+     * Override existing mazeArray cell with value given in .properties
+     * @param location the specified location
+     * @param value    the value to be replaced with
+     */
     public void setCell(Location location, BlockType value) {
         MAZE_ARRAY[location.x][location.y] = value;
     }
