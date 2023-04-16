@@ -93,7 +93,7 @@ public class Orion extends Monster {
         // If it can't move here, has to move to a random spot,
         // means either turn left, turn right, or move backwards
         else {
-            double sign = this.randomizer.nextDouble();
+            double sign = this.RANDOMIZER.nextDouble();
             this.setDirection(oldDirection);
             this.turn(sign*90);
             next = this.getNextMoveLocation();
@@ -207,7 +207,7 @@ public class Orion extends Monster {
     {
         while (true)
         {
-            int randomIndex = this.randomizer.nextInt(0, golds.size());
+            int randomIndex = this.RANDOMIZER.nextInt(0, golds.size());
 
             HashableLocation currentLocation = golds.get(randomIndex);
 
