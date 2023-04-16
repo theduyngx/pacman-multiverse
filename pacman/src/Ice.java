@@ -29,7 +29,6 @@ public class Ice extends Item {
     @Override
     public void putItem(GGBackground bg, Game game, Location location) {
         bg.setPaintColor(Color.blue);
-        bg.fillCircle(game.toPoint(location), RADIUS);
         game.addActor(this, location);
     }
 
