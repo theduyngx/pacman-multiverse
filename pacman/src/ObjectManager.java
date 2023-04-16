@@ -148,34 +148,32 @@ public class ObjectManager {
         pacActor.setInitLocation(new Location(pacManX, pacManY));
 
         // parse the pill locations if there is pill location
-        if (properties.containsKey("Pills.location")) {
+        if (properties.containsKey("Pill.location")) {
             String[] pillLocations = properties.getProperty("Pills.location").split(";");
             for (String pL : pillLocations) {
                 String[] pos = pL.split(",");
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
-                if (! HashableLocation.containLocationHash(ITEMS, location)) {
-                    Pill pill = new Pill();
-                    HashableLocation.putLocationHash(ITEMS, location, pill);
-                    numPillsAndGold++;
-                }
+                Pill pill = new Pill();
+                HashableLocation.putLocationHash(ITEMS, location, pill);
+                getGame().getGrid().setCell(location, PacManGameGrid.BlockType.PILL);
+                numPillsAndGold++;
             }
         }
 
         // parse the gold locations if there is gold location
-        if (properties.containsKey("Golds.location")) {
+        if (properties.containsKey("Gold.location")) {
             String[] goldLocations = properties.getProperty("Gold.location").split(";");
             for (String gL : goldLocations) {
                 String[] pos = gL.split(",");
                 int posX = Integer.parseInt(pos[0]);
                 int posY = Integer.parseInt(pos[1]);
                 Location location = new Location(posX, posY);
-                if (! HashableLocation.containLocationHash(ITEMS, location)) {
-                    Gold gold = new Gold();
-                    HashableLocation.putLocationHash(ITEMS, location, gold);
-                    numPillsAndGold++;
-                }
+                Gold gold = new Gold();
+                HashableLocation.putLocationHash(ITEMS, location, gold);
+                getGame().getGrid().setCell(location, PacManGameGrid.BlockType.GOLD);
+                numPillsAndGold++;
             }
         }
     }

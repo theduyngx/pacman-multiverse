@@ -72,6 +72,10 @@ public class PacManGameGrid {
         return MAZE_ARRAY[location.y][location.x];
     }
 
+    public void setCell(Location location, BlockType value) {
+        MAZE_ARRAY[location.x][location.y] = value;
+    }
+
     /**
      * Get the number of horizontal cells of the grid.
      * @return the number of horizontal cells
