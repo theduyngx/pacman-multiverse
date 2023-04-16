@@ -77,50 +77,43 @@ public class Orion extends Monster {
             this.findNewGold();
         }
 
-        // Now we go towards the direction of this new location
-        Location orionLocation = this.getLocation();
+        // Now we go towards the direction of this new gold location
+        double oldDirection = this.getDirection();
         Location.CompassDirection compassDir = this.getLocation().get4CompassDirectionTo(
                 this.currDestination.location());
         this.setDirection(compassDir);
 
-        // Orion monster can only go vertically and horizontally (it doesn't fly)
-        // Want to go towards direction where distance to gold is minimized
-        int minDistance = Integer.MAX_VALUE;
-        Location toMove = null;
-        for (Location.CompassDirection dir : Location.CompassDirection.values()) {
-            if (dir.getDirection()%10 == 0) {
-                Location currLocation = orionLocation.getNeighbourLocation(dir);
-                int distanceToGold = currLocation.getDistanceTo(this.currDestination.location());
-                // To prevent Orion from just going to the same 2 places constantly,
-                // need to track visited locations with visited list
-                if (this.canMove(currLocation) && !this.isVisited(currLocation) &&
-                        distanceToGold < minDistance) {
-                    minDistance = distanceToGold;
-                    toMove = currLocation;
-                }
-            }
-        }
 
-        // In case every move has been visited already,
-        // just find the immediate place you can move to
-        if (toMove == null) {
-            Location.CompassDirection[] directions = Location.CompassDirection.values();
-            while(true)
-            {
-                int currIndex = this.randomizer.nextInt(0, directions.length);
-                Location.CompassDirection dir = directions[currIndex];
-                Location newLocation = this.getLocation().getNeighbourLocation(dir);
-                if (this.canMove(newLocation) && dir.getDirection()%10 == 0)
-                {
-                    toMove = newLocation;
-                    break;
-                }
+        Location next = this.getLocation().getNeighbourLocation(compassDir);
+        // Only go to this direction if you can move here, and
+        // if it wasn't visited yet
+        if (this.canMove(next) && !this.isVisited(next)) {
+            this.setLocation(next);
+        }
+        // If it can't move here, has to move to a random spot,
+        // means either turn left, turn right, or move backwards
+        else {
+            double sign = this.randomizer.nextDouble();
+            this.setDirection(oldDirection);
+            this.turn(sign*90);
+            next = this.getNextMoveLocation();
+
+            // Check if we can turn this direction
+            if (this.canMove(next)) {
+                this.setLocation(next);
+            }
+
+            // Otherwise just turn backwards
+            else {
+                this.setDirection(oldDirection);
+                this.turn(180);
+                next = this.getNextMoveLocation();
+                this.setLocation(next);
             }
         }
 
         // Now when the move has been decided, can move Orion to the desired piece
-        this.addVisitedList(toMove);
-        this.setLocation(toMove);
+        this.addVisitedList(next);
     }
 
     /**
@@ -218,13 +211,17 @@ public class Orion extends Monster {
 
             HashableLocation currentLocation = golds.get(randomIndex);
 
+            if (this.currDestination != null && this.currDestination.getX() == 4 && this.currDestination.getY() == 9
+                && this.getLocation().getY() == 7 && this.getLocation().getX() == 6) {
+                System.out.printf("Chosen Coordinate : %d %d\n", currentLocation.getX(), currentLocation.getY());
+            }
+
             if (!this.goldVisited.get(currentLocation) &&
                   // Need to check if the gold is NOT the one
                   // Orion is already in
                   currentLocation.location().getX() != this.getLocation().getX() &&
                   currentLocation.location().getY() != this.getLocation().getY()
-            )
-            {
+            ) {
                 return currentLocation;
             }
         }
