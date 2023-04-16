@@ -56,12 +56,12 @@ public class Orion extends Monster {
         // If we already are at destination or destination is null,
         // we want to ensure we find a new destination to walk towards
         if (this.currDestination != null &&
-            // .equals() logic for Location is based on reference, so have
-            // to compare location coordinates directly
-            // this.currDestination.location().getX() == this.getLocation().getX() &&
-            // this.currDestination.location().getY() == this.getLocation().getY()
+                // .equals() logic for Location is based on reference, so have
+                // to compare location coordinates directly
+                // this.currDestination.location().getX() == this.getLocation().getX() &&
+                // this.currDestination.location().getY() == this.getLocation().getY()
                 this.currDestination.location().equals(this.getLocation())
-            ) {
+        ) {
             this.hasDestination = false;
             this.goldVisited.put(this.currDestination, true);
             // After Orion finishes walk cycle, reset its cycle
@@ -72,48 +72,63 @@ public class Orion extends Monster {
             }
         }
 
-        if (!hasDestination) {
-            System.out.println("Finding new gold piece");
-            this.findNewGold();
-        }
+        if (!hasDestination) this.findNewGold();
 
-        // Now we go towards the direction of this new gold location
-        double oldDirection = this.getDirection();
+        // Now we go towards the direction of this new location
+        Location orionLocation = this.getLocation();
         Location.CompassDirection compassDir = this.getLocation().get4CompassDirectionTo(
                 this.currDestination.location());
         this.setDirection(compassDir);
 
-
-        Location next = this.getLocation().getNeighbourLocation(compassDir);
-        // Only go to this direction if you can move here, and
-        // if it wasn't visited yet
-        if (this.canMove(next) && !this.isVisited(next)) {
-            this.setLocation(next);
+        // Orion monster can only go vertically and horizontally (it doesn't fly)
+        // Want to go towards direction where distance to gold is minimized
+        int minDistance = Integer.MAX_VALUE;
+        ArrayList<Location> possibleLocations = new ArrayList<>();
+        Location toMove;
+        for (Location.CompassDirection dir : Location.CompassDirection.values()) {
+            if (dir.getDirection()%10 == 0) {
+                Location currLocation = orionLocation.getNeighbourLocation(dir);
+                int distanceToGold = currLocation.getDistanceTo(this.currDestination.location());
+                // To prevent Orion from just going to the same 2 places constantly,
+                // need to track visited locations with visited list
+                if (this.canMove(currLocation) && !this.isVisited(currLocation) &&
+                        distanceToGold <= minDistance) {
+                    if (distanceToGold < minDistance)
+                    // Keep track of all possible tying directions
+                    {
+                        minDistance = distanceToGold;
+                        possibleLocations = new ArrayList<>();
+                    }
+                    possibleLocations.add(currLocation);
+                }
+            }
         }
-        // If it can't move here, has to move to a random spot,
-        // means either turn left, turn right, or move backwards
+
+        // In case every move has been visited already,
+        // just find the immediate place you can move to
+        if (possibleLocations.isEmpty()) {
+            Location.CompassDirection[] directions = Location.CompassDirection.values();
+            while(true) {
+                int currIndex = this.RANDOMIZER.nextInt(0, directions.length);
+                Location.CompassDirection dir = directions[currIndex];
+                Location newLocation = this.getLocation().getNeighbourLocation(dir);
+                if (this.canMove(newLocation) && dir.getDirection()%10 == 0) {
+                    toMove = newLocation;
+                    break;
+                }
+            }
+        }
+
+        // There may be more than one unvisited location that minimizes distance
+        // to a gold, randomly select from these options
         else {
-            double sign = this.RANDOMIZER.nextDouble();
-            this.setDirection(oldDirection);
-            this.turn(sign*90);
-            next = this.getNextMoveLocation();
-
-            // Check if we can turn this direction
-            if (this.canMove(next)) {
-                this.setLocation(next);
-            }
-
-            // Otherwise just turn backwards
-            else {
-                this.setDirection(oldDirection);
-                this.turn(180);
-                next = this.getNextMoveLocation();
-                this.setLocation(next);
-            }
+            int randomIndex = this.RANDOMIZER.nextInt(0, possibleLocations.size());
+            toMove = possibleLocations.get(randomIndex);
         }
 
         // Now when the move has been decided, can move Orion to the desired piece
-        this.addVisitedList(next);
+        this.addVisitedList(toMove);
+        this.setLocation(toMove);
     }
 
     /**
@@ -160,7 +175,6 @@ public class Orion extends Monster {
         // Set this new location for Orion and set hasDestination to true
         this.hasDestination = true;
         this.currDestination = newLocation;
-        System.out.printf("Current Gold Location: %d %d\n", newLocation.getX(), newLocation.getY());
     }
 
     /**
