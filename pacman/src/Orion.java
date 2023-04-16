@@ -43,25 +43,17 @@ public class Orion extends Monster {
 
     /**
      * Moves Orion to its next location, based on walking through every
-     * gold location randomly, prioritizing golds pacman has not eaten
-     * Unlike other monsters, Orion has walk cycles
-     * A walk cycle starts when Orion determines the first gold
-     * location to walk to, and ends when it arrives at its last unvisited
-     * gold location.
-     * Afterwards, this cycle resets and Orion walks again
-     * as if it hasn't visited any gold location
+     * gold location randomly, prioritizing golds Pacman has not eaten
+     * Orion has walk cycles; a walk cycle starts when Orion determines the
+     * first gold location to walk to, and ends when it arrives at
+     * its last unvisited gold location.
      */
     @Override
     public void moveApproach() {
         // If we already are at destination or destination is null,
         // we want to ensure we find a new destination to walk towards
-        if (this.currDestination != null &&
-                // .equals() logic for Location is based on reference, so have
-                // to compare location coordinates directly
-                // this.currDestination.location().getX() == this.getLocation().getX() &&
-                // this.currDestination.location().getY() == this.getLocation().getY()
-                this.currDestination.location().equals(this.getLocation())
-        ) {
+        if (this.currDestination != null && this.currDestination.location().equals(
+                this.getLocation())) {
             this.hasDestination = false;
             this.goldVisited.put(this.currDestination, true);
             // After Orion finishes walk cycle, reset its cycle
@@ -93,9 +85,8 @@ public class Orion extends Monster {
                 // need to track visited locations with visited list
                 if (this.canMove(currLocation) && !this.isVisited(currLocation) &&
                         distanceToGold <= minDistance) {
-                    if (distanceToGold < minDistance)
                     // Keep track of all possible tying directions
-                    {
+                    if (distanceToGold < minDistance) {
                         minDistance = distanceToGold;
                         possibleLocations = new ArrayList<>();
                     }
@@ -135,7 +126,7 @@ public class Orion extends Monster {
      * Helper function for moveApproach that decides the next
      * gold piece location Orion moves towards
      */
-    public void findNewGold() {
+    private void findNewGold() {
         // Idea is that we need to somehow keep track of the gold coins that have and have not been visited
         HashMap<HashableLocation, Boolean> notTaken = new HashMap<>();
         int numGolds = 0;
