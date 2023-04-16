@@ -41,7 +41,9 @@ public class Ice extends Item {
         // assert that player is in fact at the location of item
         if (matchPacmanLocation(manager))
             // trigger signal
-            for (Monster monster : manager.getMonsters())
-                monster.stopMoving(FREEZE_TIME);
+            if (manager.isMultiverse()) {
+                for (Monster monster : manager.getMonsters())
+                    monster.stopMoving(FREEZE_TIME);
+            }
     }
 }

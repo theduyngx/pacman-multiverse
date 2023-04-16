@@ -36,6 +36,7 @@ public class ObjectManager {
     private int seed = INIT_SEED;
     // current number of pills and gold pieces, which indicate whether player has won or not
     private int numPillsAndGold = 0;
+    private boolean isMultiverse = false;
 
     /**
      * Constructor for ObjectManager.
@@ -112,6 +113,14 @@ public class ObjectManager {
     }
 
     /**
+     * Get the version of the game
+     * @return a boolean representing if the game is simple or a multiverse
+     */
+    public boolean isMultiverse() {
+        return isMultiverse;
+    }
+
+    /**
      * Decrementing the number of pill and gold pieces when PacMan eats one of the pieces.
      * Hence, used in eatItem of PacActor. It will also check if a specified item is of instance
      * Gold or Pill, and if not then it will not decrement.
@@ -128,6 +137,7 @@ public class ObjectManager {
      */
     public void parseProperties(Properties properties) {
         seed = Integer.parseInt(properties.getProperty("seed"));
+        isMultiverse = properties.getProperty("version").contains("multiverse");
 
         // parse pacman
         pacActor.setPropertyMoves(properties.getProperty("PacMan.move"));
@@ -241,43 +251,45 @@ public class ObjectManager {
                 this.MONSTERS.add(troll);
             }
         }
-        if (properties.containsKey("Orion.location") && !properties.getProperty("Orion.location").equals("")) {
-            String[] orionLocations = properties.getProperty("Orion.location").split(";");
-            for (String loc : orionLocations) {
-                String[] pos = loc.split(",");
-                int posX = Integer.parseInt(pos[0]);
-                int posY = Integer.parseInt(pos[1]);
-                Location location = new Location(posX, posY);
-                Orion orion = new Orion(this);
-                this.MONSTERS_LOCATIONS.add(location);
-                // HashableLocation.putLocationHash(monsters, location, orion);
-                this.MONSTERS.add(orion);
+        if (isMultiverse) {
+            if (properties.containsKey("Orion.location") && !properties.getProperty("Orion.location").equals("")) {
+                String[] orionLocations = properties.getProperty("Orion.location").split(";");
+                for (String loc : orionLocations) {
+                    String[] pos = loc.split(",");
+                    int posX = Integer.parseInt(pos[0]);
+                    int posY = Integer.parseInt(pos[1]);
+                    Location location = new Location(posX, posY);
+                    Orion orion = new Orion(this);
+                    this.MONSTERS_LOCATIONS.add(location);
+                    // HashableLocation.putLocationHash(monsters, location, orion);
+                    this.MONSTERS.add(orion);
+                }
             }
-        }
-        if (properties.containsKey("Alien.location") && !properties.getProperty("Alien.location").equals("")) {
-            String[] alienLocations = properties.getProperty("Alien.location").split(";");
-            for (String loc : alienLocations) {
-                String[] pos = loc.split(",");
-                int posX = Integer.parseInt(pos[0]);
-                int posY = Integer.parseInt(pos[1]);
-                Location location = new Location(posX, posY);
-                Alien alien = new Alien(this);
-                this.MONSTERS_LOCATIONS.add(location);
-                // HashableLocation.putLocationHash(monsters, location, alien);
-                this.MONSTERS.add(alien);
+            if (properties.containsKey("Alien.location") && !properties.getProperty("Alien.location").equals("")) {
+                String[] alienLocations = properties.getProperty("Alien.location").split(";");
+                for (String loc : alienLocations) {
+                    String[] pos = loc.split(",");
+                    int posX = Integer.parseInt(pos[0]);
+                    int posY = Integer.parseInt(pos[1]);
+                    Location location = new Location(posX, posY);
+                    Alien alien = new Alien(this);
+                    this.MONSTERS_LOCATIONS.add(location);
+                    // HashableLocation.putLocationHash(monsters, location, alien);
+                    this.MONSTERS.add(alien);
+                }
             }
-        }
-        if (properties.containsKey("Wizard.location") && !properties.getProperty("Wizard.location").equals("")) {
-            String[] wizardLocations = properties.getProperty("Wizard.location").split(";");
-            for (String loc : wizardLocations) {
-                String[] pos = loc.split(",");
-                int posX = Integer.parseInt(pos[0]);
-                int posY = Integer.parseInt(pos[1]);
-                Location location = new Location(posX, posY);
-                Wizard wizard = new Wizard(this);
-                this.MONSTERS_LOCATIONS.add(location);
-                // HashableLocation.putLocationHash(monsters, location, wizard);
-                this.MONSTERS.add(wizard);
+            if (properties.containsKey("Wizard.location") && !properties.getProperty("Wizard.location").equals("")) {
+                String[] wizardLocations = properties.getProperty("Wizard.location").split(";");
+                for (String loc : wizardLocations) {
+                    String[] pos = loc.split(",");
+                    int posX = Integer.parseInt(pos[0]);
+                    int posY = Integer.parseInt(pos[1]);
+                    Location location = new Location(posX, posY);
+                    Wizard wizard = new Wizard(this);
+                    this.MONSTERS_LOCATIONS.add(location);
+                    // HashableLocation.putLocationHash(monsters, location, wizard);
+                    this.MONSTERS.add(wizard);
+                }
             }
         }
 

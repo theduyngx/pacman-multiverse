@@ -41,16 +41,18 @@ public class Gold extends Item {
         if (matchPacmanLocation(manager))
             // trigger signal
             for (Monster monster : manager.getMonsters()) {
+                if (manager.isMultiverse()) {
                 monster.speedUp(Monster.AGGRAVATE_TIME);
                 // When the monster is Orion, we want Orion to
                 // know that this gold piece is already eaten
                 if (monster instanceof Orion) {
-                    Orion orion = (Orion)monster;
+                    Orion orion = (Orion) monster;
                     HashableLocation.putLocationHash(
                             orion.goldPacmanAte,
                             this.getLocation(),
                             true
                     );
+                }
             }
         }
     }
