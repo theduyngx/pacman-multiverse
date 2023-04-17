@@ -1,33 +1,35 @@
 package src;
 import ch.aplu.jgamegrid.*;
+
+
 /**
- * Monster Child Class specific for Trolls
- * Enemies in the game whose movement is completely random
+ * Troll class extended from abstract parent Monster.
+ * Enemies in the game whose movement is completely random.
+ * @see Monster
  */
 public class Troll extends Monster {
-    // Name of class needed for GameCallback
-    private static final String TROLL_NAME = "Troll";
-    // Need these variables for implementation with
-    // super constructor
+    // Type of monster needed for GameCallback
+    private static final MonsterType TYPE = MonsterType.Troll;
+
+    // Variables used for super's constructor
     public static final int NUM_TROLL_IMAGES = 1;
     public static final String DIRECTORY = "sprites/m_troll.gif";
 
     /**
      * Troll constructor
-     * @param manager    stores locations of all game objects
+     * @param manager stores locations of all game objects
      */
     public Troll(ObjectManager manager) {
         super(manager, false, DIRECTORY, NUM_TROLL_IMAGES);
         assert manager != null;
-        setName(TROLL_NAME);
+        setType(TYPE);
     }
 
     /**
-     * Moves troll to its next location, determination
-     * of movement is completely random
+     * Moves troll to its next location, determination of movement is completely random
      */
     @Override
-    public void moveApproach() {
+    protected void moveApproach() {
         double oldDirection = this.getDirection();
         // Should be int but I don't know what happened
         double sign = this.RANDOMIZER.nextDouble();

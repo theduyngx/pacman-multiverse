@@ -7,24 +7,27 @@ import java.util.*;
 /**
  * Based on skeleton code for SWEN20003 Project, Semester 2, 2022, The University of Melbourne.
  * PacActor class extended from abstract LiveActor class, implementing a key repeat listener interface.
+ * The latter is so that the game responds to player's input.
  * (WIP) - too messy and poorly coded for not. Need some work done.
+ * @see LiveActor
+ * @see GGKeyRepeatListener
+ * @see ObjectManager
  */
 public class PacActor extends LiveActor implements GGKeyRepeatListener {
     private static final int INF = 1000;
     private static final int NB_SPRITES = 4;
     private static final String DIRECTORY = "sprites/pacpix.gif";
-    private final Random RANDOMIZER = new Random();
     private int idSprite = 0;
     private int nbPills = 0;
     private int score = 0;
-    private Location initLocation;
     private List<String> propertyMoves = new ArrayList<>();
     private int propertyMoveIndex = 0;
     private boolean isAuto = false;
 
 
     /**
-     * (WIP should not have game as property) PacMan constructor.
+     * PacMan constructor.
+     * @param manager the object manager
      */
     public PacActor(ObjectManager manager) {
         super(manager, true, DIRECTORY, NB_SPRITES);
@@ -32,27 +35,11 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     }
 
     /**
-     * Get PacMan's initial location to add to game.
-     * @return the initial location
-     */
-    public Location getInitLocation() {
-        return initLocation;
-    }
-
-    /**
      * Set whether PacMan runs in auto mode or player mode.
      * @param auto true if PacMan runs in auto mode, false if otherwise
      */
-    public void setAuto(boolean auto) {
+    protected void setAuto(boolean auto) {
         isAuto = auto;
-    }
-
-    /**
-     * Set initial location for PacMan.
-     * @param initLocation PacMan's initial location
-     */
-    public void setInitLocation(Location initLocation) {
-        this.initLocation = initLocation;
     }
 
     /**
@@ -64,12 +51,21 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         RANDOMIZER.setSeed(seed);
     }
 
-    public void setPropertyMoves(String propertyMoveString) {
-        if (propertyMoveString != null) {
+    /**
+     * Setting player's sequence of moves in auto-movement mode.
+     * @param propertyMoveString the string, separated by ',' where each other character represents a
+     *                           particular move
+     */
+    protected void setPropertyMoves(String propertyMoveString) {
+        if (propertyMoveString != null)
             this.propertyMoves = Arrays.asList(propertyMoveString.split(","));
-        }
     }
 
+    /**
+     * Method in key listener.
+     * @param keyCode key code represents which key was pressed by player.
+     */
+    @Override
     public void keyRepeated(int keyCode) {
         if (isAuto) return;
         if (isRemoved())  // Already removed
@@ -156,7 +152,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     /**
      * Method for handling PacMan eating an item. Each item will have a different effect upon acquired, and
      * this method will handle that as well.
-     * @param manager  object manager
+     * @param manager object manager
      */
     private void eatItem(ObjectManager manager) {
         Location location = getLocation();
@@ -168,8 +164,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
 
             // check of which type
             String itemType = (item instanceof Pill) ? "pills" :
-                    (item instanceof Gold) ? "gold"  :
-                            "ice";
+                              (item instanceof Gold) ? "gold"  : "ice";
             if (! (item instanceof Ice)) nbPills++;
             score += item.getScore();
             getManager().decrementNumPillAndGold(item);
@@ -198,6 +193,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     /**
      * Get the closest location of an item that is either a pill or gold. Used only when in auto mode.
      * @return said closest location
+     * @see    Location
      */
     private Location closestPillLocation() {
         int currentDistance = INF;
@@ -216,6 +212,10 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         return currentLocation;
     }
 
+    /**
+     * Let pacman in auto mode follow the moves parsed from properties file. It will read which direction
+     * pacman will be heading to, and move accordingly.
+     */
     private void followPropertyMoves() {
         String currentMove = propertyMoves.get(propertyMoveIndex);
         switch (currentMove) {

@@ -5,15 +5,31 @@ import java.util.*;
 /**
  * Based on skeleton code for SWEN20003 Project, Semester 2, 2022, The University of Melbourne.
  * Monster abstract class extended from abstract LiveActor class.
+ * @see LiveActor
  */
 public abstract class Monster extends LiveActor {
+
+    /**
+     * Monster type enumeration. Each monster type has a boolean value indicating whether it is exclusive
+     * to the extended multiverse game or not.
+     */
+    public enum MonsterType {
+        Troll(false),
+        TX5(false),
+        Alien(true),
+        Orion(true),
+        Wizard(true);
+        public final boolean inMultiverse;
+        MonsterType(boolean inMultiverse) {
+            this.inMultiverse = inMultiverse;
+        }
+    }
+
     // time-related constants
     public static final int SECOND_TO_MILLISECONDS = 1000;
     public static final int AGGRAVATE_TIME = 3;
     private static final int AGGRAVATE_SPEED_FACTOR = 2;
 
-    // monster's name
-    private String name;
     // visited locations
     private final ArrayList<Location> visitedList = new ArrayList<>();
     // if it has stopped moving or not
@@ -41,26 +57,35 @@ public abstract class Monster extends LiveActor {
     }
 
     /**
-     * Get monster's name; used for GameCallBack to write monster's names to log.
-     * @return monster's name
+     * Set the monster type to monster.
+     * @param type the monster type
      */
-    public String getName() {
-        return name;
+    public void setType(MonsterType type) {
+        setName(type.toString());
     }
 
     /**
-     * Set monster's name.
-     * @param name monster's name
+     * Overridden method for setting monster's seed.
+     * @param seed specified seed
      */
-    protected void setName(String name) {
-        this.name = name;
+    @Override
+    protected void setSeed(int seed) {
+        RANDOMIZER.setSeed(seed);
+    }
+
+    /**
+     * Set monster to either stop or continue/start moving.
+     * @param stopMoving boolean indicating if monster stops moving or not
+     */
+    protected void setStopMoving(boolean stopMoving) {
+        this.stopMoving = stopMoving;
     }
 
     /**
      * Stops monster's movement for a specified number of seconds.
      * @param seconds number of seconds monster stops moving
      */
-    public void stopMoving(int seconds) {
+    protected void stopMoving(int seconds) {
         setStopMoving(true);
         Timer timer = new Timer(); // Instantiate Timer Object
         final Monster monster = this;
@@ -88,25 +113,10 @@ public abstract class Monster extends LiveActor {
         }, (long) seconds * SECOND_TO_MILLISECONDS);
     }
 
-    /**
-     * Overridden method for setting monster's seed.
-     * @param seed specified seed
-     */
-    @Override
-    public void setSeed(int seed) {
-        RANDOMIZER.setSeed(seed);
-    }
-
-    /**
-     * Set monster to either stop or continue/start moving.
-     * @param stopMoving boolean indicating if monster stops moving or not
-     */
-    public void setStopMoving(boolean stopMoving) {
-        this.stopMoving = stopMoving;
-    }
 
     /**
      * Overridden act method from Actor class for monster to act within the game.
+     * @see Actor
      */
     @Override
     public void act() {
@@ -131,15 +141,14 @@ public abstract class Monster extends LiveActor {
     }
 
     /**
-     * Check if monster has visited a specific location or not.
-     * (WIP: should be HashMap<HashableLocation, Monster>)
+     * Check if monster has not visited a specific location.
      * @param location specified location to check if monster has visited
-     * @return         true if monster has, false if otherwise
+     * @return         true if monster has yet, false if otherwise
      */
-    protected boolean isVisited(Location location) {
+    protected boolean notVisited(Location location) {
         for (Location loc : visitedList)
             if (loc.equals(location))
-                return true;
-        return false;
+                return false;
+        return true;
     }
 }

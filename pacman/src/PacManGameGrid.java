@@ -7,10 +7,6 @@ import ch.aplu.jgamegrid.*;
  * on the grid via enumerated identification.
  */
 public class PacManGameGrid {
-    // enumerated block, or inanimate objects, type
-    enum BlockType {
-        WALL, PILL, SPACE, GOLD, ICE, ERROR
-    }
 
     // grid constants
     private final int X_LEFT;
@@ -24,6 +20,21 @@ public class PacManGameGrid {
     private final int NUM_VERTICAL_CELLS;
     // the grid data structure, represented by a 2-dimensional array of blocks
     private final BlockType[][] MAZE_ARRAY;
+
+    /**
+     * Enumerated block, or inanimate objects, type. This includes
+     * <ul>
+     *     <li>wall  - obstructed block which cannot be bypassed
+     *     <li>pill  - the pill item required to be eaten by pacman to win
+     *     <li>space - the empty space
+     *     <li>gold  - the gold piece required to be eaten, but also aggravates monsters
+     *     <li>ice   - the ice piece not required to be eaten, but freezes monsters
+     *     <li>error - error block (nonexistent)
+     * </ul>
+     */
+    public enum BlockType {
+        WALL, PILL, SPACE, GOLD, ICE, ERROR
+    }
 
 
     /**
@@ -66,6 +77,7 @@ public class PacManGameGrid {
      * Get the block type from a specific cell in a specified location.
      * @param location the specified location
      * @return         the block type in said location
+     * @see            Location
      */
     public BlockType getCell(Location location)
     {
@@ -76,8 +88,10 @@ public class PacManGameGrid {
      * Override existing mazeArray cell with value given in .properties
      * @param location the specified location
      * @param value    the value to be replaced with
+     * @see            Location
+     * @see            BlockType
      */
-    public void setCell(Location location, BlockType value) {
+    protected void setCell(Location location, BlockType value) {
         MAZE_ARRAY[location.x][location.y] = value;
     }
 
@@ -100,6 +114,7 @@ public class PacManGameGrid {
     /**
      * Get the grid itself, represented by a 2-dimensional array.
      * @return the grid
+     * @see    BlockType
      */
     public BlockType[][] getMazeArray() {
         return MAZE_ARRAY;
@@ -141,6 +156,7 @@ public class PacManGameGrid {
      * Convert a maze string where each cell is represented by a character, to its corresponding block type.
      * @param c cell character
      * @return  its block type
+     * @see     BlockType
      */
     private BlockType toType(char c) {
         return switch (c) {

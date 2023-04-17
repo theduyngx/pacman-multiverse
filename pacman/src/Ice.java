@@ -4,6 +4,7 @@ import java.awt.*;
 
 /**
  * Ice class extended from abstract Item class.
+ * @see Item
  */
 public class Ice extends Item {
     // properties
@@ -25,9 +26,12 @@ public class Ice extends Item {
      * @param bg        background of game grid
      * @param game      the game
      * @param location  the current gold item's location
+     * @see             GGBackground
+     * @see             Game
+     * @see             Location
      */
     @Override
-    public void putItem(GGBackground bg, Game game, Location location) {
+    protected void putItem(GGBackground bg, Game game, Location location) {
         bg.setPaintColor(Color.blue);
         game.addActor(this, location);
     }
@@ -35,9 +39,10 @@ public class Ice extends Item {
     /**
      * Overridden method signalling object manager to freeze monsters.
      * @param manager object manager
+     * @see           ObjectManager
      */
     @Override
-    public void signalManager(ObjectManager manager) {
+    protected void signalManager(ObjectManager manager) {
         // assert that player is in fact at the location of item
         if (matchPacmanLocation(manager))
             // trigger signal

@@ -1,32 +1,35 @@
 package src;
-
 import ch.aplu.jgamegrid.Location;
 
+
+/**
+ * Wizard class extended from Monster class.
+ * @see Monster
+ */
 public class Wizard extends Monster {
     // Name of class needed for GameCallback
-    private static final String WIZARD_NAME = "Wizard";
-    // Need these variables for implementation with
-    // super constructor
+    private static final MonsterType TYPE = MonsterType.Wizard;
+
+    // Required variables for super constructor
     public static final int NUM_WIZARD_IMAGES = 1;
     public static final String DIRECTORY = "sprites/m_wizard.gif";
 
     /**
      * Wizard constructor
-     * @param manager    stores locations of all game objects
+     * @param manager stores locations of all game objects
      */
     public Wizard(ObjectManager manager) {
         super(manager, false, DIRECTORY, NUM_WIZARD_IMAGES);
         assert manager != null;
-        setName(WIZARD_NAME);
+        setType(TYPE);
     }
 
     /**
-     * Moves Wizard to its next location, movement is
-     * randomly selected from its 8 neighboring locations
-     * But also has the ability to walk through walls
+     * Moves Wizard to its next location, movement is randomly selected from its 8 neighboring locations,
+     * but also has the ability to walk through walls. Overridden from Monster.
      */
     @Override
-    public void moveApproach() {
+    protected void moveApproach() {
         Location.CompassDirection[] possibleLocations = Location.CompassDirection.values();
 
         // This loop will keep on going until a location is set for the wizard
