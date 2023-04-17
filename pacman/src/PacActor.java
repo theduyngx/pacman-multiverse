@@ -16,6 +16,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     // properties
     private static final int NB_SPRITES = 4;
     private static final String DIRECTORY = "sprites/pacpix.gif";
+    private static final String PACMAN_NAME = "PacMan";
     private int idSprite = 0;
     private int nbPills = 0;
     private int score = 0;
@@ -42,6 +43,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     public PacActor(ObjectManager manager) {
         super(manager, true, DIRECTORY, NB_SPRITES);
         assert manager != null;
+        setName(PACMAN_NAME);
     }
 
     /**
@@ -172,9 +174,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         if (manager.getItems().containsKey(hashLocation)) {
             Item item = manager.getItems().get(hashLocation);
 
-            // check of which type
-            String itemType = (item instanceof Pill) ? "pills" :
-                              (item instanceof Gold) ? "gold"  : "ice";
+            // add score (WIP - this shouldn't even be in here)
             if (! (item instanceof Ice)) nbPills++;
             score += item.getScore();
             getManager().decrementNumPillAndGold(item);
@@ -182,7 +182,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             // signals the manager and removes itself
             item.signalManager(manager);
             getBackground().fillCell(location, Game.COLOR_SPACE);
-            getGameCallback().pacManEatPillsAndItems(location, itemType);
+            getGameCallback().pacManEatPillsAndItems(location, item.getName());
             item.removeItem(manager);
         }
         String title = "[PacMan in the Multiverse] Current score: " + score;
