@@ -26,6 +26,14 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     // if pacman is in auto mode
     private boolean isAuto = false;
 
+    // direction related
+    private static final String RIGHT_DIR = "R";
+    private static final String LEFT_DIR = "L";
+    private static final String MOVE_DIR = "M";
+    private static final int RIGHT_TURN_ANGLE = 90;
+    private static final int LEFT_TURN_ANGLE = -RIGHT_TURN_ANGLE;
+    private static final int BACK_TURN_ANGLE = 2 * RIGHT_TURN_ANGLE;
+
 
     /**
      * PacMan constructor.
@@ -130,18 +138,18 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         else {
             int sign = RANDOMIZER.nextDouble() < 0.5 ? 1 : -1;
             setDirection(oldDirection);
-            turn(sign * 90); // Try to turn left/right
+            turn(sign * RIGHT_TURN_ANGLE); // Try to turn left/right
             next = getNextMoveLocation();
             if (! canMove(next)) {
                 setDirection(oldDirection);
                 next = getNextMoveLocation(); // Try to move forward
                 if (! canMove(next)) {
                     setDirection(oldDirection);
-                    turn(-sign * 90); // Try to turn right/left
+                    turn(sign * LEFT_TURN_ANGLE); // Try to turn right/left
                     next = getNextMoveLocation();
                     if (! canMove(next)) {
                         setDirection(oldDirection);
-                        turn(180); // Turn backward
+                        turn(BACK_TURN_ANGLE); // Turn backward
                         next = getNextMoveLocation();
                     }
                 }
@@ -221,9 +229,9 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     private void followPropertyMoves() {
         String currentMove = propertyMoves.get(propertyMoveIndex);
         switch (currentMove) {
-            case "R" -> turn(90);
-            case "L" -> turn(-90);
-            case "M" -> {
+            case RIGHT_DIR -> turn(RIGHT_TURN_ANGLE);
+            case LEFT_DIR  -> turn(LEFT_TURN_ANGLE);
+            case MOVE_DIR  -> {
                 Location next = getNextMoveLocation();
                 if (canMove(next)) {
                     setLocation(next);
