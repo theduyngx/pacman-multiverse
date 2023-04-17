@@ -68,9 +68,6 @@ public class Orion extends Monster {
 
         // Now we go towards the direction of this new location
         Location orionLocation = this.getLocation();
-        Location.CompassDirection compassDir = this.getLocation().get4CompassDirectionTo(
-                this.currDestination.location());
-        this.setDirection(compassDir);
 
         // Orion monster can only go vertically and horizontally (it doesn't fly)
         // Want to go towards direction where distance to gold is minimized
@@ -148,14 +145,12 @@ public class Orion extends Monster {
 
         // Need to first decide which golds we can iterate through:
         // If there are still golds pacman hasn't eaten yet and Orion hasn't visited
-        if (!this.checkIfAllVisited(new ArrayList<>(notTaken.keySet())) && numGolds > 0)
-        {
+        if (!this.checkIfAllVisited(new ArrayList<>(notTaken.keySet())) && numGolds > 0) {
             goldsToIterate = new ArrayList<>(notTaken.keySet());
         }
 
         // Otherwise randomly check from all possible gold locations
-        else
-        {
+        else {
             goldsToIterate = new ArrayList<>(this.goldVisited.keySet());
         }
 
@@ -164,6 +159,9 @@ public class Orion extends Monster {
         HashableLocation newLocation = this.getRandomLocation(goldsToIterate);
 
         // Set this new location for Orion and set hasDestination to true
+        System.out.printf("Current Gold Destination: %d, %d\n",
+                newLocation.getX(),
+                newLocation.getY());
         this.hasDestination = true;
         this.currDestination = newLocation;
     }
