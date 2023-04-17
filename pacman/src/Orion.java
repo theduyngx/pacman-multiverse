@@ -188,8 +188,9 @@ public class Orion extends Monster {
      * @see    HashableLocation
      */
     private HashableLocation getRandomLocation(ArrayList<HashableLocation> golds) {
+        assert(!golds.isEmpty());
         while (true) {
-            int randomIndex = this.RANDOMIZER.nextInt(0, golds.size());
+            int randomIndex = this.RANDOMIZER.nextInt(LIST_START, golds.size());
             HashableLocation currentLocation = golds.get(randomIndex);
 
             if (!this.goldVisited.get(currentLocation)) {
