@@ -7,7 +7,6 @@ import ch.aplu.jgamegrid.*;
  * on the grid via enumerated identification.
  */
 public class PacManGameGrid {
-
     // grid constants
     private final int X_LEFT;
     private final int Y_TOP;
@@ -22,6 +21,14 @@ public class PacManGameGrid {
     private final int NUM_VERTICAL_CELLS;
     // the grid data structure, represented by a 2-dimensional array of blocks
     private final BlockType[][] MAZE_ARRAY;
+
+    // character representing specific block
+    private static final char WALL_CHAR = 'x';
+    private static final char SPACE_CHAR = ' ';
+    private static final char PILL_CHAR = '.';
+    private static final char GOLD_CHAR = 'g';
+    private static final char ICE_CHAR = 'i';
+
 
     /**
      * Enumerated block, or inanimate objects, type. This includes
@@ -163,12 +170,12 @@ public class PacManGameGrid {
      */
     private BlockType toType(char c) {
         return switch (c) {
-            case 'x' -> BlockType.WALL;
-            case '.' -> BlockType.PILL;
-            case ' ' -> BlockType.SPACE;
-            case 'g' -> BlockType.GOLD;
-            case 'i' -> BlockType.ICE;
-            default  -> BlockType.ERROR;
+            case WALL_CHAR  -> BlockType.WALL;
+            case PILL_CHAR  -> BlockType.PILL;
+            case GOLD_CHAR  -> BlockType.GOLD;
+            case ICE_CHAR   -> BlockType.ICE;
+            case SPACE_CHAR -> BlockType.SPACE;
+            default         -> BlockType.ERROR;
         };
     }
 }
