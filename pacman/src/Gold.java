@@ -2,6 +2,7 @@ package src;
 import ch.aplu.jgamegrid.*;
 import java.awt.*;
 
+
 /**
  * Gold class extended from abstract Item class.
  * @see Item
@@ -30,7 +31,7 @@ public class Gold extends Item {
      * @see             Location
      */
     @Override
-    public void putItem(GGBackground bg, Game game, Location location) {
+    protected void putItem(GGBackground bg, Game game, Location location) {
         bg.setPaintColor(Color.yellow);
         game.addActor(this, location);
     }
@@ -41,7 +42,7 @@ public class Gold extends Item {
      * @see           ObjectManager
      */
     @Override
-    public void signalManager(ObjectManager manager) {
+    protected void signalManager(ObjectManager manager) {
         // assert that player is in fact at the location of item
         if (matchPacmanLocation(manager))
             // trigger signal

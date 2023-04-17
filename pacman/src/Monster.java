@@ -43,7 +43,7 @@ public abstract class Monster extends LiveActor {
      * Stops monster's movement for a specified number of seconds.
      * @param seconds number of seconds monster stops moving
      */
-    public void stopMoving(int seconds) {
+    protected void stopMoving(int seconds) {
         setStopMoving(true);
         Timer timer = new Timer(); // Instantiate Timer Object
         final Monster monster = this;
@@ -76,7 +76,7 @@ public abstract class Monster extends LiveActor {
      * @param seed specified seed
      */
     @Override
-    public void setSeed(int seed) {
+    protected void setSeed(int seed) {
         RANDOMIZER.setSeed(seed);
     }
 
@@ -84,7 +84,7 @@ public abstract class Monster extends LiveActor {
      * Set monster to either stop or continue/start moving.
      * @param stopMoving boolean indicating if monster stops moving or not
      */
-    public void setStopMoving(boolean stopMoving) {
+    protected void setStopMoving(boolean stopMoving) {
         this.stopMoving = stopMoving;
     }
 

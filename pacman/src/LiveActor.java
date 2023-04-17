@@ -4,6 +4,7 @@ import src.utility.GameCallback;
 
 import java.util.Random;
 
+
 /**
  * Abstract LiveActor class for any actors in the game that are animate objects. Like Item class, it will
  * frequently interact with the object manager to get the state of the game, which includes where every

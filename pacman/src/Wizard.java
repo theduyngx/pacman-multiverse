@@ -29,7 +29,7 @@ public class Wizard extends Monster {
      * but also has the ability to walk through walls. Overridden from Monster.
      */
     @Override
-    public void moveApproach() {
+    protected void moveApproach() {
         Location.CompassDirection[] possibleLocations = Location.CompassDirection.values();
 
         // This loop will keep on going until a location is set for the wizard

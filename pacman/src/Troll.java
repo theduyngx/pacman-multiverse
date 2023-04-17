@@ -29,7 +29,7 @@ public class Troll extends Monster {
      * Moves troll to its next location, determination of movement is completely random
      */
     @Override
-    public void moveApproach() {
+    protected void moveApproach() {
         double oldDirection = this.getDirection();
         // Should be int but I don't know what happened
         double sign = this.RANDOMIZER.nextDouble();

@@ -3,6 +3,7 @@ import ch.aplu.jgamegrid.GGBackground;
 import ch.aplu.jgamegrid.Location;
 import java.awt.*;
 
+
 /**
  * Pill class extended from abstract Item class. Item is required to be eaten by pacman, but doesn't have
  * any particular effect other than increasing the points in the game.
@@ -32,7 +33,7 @@ public class Pill extends Item {
      * @see             Location
      */
     @Override
-    public void putItem(GGBackground bg, Game game, Location location) {
+    protected void putItem(GGBackground bg, Game game, Location location) {
         bg.setPaintColor(Color.white);
         bg.fillCircle(game.toPoint(location), RADIUS);
         game.addActor(this, location);
@@ -45,7 +46,7 @@ public class Pill extends Item {
      * @param manager the object manager
      */
     @Override
-    public void signalManager(ObjectManager manager) {
+    protected void signalManager(ObjectManager manager) {
         // do nothing
     }
 }

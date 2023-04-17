@@ -31,7 +31,7 @@ public class Ice extends Item {
      * @see             Location
      */
     @Override
-    public void putItem(GGBackground bg, Game game, Location location) {
+    protected void putItem(GGBackground bg, Game game, Location location) {
         bg.setPaintColor(Color.blue);
         game.addActor(this, location);
     }
@@ -42,7 +42,7 @@ public class Ice extends Item {
      * @see           ObjectManager
      */
     @Override
-    public void signalManager(ObjectManager manager) {
+    protected void signalManager(ObjectManager manager) {
         // assert that player is in fact at the location of item
         if (matchPacmanLocation(manager))
             // trigger signal

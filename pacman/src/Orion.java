@@ -44,7 +44,7 @@ public class Orion extends Monster {
      * Overridden from Monster.
      */
     @Override
-    public void moveApproach() {
+    protected void moveApproach() {
         // If already are at destination or destination is null, find a new destination to walk to
         if (this.currDestination != null && this.currDestination.location().equals(
                 this.getLocation())) {

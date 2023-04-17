@@ -48,7 +48,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      * Set whether PacMan runs in auto mode or player mode.
      * @param auto true if PacMan runs in auto mode, false if otherwise
      */
-    public void setAuto(boolean auto) {
+    protected void setAuto(boolean auto) {
         isAuto = auto;
     }
 
@@ -57,7 +57,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      * @param initLocation PacMan's initial location
      * @see   Location
      */
-    public void setInitLocation(Location initLocation) {
+    protected void setInitLocation(Location initLocation) {
         this.initLocation = initLocation;
     }
 
@@ -75,7 +75,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      * @param propertyMoveString the string, separated by ',' where each other character represents a
      *                           particular move
      */
-    public void setPropertyMoves(String propertyMoveString) {
+    protected void setPropertyMoves(String propertyMoveString) {
         if (propertyMoveString != null)
             this.propertyMoves = Arrays.asList(propertyMoveString.split(","));
     }

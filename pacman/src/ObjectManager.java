@@ -5,13 +5,15 @@ import java.util.*;
 
 
 /**
- * ObjectManager class to manage all objects, animate or inanimate, especially their instantiations and
- * locations. Anything that has to do with checking every actor for a specific task uniformly will be a
- * responsibility of ObjectManager, since it has access to all Actors, as well as other grid-related
- * objects.
+ * ObjectManager class to manage all objects, animate or inanimate (viz. item or live actor), especially
+ * their instantiations and locations. Anything that has to do with checking every actor for a specific
+ * task uniformly will be a responsibility of ObjectManager, since it has access to all Actors, as well as
+ * other grid-related objects.
  * As such, ObjectManager can be frequently used to deal with a specific Actor checking the 'state' of
  * every other actor.
  * @see Game
+ * @see Item
+ * @see LiveActor
  */
 public class ObjectManager {
     // constant initial seed
@@ -87,8 +89,7 @@ public class ObjectManager {
      * @return a list of all the monsters in the game
      * @see    Monster
      */
-    public ArrayList<Monster> getMonsters() {
-    // public HashMap<HashableLocation, Monster> getMonsters() {
+    protected ArrayList<Monster> getMonsters() {
         return MONSTERS;
     }
 
@@ -96,24 +97,28 @@ public class ObjectManager {
      * Get all monster locations (used only in initialization)
      * @return a list of the locations of all the monsters,
      *         in the same order monsters were entered
+     * @see    Location
      */
-    public ArrayList<Location> getMonsterLocations() {
+    protected ArrayList<Location> getMonsterLocations() {
         return MONSTERS_LOCATIONS;
     }
 
     /**
      * Get all items currently still in the game.
      * @return a hashmap where the key is the items' locations, and value being the items
+     * @see    HashableLocation
+     * @see    Item
      */
-    public HashMap<HashableLocation, Item> getItems() {
+    protected HashMap<HashableLocation, Item> getItems() {
         return ITEMS;
     }
 
     /**
      * Get all walls.
      * @return a hashmap where the key is the walls' locations, and value being the walls
+     * @see    HashableLocation
      */
-    public HashMap<HashableLocation, Integer> getWalls() {
+    protected HashMap<HashableLocation, Integer> getWalls() {
         return WALLS;
     }
 
@@ -121,7 +126,7 @@ public class ObjectManager {
      * Get the number of pills and gold pieces left in the game. Hence, used to detect winning condition.
      * @return the number of pills and gold pieces left in the game
      */
-    public int getNumPillsAndGold() {
+    protected int getNumPillsAndGold() {
         return numPillsAndGold;
     }
 
@@ -129,7 +134,7 @@ public class ObjectManager {
      * Get the version of the game
      * @return a boolean representing if the game is simple or a multiverse
      */
-    public boolean isMultiverse() {
+    protected boolean isMultiverse() {
         return isMultiverse;
     }
 
@@ -138,6 +143,7 @@ public class ObjectManager {
      * Hence, used in eatItem of PacActor. It will also check if a specified item is of instance
      * Gold or Pill, and if not then it will not decrement.
      * @param item specified eaten item
+     * @see        Item
      */
     protected void decrementNumPillAndGold(Item item) {
         if (item instanceof Gold || item instanceof Pill)
@@ -147,6 +153,7 @@ public class ObjectManager {
     /**
      * Parse properties that do not require an Actor instantiation.
      * @param properties the specified properties
+     * @see   Properties
      */
     public void parseProperties(Properties properties) {
         seed = Integer.parseInt(properties.getProperty("seed"));
@@ -191,7 +198,11 @@ public class ObjectManager {
         }
     }
 
-    public void instantiatePacActor() {
+    /**
+     * Instantiate the pacman actor. Called in Game constructor.
+     * @see PacActor
+     */
+    protected void instantiatePacActor() {
         this.pacActor = new PacActor(this);
         pacActor.setSeed(seed);
         pacActor.setSlowDown(3);
@@ -199,10 +210,11 @@ public class ObjectManager {
 
 
     /**
-     * Instantiate the items in the grid and put them in their respective hashmaps.
+     * Instantiate the items in the grid and put them in their respective hashmaps. Called in Game constructor.
      * @param grid the game grid so that the items can be drawn onto
+     * @see   PacManGameGrid
      */
-    public void instantiateObjects(PacManGameGrid grid) {
+    protected void instantiateObjects(PacManGameGrid grid) {
         for (int col = 0; col < grid.getNumVerticalCells(); col++)
             for (int row = 0; row < grid.getNumHorizontalCells(); row++) {
                 PacManGameGrid.BlockType itemType = grid.getMazeArray()[col][row];
@@ -232,10 +244,11 @@ public class ObjectManager {
     }
 
     /**
-     * (WIP) Instantiating monsters, for now this is clunky and needs plenty of work done
+     * Instantiating monsters. Called in Game constructor.
      * @param properties properties to parse for monsters
+     * @see   Properties
      */
-    public void instantiateMonsters(Properties properties) {
+    protected void instantiateMonsters(Properties properties) {
         if (properties.containsKey("TX5.location") && !properties.getProperty("TX5.location").equals("")) {
             String[] TX5Locations = properties.getProperty("TX5.location").split(";");
             for (String loc : TX5Locations) {
@@ -304,7 +317,7 @@ public class ObjectManager {
             }
         }
 
-        /// TEMPORARY SET SEED AND SLOW DOWN
+        /// SET SEED AND SLOW DOWN TO REDUCE GAME DIFFICULTY
         // for (Monster monster : monsters.values()) {
         for (Monster monster : MONSTERS) {
             monster.setSeed(seed);
@@ -316,11 +329,11 @@ public class ObjectManager {
 
     /**
      * Set all monsters to stop moving; used when game is over (win/lose condition is met).
+     * @see Monster
      */
     protected void setMonstersStopMoving() {
         // for (Monster monster : getMonsters().values())
-        for (Monster monster: MONSTERS) {
+        for (Monster monster: MONSTERS)
             monster.setStopMoving(true);
-        }
     }
 }

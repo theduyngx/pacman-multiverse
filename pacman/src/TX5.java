@@ -30,7 +30,7 @@ public class TX5 extends Monster {
      * otherwise resorts to random movement. Overridden from Monster.
      */
     @Override
-    public void moveApproach() {
+    protected void moveApproach() {
         // With TX5, need to base direction to move on the position of pacman
         Location pacLocation = getManager().getPacActor().getLocation();
         double oldDirection = this.getDirection();

@@ -2,6 +2,7 @@ package src;
 import ch.aplu.jgamegrid.Location;
 import java.util.ArrayList;
 
+
 /**
  * Aliens class extended from abstract parent Monster.
  * Enemies in the game who move ONLY to get closer to Pacman, and can also move diagonally.
@@ -30,7 +31,7 @@ public class Alien extends Monster {
      * it can move to and are closest to Pacman. Overridden from Monster.
      */
     @Override
-    public void moveApproach() {
+    protected void moveApproach() {
         // Aliens pick from the directions it can walk to, and choose one that's closest to pacman
         ArrayList<Location> possibleMoves = new ArrayList<>();
         int minDistance = Integer.MAX_VALUE;

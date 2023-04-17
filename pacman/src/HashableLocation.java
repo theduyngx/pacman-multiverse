@@ -3,6 +3,7 @@ import ch.aplu.jgamegrid.Location;
 import java.util.Arrays;
 import java.util.HashMap;
 
+
 /**
  * HashableLocation record class as a placeholder for Location object, but with purpose-driven hashability
  * to ensure that 2 locations that are equal will produce the same hashed value. This is utilized for hash

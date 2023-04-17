@@ -1,6 +1,7 @@
 package src;
 import ch.aplu.jgamegrid.*;
 
+
 /**
  * Abstract Item class extended from Actor for any actors in the game that are inanimate objects that
  * have an effect to the game. It will make use of the object manager to handle its locations, which
@@ -51,7 +52,7 @@ public abstract class Item extends Actor {
      * Set the score that would be acquired if item were eaten.
      * @param score set score
      */
-    public void setScore(int score) {
+    protected void setScore(int score) {
         this.score = score;
     }
 
@@ -59,7 +60,7 @@ public abstract class Item extends Actor {
      * Remove item; used when item is eaten by PacMan.
      * @param manager object manager
      */
-    public void removeItem(ObjectManager manager) {
+    protected void removeItem(ObjectManager manager) {
         HashableLocation hashLocation = new HashableLocation(getLocation());
         manager.getItems().remove(hashLocation);
         removeSelf();
@@ -74,11 +75,11 @@ public abstract class Item extends Actor {
      * @see             Game
      * @see             Location
      */
-    public abstract void putItem(GGBackground bg, Game game, Location location);
+    protected abstract void putItem(GGBackground bg, Game game, Location location);
 
     /**
      * Abstract method to signal the object manager for changes that acquiring the item makes.
      * @param manager the object manager
      */
-    public abstract void signalManager(ObjectManager manager);
+    protected abstract void signalManager(ObjectManager manager);
 }

@@ -91,7 +91,7 @@ public class PacManGameGrid {
      * @see            Location
      * @see            BlockType
      */
-    public void setCell(Location location, BlockType value) {
+    protected void setCell(Location location, BlockType value) {
         MAZE_ARRAY[location.x][location.y] = value;
     }
 
