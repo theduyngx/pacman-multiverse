@@ -24,9 +24,9 @@ public class Orion extends Monster {
     protected HashMap<HashableLocation, Boolean> goldPacmanAte = new HashMap<>();
 
     // Constants used to check for non-diagonal directions
-    private final int CHECK_NON_DIAGONAL = 10;
-    private final int NON_DIAGONAL = 0;
-    private final int LIST_START = 0;
+    private static final int CHECK_NON_DIAGONAL = 10;
+    private static final int NON_DIAGONAL = 0;
+    private static final int LIST_START = 0;
 
     /**
      * Orion constructor
@@ -188,15 +188,20 @@ public class Orion extends Monster {
      * @see    HashableLocation
      */
     private HashableLocation getRandomLocation(ArrayList<HashableLocation> golds) {
-        assert(!golds.isEmpty());
-        while (true) {
-            int randomIndex = this.RANDOMIZER.nextInt(LIST_START, golds.size());
-            HashableLocation currentLocation = golds.get(randomIndex);
-
-            if (!this.goldVisited.get(currentLocation)) {
-                return currentLocation;
+        // Make a new arraylist where from the list of golds, none are either
+        // visited or the exact same location Orion is in
+        ArrayList<HashableLocation> goldsToCheck = new ArrayList<>();
+        for (HashableLocation loc : golds) {
+            if (!this.goldVisited.get(loc) &&
+                    (loc.getX() != this.getLocation().getX() ||
+                    loc.getY() != this.getLocation().getY())) {
+                goldsToCheck.add(loc);
             }
         }
+
+        // Now return a random location from this new list
+        int randomIndex = this.RANDOMIZER.nextInt(LIST_START, goldsToCheck.size());
+        return goldsToCheck.get(randomIndex);
     }
 }
 
