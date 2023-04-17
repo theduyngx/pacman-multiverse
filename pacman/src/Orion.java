@@ -12,7 +12,7 @@ import java.util.HashMap;
  */
 public class Orion extends Monster {
     // Name of class required for GameCallback
-    private static final String ORION_NAME = "Orion";
+    private static final MonsterType TYPE = MonsterType.Orion;
     // Constructor arguments
     public static final int numOrionImages = 1;
     public static final String directory = "sprites/m_orion.gif";
@@ -30,7 +30,7 @@ public class Orion extends Monster {
     public Orion(ObjectManager manager) {
         super(manager, false, directory, numOrionImages);
         assert manager != null;
-        setName(ORION_NAME);
+        setType(TYPE);
         // Assert there are actually items for Orion to store
         assert ! this.getManager().getItems().isEmpty();
         this.makeGoldMaps();

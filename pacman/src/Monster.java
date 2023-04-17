@@ -8,6 +8,23 @@ import java.util.*;
  * @see LiveActor
  */
 public abstract class Monster extends LiveActor {
+
+    /**
+     * Monster type enumeration. Each monster type has a boolean value indicating whether it is exclusive
+     * to the extended multiverse game or not.
+     */
+    public enum MonsterType {
+        Troll(false),
+        TX5(false),
+        Alien(true),
+        Orion(true),
+        Wizard(true);
+        public final boolean inMultiverse;
+        MonsterType(boolean inMultiverse) {
+            this.inMultiverse = inMultiverse;
+        }
+    }
+
     // time-related constants
     public static final int SECOND_TO_MILLISECONDS = 1000;
     public static final int AGGRAVATE_TIME = 3;
@@ -40,6 +57,31 @@ public abstract class Monster extends LiveActor {
     }
 
     /**
+     * Set the monster type to monster.
+     * @param type the monster type
+     */
+    public void setType(MonsterType type) {
+        setName(type.toString());
+    }
+
+    /**
+     * Overridden method for setting monster's seed.
+     * @param seed specified seed
+     */
+    @Override
+    protected void setSeed(int seed) {
+        RANDOMIZER.setSeed(seed);
+    }
+
+    /**
+     * Set monster to either stop or continue/start moving.
+     * @param stopMoving boolean indicating if monster stops moving or not
+     */
+    protected void setStopMoving(boolean stopMoving) {
+        this.stopMoving = stopMoving;
+    }
+
+    /**
      * Stops monster's movement for a specified number of seconds.
      * @param seconds number of seconds monster stops moving
      */
@@ -69,23 +111,6 @@ public abstract class Monster extends LiveActor {
                 monster.setSlowDown(AGGRAVATE_SPEED_FACTOR);
             }
         }, (long) seconds * SECOND_TO_MILLISECONDS);
-    }
-
-    /**
-     * Overridden method for setting monster's seed.
-     * @param seed specified seed
-     */
-    @Override
-    protected void setSeed(int seed) {
-        RANDOMIZER.setSeed(seed);
-    }
-
-    /**
-     * Set monster to either stop or continue/start moving.
-     * @param stopMoving boolean indicating if monster stops moving or not
-     */
-    protected void setStopMoving(boolean stopMoving) {
-        this.stopMoving = stopMoving;
     }
 
 

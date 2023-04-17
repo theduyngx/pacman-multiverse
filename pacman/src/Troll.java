@@ -8,8 +8,8 @@ import ch.aplu.jgamegrid.*;
  * @see Monster
  */
 public class Troll extends Monster {
-    // Name of monster needed for GameCallback
-    private static final String TROLL_NAME = "Troll";
+    // Type of monster needed for GameCallback
+    private static final MonsterType TYPE = MonsterType.Troll;
 
     // Variables used for super's constructor
     public static final int NUM_TROLL_IMAGES = 1;
@@ -22,7 +22,7 @@ public class Troll extends Monster {
     public Troll(ObjectManager manager) {
         super(manager, false, DIRECTORY, NUM_TROLL_IMAGES);
         assert manager != null;
-        setName(TROLL_NAME);
+        setType(TYPE);
     }
 
     /**

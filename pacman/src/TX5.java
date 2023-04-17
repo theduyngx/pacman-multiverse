@@ -9,7 +9,7 @@ import ch.aplu.jgamegrid.*;
  */
 public class TX5 extends Monster {
     // Name of class needed for GameCallback
-    private static final String TX5_NAME = "TX5";
+    private static final MonsterType TYPE = MonsterType.TX5;
 
     // Required variables for super constructor
     public static final int NUM_TX5_IMAGES = 1;
@@ -22,7 +22,7 @@ public class TX5 extends Monster {
     public TX5(ObjectManager manager) {
         super(manager, false, DIRECTORY, NUM_TX5_IMAGES);
         assert manager != null;
-        setName(TX5_NAME);
+        setType(TYPE);
     }
 
     /**

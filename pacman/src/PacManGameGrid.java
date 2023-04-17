@@ -32,7 +32,7 @@ public class PacManGameGrid {
      *     <li>error - error block (nonexistent)
      * </ul>
      */
-    enum BlockType {
+    public enum BlockType {
         WALL, PILL, SPACE, GOLD, ICE, ERROR
     }
 

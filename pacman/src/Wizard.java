@@ -8,7 +8,7 @@ import ch.aplu.jgamegrid.Location;
  */
 public class Wizard extends Monster {
     // Name of class needed for GameCallback
-    private static final String WIZARD_NAME = "Wizard";
+    private static final MonsterType TYPE = MonsterType.Wizard;
 
     // Required variables for super constructor
     public static final int NUM_WIZARD_IMAGES = 1;
@@ -21,7 +21,7 @@ public class Wizard extends Monster {
     public Wizard(ObjectManager manager) {
         super(manager, false, DIRECTORY, NUM_WIZARD_IMAGES);
         assert manager != null;
-        setName(WIZARD_NAME);
+        setType(TYPE);
     }
 
     /**

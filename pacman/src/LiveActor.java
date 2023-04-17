@@ -17,8 +17,9 @@ public abstract class LiveActor extends Actor {
     private final ObjectManager MANAGER;
     protected final Random RANDOMIZER = new Random(0);
 
-    // actor's name
+    // other properties
     private String name;
+    public static final int SLOW_DOWN = 3;
 
     /**
      * Constructor for LiveActor.

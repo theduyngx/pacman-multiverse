@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class Alien extends Monster {
     // Name of class needed for GameCallback
-    private static final String ALIEN_NAME = "Alien";
+    private static final MonsterType TYPE = MonsterType.Alien;
     // Need these variables for implementation with super constructor
     public static final int NUM_ALIEN_IMAGES = 1;
     public static final String DIRECTORY = "sprites/m_alien.gif";
@@ -23,7 +23,7 @@ public class Alien extends Monster {
     public Alien(ObjectManager manager) {
         super(manager, false, DIRECTORY, NUM_ALIEN_IMAGES);
         assert manager != null;
-        setName(ALIEN_NAME);
+        setType(TYPE);
     }
 
     /**
