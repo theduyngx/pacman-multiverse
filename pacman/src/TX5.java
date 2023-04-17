@@ -1,22 +1,23 @@
 package src;
 import ch.aplu.jgamegrid.*;
 
+
 /**
- * Monster Child Class specific for TX5
- * Enemies in the game always moving towards Pacman;
- * If unable to, moves randomly
+ * TX5 class extended from Monster class. These are enemies that always move towards Pacman.
+ * If unable to do so, they move randomly.
+ * @see Monster
  */
 public class TX5 extends Monster {
     // Name of class needed for GameCallback
     private static final String TX5_NAME = "TX5";
-    // Need these variables for implementation with
-    // super constructor
+
+    // Required variables for super constructor
     public static final int NUM_TX5_IMAGES = 1;
     public static final String DIRECTORY = "sprites/m_tx5.gif";
 
     /**
      * TX5 Constructor
-     * @param manager    stores locations of all game objects
+     * @param manager stores locations of all game objects
      */
     public TX5(ObjectManager manager) {
         super(manager, false, DIRECTORY, NUM_TX5_IMAGES);
@@ -25,9 +26,8 @@ public class TX5 extends Monster {
     }
 
     /**
-     * Moves TX5 to its next location, determination
-     * of movement is purely to get closer to Pacman;
-     * otherwise resorts to random movement
+     * Moves TX5 to its next location, determination of movement is purely to get closer to Pacman;
+     * otherwise resorts to random movement. Overridden from Monster.
      */
     @Override
     public void moveApproach() {
@@ -40,7 +40,7 @@ public class TX5 extends Monster {
         // This marks the direction nearest to pacman
         Location next = this.getLocation().getNeighbourLocation(compassDir);
         // Only go to this direction if you can move here, and if it wasn't visited yet
-        if (this.canMove(next) && !this.isVisited(next))
+        if (this.canMove(next) && this.notVisited(next))
             this.setLocation(next);
 
         // If it can't move here, has to move to a random spot,

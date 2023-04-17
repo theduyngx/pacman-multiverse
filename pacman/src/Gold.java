@@ -4,6 +4,7 @@ import java.awt.*;
 
 /**
  * Gold class extended from abstract Item class.
+ * @see Item
  */
 public class Gold extends Item {
     // properties
@@ -24,6 +25,9 @@ public class Gold extends Item {
      * @param bg        background of game grid
      * @param game      the game
      * @param location  the current gold item's location
+     * @see             GGBackground
+     * @see             Game
+     * @see             Location
      */
     @Override
     public void putItem(GGBackground bg, Game game, Location location) {
@@ -34,26 +38,26 @@ public class Gold extends Item {
     /**
      * Overridden method signalling object manager to aggravate monsters.
      * @param manager object manager
+     * @see           ObjectManager
      */
     @Override
     public void signalManager(ObjectManager manager) {
         // assert that player is in fact at the location of item
         if (matchPacmanLocation(manager))
             // trigger signal
-            for (Monster monster : manager.getMonsters()) {
-                if (manager.isMultiverse()) {
-                monster.speedUp(Monster.AGGRAVATE_TIME);
-                // When the monster is Orion, we want Orion to
-                // know that this gold piece is already eaten
-                if (monster instanceof Orion) {
-                    Orion orion = (Orion) monster;
-                    HashableLocation.putLocationHash(
-                            orion.goldPacmanAte,
-                            this.getLocation(),
-                            true
-                    );
+            for (Monster monster : manager.getMonsters())
+            {
+                if (manager.isMultiverse())
+                {
+                    monster.speedUp(Monster.AGGRAVATE_TIME);
+                    // monster is Orion, then we want Orion to know that this gold piece is already eaten
+                    if (monster instanceof Orion orion)
+                        HashableLocation.putLocationHash(
+                                orion.goldPacmanAte,
+                                this.getLocation(),
+                                true
+                        );
                 }
             }
-        }
     }
 }

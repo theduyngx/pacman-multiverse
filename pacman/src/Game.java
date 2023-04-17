@@ -9,6 +9,7 @@ import java.util.Properties;
  * Based on skeleton code for SWEN20003 Project, Semester 2, 2022, The University of Melbourne.
  * The Game class is responsible for putting items and actors onto its own grid, as well as running
  * the game.
+ * @see GameGrid
  *
  * @author The Duy Nguyen            - 1100548 (theduyn@student.unimelb.edu.au)
  * @author Ramon Javier L. Felipe VI - 1233281 (rfelipe@student.unimelb.edu.au)
@@ -38,7 +39,8 @@ public class Game extends GameGrid {
 
     /**
      * Game class constructor.
-     * @param properties    properties object read from properties file for instantiating actors and items
+     * @param properties properties object read from properties file for instantiating actors and items
+     * @see              Properties
      */
     public Game(Properties properties) {
 
@@ -59,6 +61,7 @@ public class Game extends GameGrid {
     /**
      * Get the game grid.
      * @return the game grid
+     * @see    PacManGameGrid
      */
     public PacManGameGrid getGrid() {
         return GRID;
@@ -119,6 +122,7 @@ public class Game extends GameGrid {
     /**
      * Draw the game's grid. The grid includes empty space and walls.
      * @param bg background object for grid
+     * @see      GGBackground
      */
     private void drawGrid(GGBackground bg) {
         // set the background
@@ -144,18 +148,24 @@ public class Game extends GameGrid {
 
 
     /**
-     * Putting all items to game.
+     * Putting all items to game. Items once put to the game will exist within the game as well as the
+     * grid, and it will also be visualized to the background.
+     * @param background the background
+     * @see              GGBackground
+     * @see              Item
      */
-    public void putItems(GGBackground bg) {
+    public void putItems(GGBackground background) {
         for (Map.Entry<HashableLocation, Item> entry : manager.getItems().entrySet()) {
             Location location = entry.getKey().location();
             Item item = entry.getValue();
-            item.putItem(bg, this, location);
+            item.putItem(background, this, location);
         }
     }
 
     /**
-     * Putting all monsters to game.
+     * Putting all monsters to game. Monsters once put to the game will exist within the game as well as the
+     * grid, and it will also be visualized to the background.
+     * @see Monster
      */
     public void putMonsters() {
         for (int i=0; i<manager.getMonsters().size(); i++) {
@@ -166,7 +176,9 @@ public class Game extends GameGrid {
     }
 
     /**
-     * Putting PacMan to game.
+     * Putting PacMan to game. Similar to put monsters, PacMan will also be added to the game in the same
+     * manner.
+     * @see PacActor
      */
     public void putPacActor() {
         PacActor pacActor = manager.getPacActor();

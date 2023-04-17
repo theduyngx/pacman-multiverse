@@ -6,10 +6,9 @@ public class Driver {
     public static final String DEFAULT_PROPERTIES_PATH = "pacman/properties/test1.properties";
 
     /**
-     * Starting point
+     * Entry point to program.
      * @param args the command line arguments
      */
-
     public static void main(String[] args) {
         String propertiesPath = DEFAULT_PROPERTIES_PATH;
         if (args.length > 0) {

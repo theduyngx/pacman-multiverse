@@ -3,7 +3,11 @@ import ch.aplu.jgamegrid.*;
 
 /**
  * Abstract Item class extended from Actor for any actors in the game that are inanimate objects that
- * have an effect to the game.
+ * have an effect to the game. It will make use of the object manager to handle its locations, which
+ * extends to whether or not a live actor has 'collided' with its location or not. In the case of pacman,
+ * that should imply the item, if not obstacles, have been acquired.
+ * @see Actor
+ * @see ObjectManager
  */
 public abstract class Item extends Actor {
     // constant radius value when drawn
@@ -66,6 +70,9 @@ public abstract class Item extends Actor {
      * @param bg        background of game grid
      * @param game      the game
      * @param location  item's location
+     * @see             GGBackground
+     * @see             Game
+     * @see             Location
      */
     public abstract void putItem(GGBackground bg, Game game, Location location);
 

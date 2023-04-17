@@ -5,12 +5,19 @@ import src.utility.GameCallback;
 import java.util.Random;
 
 /**
- * Abstract LiveActor class for any actors in the game that are animate objects.
+ * Abstract LiveActor class for any actors in the game that are animate objects. Like Item class, it will
+ * frequently interact with the object manager to get the state of the game, which includes where every
+ * other actor is located at, and whether there is a location collision or not.
+ * @see Actor
+ * @see ObjectManager
  */
 public abstract class LiveActor extends Actor {
-    // properties
+    // manager and randomizer
     private final ObjectManager MANAGER;
     protected final Random RANDOMIZER = new Random(0);
+
+    // actor's name
+    private String name;
 
     /**
      * Constructor for LiveActor.
@@ -27,6 +34,7 @@ public abstract class LiveActor extends Actor {
     /**
      * Get the game grid.
      * @return the game grid
+     * @see    GameGrid
      */
     public GameGrid getGameGrid() {
         assert this.gameGrid != null;
@@ -46,11 +54,28 @@ public abstract class LiveActor extends Actor {
     /**
      * Get the GameCallBack to update log from object manager.
      * @return the game callback object
+     * @see    GameCallback
      */
     public GameCallback getGameCallback() {
         GameCallback gameCallback = getManager().getGameCallback();
         assert gameCallback != null;
         return gameCallback;
+    }
+
+    /**
+     * Get actor's name; used for GameCallBack to write actor's names to log.
+     * @return monster's name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Set live actor's name.
+     * @param name live actor's name
+     */
+    protected void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -70,6 +95,7 @@ public abstract class LiveActor extends Actor {
      * Check whether a live actor can move to a specified location.
      * @param location specified location
      * @return         boolean indicating whether actor can move there.
+     * @see            Location
      */
     protected boolean canMove(Location location) {
         int x = location.getX(), y = location.getY();

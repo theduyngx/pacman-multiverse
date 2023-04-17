@@ -7,6 +7,7 @@ import java.util.HashMap;
  * HashableLocation record class as a placeholder for Location object, but with purpose-driven hashability
  * to ensure that 2 locations that are equal will produce the same hashed value. This is utilized for hash
  * maps that use location as keys for fast accessing.
+ * @see Location
  */
 public record HashableLocation(Location location) {
     // properties
@@ -45,6 +46,7 @@ public record HashableLocation(Location location) {
      * Get the hashable location, which is actually just an array of size 2 in form [x, y].
      * @param location the specified location
      * @return         the hashable array
+     * @see            Location
      */
     public static int[] getArrayLocation(Location location) {
         return new int[]{location.getX(), location.getY()};
@@ -56,6 +58,7 @@ public record HashableLocation(Location location) {
      * @param location  specified location as key
      * @param object    generic object as value
      * @param <T>       the generic type, but in this context we only use live actors and items for it.
+     * @see             Location
      */
     public static <T> void putLocationHash(HashMap<HashableLocation, T> map, Location location, T object) {
         HashableLocation hashLocation = new HashableLocation(location);
@@ -69,6 +72,7 @@ public record HashableLocation(Location location) {
      * @param location  specified location
      * @return          the value
      * @param <T>       generic type for value
+     * @see             Location
      */
     public static <T> T getLocationHash(HashMap<HashableLocation, T> map, Location location) {
         return map.get(new HashableLocation(location));
@@ -81,6 +85,7 @@ public record HashableLocation(Location location) {
      * @param location  specified location
      * @return          boolean value indicating whether key is contained
      * @param <T>       generic Object class
+     * @see             Location
      */
     public static <T> boolean containLocationHash(HashMap<HashableLocation, T> map, Location location) {
         HashableLocation hashLocation = new HashableLocation(location);

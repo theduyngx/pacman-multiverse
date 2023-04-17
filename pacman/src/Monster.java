@@ -5,6 +5,7 @@ import java.util.*;
 /**
  * Based on skeleton code for SWEN20003 Project, Semester 2, 2022, The University of Melbourne.
  * Monster abstract class extended from abstract LiveActor class.
+ * @see LiveActor
  */
 public abstract class Monster extends LiveActor {
     // time-related constants
@@ -12,8 +13,6 @@ public abstract class Monster extends LiveActor {
     public static final int AGGRAVATE_TIME = 3;
     private static final int AGGRAVATE_SPEED_FACTOR = 2;
 
-    // monster's name
-    private String name;
     // visited locations
     private final ArrayList<Location> visitedList = new ArrayList<>();
     // if it has stopped moving or not
@@ -38,22 +37,6 @@ public abstract class Monster extends LiveActor {
     public ObjectManager getManager() {
         assert super.getManager() != null;
         return super.getManager();
-    }
-
-    /**
-     * Get monster's name; used for GameCallBack to write monster's names to log.
-     * @return monster's name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Set monster's name.
-     * @param name monster's name
-     */
-    protected void setName(String name) {
-        this.name = name;
     }
 
     /**
@@ -105,8 +88,10 @@ public abstract class Monster extends LiveActor {
         this.stopMoving = stopMoving;
     }
 
+
     /**
      * Overridden act method from Actor class for monster to act within the game.
+     * @see Actor
      */
     @Override
     public void act() {
@@ -131,15 +116,14 @@ public abstract class Monster extends LiveActor {
     }
 
     /**
-     * Check if monster has visited a specific location or not.
-     * (WIP: should be HashMap<HashableLocation, Monster>)
+     * Check if monster has not visited a specific location.
      * @param location specified location to check if monster has visited
-     * @return         true if monster has, false if otherwise
+     * @return         true if monster has yet, false if otherwise
      */
-    protected boolean isVisited(Location location) {
+    protected boolean notVisited(Location location) {
         for (Location loc : visitedList)
             if (loc.equals(location))
-                return true;
-        return false;
+                return false;
+        return true;
     }
 }

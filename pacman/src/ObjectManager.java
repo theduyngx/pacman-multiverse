@@ -11,6 +11,7 @@ import java.util.*;
  * objects.
  * As such, ObjectManager can be frequently used to deal with a specific Actor checking the 'state' of
  * every other actor.
+ * @see Game
  */
 public class ObjectManager {
     // constant initial seed
@@ -40,6 +41,7 @@ public class ObjectManager {
 
     /**
      * Constructor for ObjectManager.
+     * @see Game
      */
     public ObjectManager(Game game) {
         assert game != null;
@@ -53,26 +55,37 @@ public class ObjectManager {
         this.WALLS = new HashMap<>();
     }
 
-    public Game getGame() {
+    /**
+     * Get the game object; used to retrieve game's grid, which either to update grid's cell or to
+     * get the information about the grid's border to disallow actors moving out of bound.
+     * @return the game
+     */
+    protected Game getGame() {
         return GAME;
     }
 
-    public GameCallback getGameCallback() {
+    /**
+     * Get the game callback; used by live actors to update their activities to log.
+     * @return the game callback
+     * @see    GameCallback
+     */
+    protected GameCallback getGameCallback() {
         return GAME_CALLBACK;
     }
 
     /**
-     * Get the player PacMan.
+     * Get the player PacMan. This is primarily used for checking collisions between PacMan and monsters.
      * @return player PacMan
+     * @see    PacActor
      */
-    public PacActor getPacActor() {
+    protected PacActor getPacActor() {
         return pacActor;
     }
 
     /**
      * Get all monsters.
-     * @return a hashmap where the key is monsters' initial location, and value being the monsters
      * @return a list of all the monsters in the game
+     * @see    Monster
      */
     public ArrayList<Monster> getMonsters() {
     // public HashMap<HashableLocation, Monster> getMonsters() {
