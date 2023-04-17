@@ -24,8 +24,6 @@ public class ObjectManager {
     // hashmap of monsters with their initial location as key
     // private final HashMap<HashableLocation, Monster> monsters;
     private final ArrayList<Monster> MONSTERS;
-    // Stores the locations of monsters for initialization
-    private final ArrayList<Location> MONSTERS_LOCATIONS;
     // hashmap of all items with their location as key
     private final HashMap<HashableLocation, Item> ITEMS;
     // hashmap of all walls with their location as key
@@ -51,8 +49,6 @@ public class ObjectManager {
         this.GAME_CALLBACK = new GameCallback();
         // this.monsters = new HashMap<>();
         this.MONSTERS = new ArrayList<>();
-        // Need this only for monsters initialization
-        this.MONSTERS_LOCATIONS = new ArrayList<>();
         this.ITEMS = new HashMap<>();
         this.WALLS = new HashMap<>();
     }
@@ -91,16 +87,6 @@ public class ObjectManager {
      */
     protected ArrayList<Monster> getMonsters() {
         return MONSTERS;
-    }
-
-    /**
-     * Get all monster locations (used only in initialization)
-     * @return a list of the locations of all the monsters,
-     *         in the same order monsters were entered
-     * @see    Location
-     */
-    protected ArrayList<Location> getMonsterLocations() {
-        return MONSTERS_LOCATIONS;
     }
 
     /**
@@ -249,12 +235,20 @@ public class ObjectManager {
      * @see   Properties
      */
     protected void instantiateMonsters(Properties properties) {
+        // for each monster type
         ArrayList<Monster.MonsterType> types = new ArrayList<>(Arrays.asList(Monster.MonsterType.values()));
         for (Monster.MonsterType type : types) {
+            // check if monster type is valid (as in, if type only exists in multiverse but property
+            // states otherwise, then we ignore)
+            if (type.inMultiverse && !isMultiverse) continue;
             String name = type.toString();
             String property_name = name + ".location";
+
+            // valid entry
             if (properties.containsKey(property_name) && !properties.getProperty(property_name).equals("")) {
                 String[] locations = properties.getProperty(property_name).split(";");
+
+                // get all locations of monster
                 for (String loc : locations) {
                     String[] pos = loc.split(",");
                     int posX = Integer.parseInt(pos[0]);
@@ -267,21 +261,18 @@ public class ObjectManager {
                         case Alien  -> new Alien(this);
                         case Wizard -> new Wizard(this);
                     };
-                    if (! type.inMultiverse || isMultiverse) {
-                        this.MONSTERS_LOCATIONS.add(location);
-                        this.MONSTERS.add(monster);
-                    }
+
+                    // set location and add itself to monster list
+                    monster.setInitLocation(location);
+                    this.MONSTERS.add(monster);
+
+                    /// SET SEED AND SLOW DOWN TO REDUCE GAME DIFFICULTY
+                    monster.setSeed(seed);
+                    monster.setSlowDown(LiveActor.SLOW_DOWN);
+                    if (type == Monster.MonsterType.TX5)
+                        monster.stopMoving(5);
                 }
             }
-        }
-
-        /// SET SEED AND SLOW DOWN TO REDUCE GAME DIFFICULTY
-        // for (Monster monster : monsters.values()) {
-        for (Monster monster : MONSTERS) {
-            monster.setSeed(seed);
-            monster.setSlowDown(LiveActor.SLOW_DOWN);
-            if (monster instanceof TX5)
-                monster.stopMoving(5);
         }
     }
 

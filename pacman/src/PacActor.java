@@ -20,7 +20,6 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     private int idSprite = 0;
     private int nbPills = 0;
     private int score = 0;
-    private Location initLocation;
     private List<String> propertyMoves = new ArrayList<>();
     private int propertyMoveIndex = 0;
     private boolean isAuto = false;
@@ -36,29 +35,11 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     }
 
     /**
-     * Get PacMan's initial location to add to game.
-     * @return the initial location
-     * @see    Location
-     */
-    public Location getInitLocation() {
-        return initLocation;
-    }
-
-    /**
      * Set whether PacMan runs in auto mode or player mode.
      * @param auto true if PacMan runs in auto mode, false if otherwise
      */
     protected void setAuto(boolean auto) {
         isAuto = auto;
-    }
-
-    /**
-     * Set initial location for PacMan.
-     * @param initLocation PacMan's initial location
-     * @see   Location
-     */
-    protected void setInitLocation(Location initLocation) {
-        this.initLocation = initLocation;
     }
 
     /**

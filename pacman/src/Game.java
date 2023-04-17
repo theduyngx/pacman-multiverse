@@ -170,8 +170,8 @@ public class Game extends GameGrid {
      */
     public void putMonsters() {
         for (int i=0; i<manager.getMonsters().size(); i++) {
-            Location location = manager.getMonsterLocations().get(i);
             Monster monster = manager.getMonsters().get(i);
+            Location location = monster.getInitLocation();
             addActor(monster, location, Location.NORTH);
         }
     }

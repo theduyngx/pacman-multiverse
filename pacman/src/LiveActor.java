@@ -17,6 +17,9 @@ public abstract class LiveActor extends Actor {
     private final ObjectManager MANAGER;
     protected final Random RANDOMIZER = new Random(0);
 
+    // initial location for actor instantiation
+    private Location initLocation;
+
     // other properties
     private String name;
     public static final int SLOW_DOWN = 3;
@@ -65,6 +68,15 @@ public abstract class LiveActor extends Actor {
     }
 
     /**
+     * Get PacMan's initial location to add to game.
+     * @return the initial location
+     * @see    Location
+     */
+    public Location getInitLocation() {
+        return initLocation;
+    }
+
+    /**
      * Get actor's name; used for GameCallBack to write actor's names to log.
      * @return monster's name
      */
@@ -78,6 +90,15 @@ public abstract class LiveActor extends Actor {
      */
     protected void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Set initial location for PacMan.
+     * @param initLocation PacMan's initial location
+     * @see   Location
+     */
+    protected void setInitLocation(Location initLocation) {
+        this.initLocation = initLocation;
     }
 
     /**
