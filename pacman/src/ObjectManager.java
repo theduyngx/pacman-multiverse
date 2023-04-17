@@ -174,7 +174,7 @@ public class ObjectManager {
                     };
 
                     // if null, then it is not an item
-                    assert item != null;
+                    if (item == null) continue;
 
                     // add to item hashmaps and set game grid's cell
                     HashableLocation.putLocationHash(ITEMS, location, item);
