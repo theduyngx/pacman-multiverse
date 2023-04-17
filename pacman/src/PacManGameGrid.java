@@ -7,12 +7,13 @@ import ch.aplu.jgamegrid.*;
  * on the grid via enumerated identification.
  */
 public class PacManGameGrid {
-
     // grid constants
     private final int X_LEFT;
     private final int Y_TOP;
     private final int X_RIGHT;
     private final int Y_BOTTOM;
+    // overestimated maximal distance between any 2 given locations
+    public final int INF;
 
     // number of horizontal cells of the grid
     private final int NUM_HORIZONTAL_CELLS;
@@ -21,15 +22,23 @@ public class PacManGameGrid {
     // the grid data structure, represented by a 2-dimensional array of blocks
     private final BlockType[][] MAZE_ARRAY;
 
+    // character representing specific block
+    private static final char WALL_CHAR = 'x';
+    private static final char SPACE_CHAR = ' ';
+    private static final char PILL_CHAR = '.';
+    private static final char GOLD_CHAR = 'g';
+    private static final char ICE_CHAR = 'i';
+
+
     /**
      * Enumerated block, or inanimate objects, type. This includes
      * <ul>
-     *     <li>wall  - obstructed block which cannot be bypassed
-     *     <li>pill  - the pill item required to be eaten by pacman to win
-     *     <li>space - the empty space
-     *     <li>gold  - the gold piece required to be eaten, but also aggravates monsters
-     *     <li>ice   - the ice piece not required to be eaten, but freezes monsters
-     *     <li>error - error block (nonexistent)
+     *     <li>WALL  - obstructed block which cannot be bypassed
+     *     <li>PILL  - the pill item required to be eaten by pacman to win
+     *     <li>SPACE - the empty space
+     *     <li>GOLD  - the gold piece required to be eaten, but also aggravates monsters
+     *     <li>ICE   - the ice piece not required to be eaten, but freezes monsters
+     *     <li>ERROR - error block (nonexistent)
      * </ul>
      */
     public enum BlockType {
@@ -45,6 +54,7 @@ public class PacManGameGrid {
     public PacManGameGrid(int numHorizontalCells, int numVerticalCells) {
         this.NUM_HORIZONTAL_CELLS = numHorizontalCells;
         this.NUM_VERTICAL_CELLS = numVerticalCells;
+        this.INF = numHorizontalCells + numVerticalCells;
 
         // Setup grid border
         X_LEFT   = 0;
@@ -160,12 +170,12 @@ public class PacManGameGrid {
      */
     private BlockType toType(char c) {
         return switch (c) {
-            case 'x' -> BlockType.WALL;
-            case '.' -> BlockType.PILL;
-            case ' ' -> BlockType.SPACE;
-            case 'g' -> BlockType.GOLD;
-            case 'i' -> BlockType.ICE;
-            default  -> BlockType.ERROR;
+            case WALL_CHAR  -> BlockType.WALL;
+            case PILL_CHAR  -> BlockType.PILL;
+            case GOLD_CHAR  -> BlockType.GOLD;
+            case ICE_CHAR   -> BlockType.ICE;
+            case SPACE_CHAR -> BlockType.SPACE;
+            default         -> BlockType.ERROR;
         };
     }
 }

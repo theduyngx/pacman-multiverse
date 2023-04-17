@@ -8,21 +8,29 @@ import java.util.*;
  * Based on skeleton code for SWEN20003 Project, Semester 2, 2022, The University of Melbourne.
  * PacActor class extended from abstract LiveActor class, implementing a key repeat listener interface.
  * The latter is so that the game responds to player's input.
- * (WIP) - too messy and poorly coded for not. Need some work done.
  * @see LiveActor
  * @see GGKeyRepeatListener
  * @see ObjectManager
  */
 public class PacActor extends LiveActor implements GGKeyRepeatListener {
-    private static final int INF = 1000;
+    // properties
     private static final int NB_SPRITES = 4;
     private static final String DIRECTORY = "sprites/pacpix.gif";
+    private static final String PACMAN_NAME = "PacMan";
     private int idSprite = 0;
     private int nbPills = 0;
     private int score = 0;
+
+    // properties related to sequence of moves for pacman in auto mode
     private List<String> propertyMoves = new ArrayList<>();
     private int propertyMoveIndex = 0;
+    // if pacman is in auto mode
     private boolean isAuto = false;
+
+    // direction related
+    private static final String RIGHT_DIR = "R";
+    private static final String LEFT_DIR = "L";
+    private static final String MOVE_DIR = "M";
 
 
     /**
@@ -32,6 +40,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     public PacActor(ObjectManager manager) {
         super(manager, true, DIRECTORY, NB_SPRITES);
         assert manager != null;
+        setName(PACMAN_NAME);
     }
 
     /**
@@ -128,18 +137,18 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         else {
             int sign = RANDOMIZER.nextDouble() < 0.5 ? 1 : -1;
             setDirection(oldDirection);
-            turn(sign * 90);                // Try to turn left/right
+            turn(sign * RIGHT_TURN_ANGLE); // Try to turn left/right
             next = getNextMoveLocation();
             if (! canMove(next)) {
                 setDirection(oldDirection);
-                next = getNextMoveLocation();     // Try to move forward
+                next = getNextMoveLocation(); // Try to move forward
                 if (! canMove(next)) {
                     setDirection(oldDirection);
-                    turn(-sign * 90);       // Try to turn right/left
+                    turn(sign * LEFT_TURN_ANGLE); // Try to turn right/left
                     next = getNextMoveLocation();
                     if (! canMove(next)) {
                         setDirection(oldDirection);
-                        turn(180);          // Turn backward
+                        turn(BACK_TURN_ANGLE); // Turn backward
                         next = getNextMoveLocation();
                     }
                 }
@@ -162,9 +171,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         if (manager.getItems().containsKey(hashLocation)) {
             Item item = manager.getItems().get(hashLocation);
 
-            // check of which type
-            String itemType = (item instanceof Pill) ? "pills" :
-                              (item instanceof Gold) ? "gold"  : "ice";
+            // add score (WIP - this shouldn't even be in here)
             if (! (item instanceof Ice)) nbPills++;
             score += item.getScore();
             getManager().decrementNumPillAndGold(item);
@@ -172,7 +179,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             // signals the manager and removes itself
             item.signalManager(manager);
             getBackground().fillCell(location, Game.COLOR_SPACE);
-            getGameCallback().pacManEatPillsAndItems(location, itemType);
+            getGameCallback().pacManEatPillsAndItems(location, item.getName());
             item.removeItem(manager);
         }
         String title = "[PacMan in the Multiverse] Current score: " + score;
@@ -196,7 +203,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      * @see    Location
      */
     private Location closestPillLocation() {
-        int currentDistance = INF;
+        int currentDistance = getManager().getGame().getGrid().INF; // set distance to infinity
         Location currentLocation = null;
         for (Map.Entry<HashableLocation, Item> entry : getManager().getItems().entrySet()) {
             Item item = entry.getValue();
@@ -219,9 +226,9 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     private void followPropertyMoves() {
         String currentMove = propertyMoves.get(propertyMoveIndex);
         switch (currentMove) {
-            case "R" -> turn(90);
-            case "L" -> turn(-90);
-            case "M" -> {
+            case RIGHT_DIR -> turn(RIGHT_TURN_ANGLE);
+            case LEFT_DIR  -> turn(LEFT_TURN_ANGLE);
+            case MOVE_DIR  -> {
                 Location next = getNextMoveLocation();
                 if (canMove(next)) {
                     setLocation(next);

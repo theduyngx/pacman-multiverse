@@ -9,6 +9,7 @@ import java.util.*;
  * their instantiations and locations. Anything that has to do with checking every actor for a specific
  * task uniformly will be a responsibility of ObjectManager, since it has access to all Actors, as well as
  * other grid-related objects.
+ * <p>
  * As such, ObjectManager can be frequently used to deal with a specific Actor checking the 'state' of
  * every other actor.
  * @see Game
@@ -22,7 +23,6 @@ public class ObjectManager {
     // PacMan
     private PacActor pacActor;
     // hashmap of monsters with their initial location as key
-    // private final HashMap<HashableLocation, Monster> monsters;
     private final ArrayList<Monster> MONSTERS;
     // hashmap of all items with their location as key
     private final HashMap<HashableLocation, Item> ITEMS;
@@ -47,7 +47,6 @@ public class ObjectManager {
         assert game != null;
         this.GAME = game;
         this.GAME_CALLBACK = new GameCallback();
-        // this.monsters = new HashMap<>();
         this.MONSTERS = new ArrayList<>();
         this.ITEMS = new HashMap<>();
         this.WALLS = new HashMap<>();
@@ -136,62 +135,131 @@ public class ObjectManager {
             numPillsAndGold--;
     }
 
+
     /**
-     * Parse properties that do not require an Actor instantiation.
+     * Parse properties that do not relate to a live actor instantiation. This includes the seed, edible
+     * items, among others available in the properties file.
      * @param properties the specified properties
      * @see   Properties
      */
-    public void parseProperties(Properties properties) {
+    public void parseInanimateActor(Properties properties) {
         seed = Integer.parseInt(properties.getProperty("seed"));
         isMultiverse = properties.getProperty("version").contains("multiverse");
 
-        // parse pacman
-        pacActor.setPropertyMoves(properties.getProperty("PacMan.move"));
-        pacActor.setAuto(Boolean.parseBoolean(properties.getProperty("PacMan.isAuto")));
-        String[] pacManLocations = properties.getProperty("PacMan.location").split(",");
-        int pacManX = Integer.parseInt(pacManLocations[0]);
-        int pacManY = Integer.parseInt(pacManLocations[1]);
-        pacActor.setInitLocation(new Location(pacManX, pacManY));
+        // concern only about locations of edible items
+        ArrayList<PacManGameGrid.BlockType> blockTypes =
+                new ArrayList<>(Arrays.asList(PacManGameGrid.BlockType.values()));
 
-        // parse the pill locations if there is pill location
-        if (properties.containsKey("Pill.location")) {
-            String[] pillLocations = properties.getProperty("Pills.location").split(";");
-            for (String pL : pillLocations) {
-                String[] pos = pL.split(",");
-                int posX = Integer.parseInt(pos[0]);
-                int posY = Integer.parseInt(pos[1]);
-                Location location = new Location(posX, posY);
-                Pill pill = new Pill();
-                HashableLocation.putLocationHash(ITEMS, location, pill);
-                getGame().getGrid().setCell(location, PacManGameGrid.BlockType.PILL);
-                numPillsAndGold++;
-            }
-        }
+        // for each of said item type
+        for (PacManGameGrid.BlockType blockType : blockTypes) {
+            String name = blockType.toString();
+            String property_name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
 
-        // parse the gold locations if there is gold location
-        if (properties.containsKey("Gold.location")) {
-            String[] goldLocations = properties.getProperty("Gold.location").split(";");
-            for (String gL : goldLocations) {
-                String[] pos = gL.split(",");
-                int posX = Integer.parseInt(pos[0]);
-                int posY = Integer.parseInt(pos[1]);
-                Location location = new Location(posX, posY);
-                Gold gold = new Gold();
-                HashableLocation.putLocationHash(ITEMS, location, gold);
-                getGame().getGrid().setCell(location, PacManGameGrid.BlockType.GOLD);
-                numPillsAndGold++;
+            // we check if item is included in properties file
+            if (properties.containsKey(property_name)) {
+                String[] itemLocations = properties.getProperty(property_name).split(";");
+
+                // parse its locations
+                for (String pL : itemLocations) {
+                    String[] pos = pL.split(",");
+                    int posX = Integer.parseInt(pos[0]);
+                    int posY = Integer.parseInt(pos[1]);
+                    Location location = new Location(posX, posY);
+                    Item item = switch(blockType) {
+                        case PILL -> new Pill();
+                        case GOLD -> new Gold();
+                        case ICE  -> new Ice();
+                        default   -> null;
+                    };
+
+                    // if null, then it is not an item
+                    if (item == null) continue;
+
+                    // add to item hashmaps and set game grid's cell
+                    HashableLocation.putLocationHash(ITEMS, location, item);
+                    getGame().getGrid().setCell(location, blockType);
+                    if (blockType == PacManGameGrid.BlockType.PILL || blockType == PacManGameGrid.BlockType.GOLD)
+                        numPillsAndGold++;
+                }
             }
         }
     }
 
+
     /**
      * Instantiate the pacman actor. Called in Game constructor.
-     * @see PacActor
+     * @param properties properties to parse for pacman
+     * @see   Properties
+     * @see   PacActor
      */
-    protected void instantiatePacActor() {
-        this.pacActor = new PacActor(this);
+    protected void instantiatePacActor(Properties properties) {
+        // instantiate pacman
+        pacActor = new PacActor(this);
         pacActor.setSeed(seed);
         pacActor.setSlowDown(LiveActor.SLOW_DOWN);
+
+        // parse pacman
+        pacActor.setPropertyMoves(properties.getProperty(
+                pacActor.getName() +
+                src.utility.PropertiesLoader.MOVE_EXTENSION)
+        );
+        pacActor.setAuto(Boolean.parseBoolean(properties.getProperty(
+                pacActor.getName() +
+                src.utility.PropertiesLoader.AUTO_EXTENSION))
+        );
+        String[] pacManLocations = properties.getProperty(
+                pacActor.getName() +
+                src.utility.PropertiesLoader.LOCATION_EXTENSION
+        ).split(",");
+        int pacManX = Integer.parseInt(pacManLocations[0]);
+        int pacManY = Integer.parseInt(pacManLocations[1]);
+        pacActor.setInitLocation(new Location(pacManX, pacManY));
+    }
+
+
+    /**
+     * Instantiating monsters. Called in Game constructor.
+     * @param properties properties to parse for monsters
+     * @see   Properties
+     */
+    protected void instantiateMonsters(Properties properties) {
+        // for each monster type
+        ArrayList<Monster.MonsterType> types = new ArrayList<>(Arrays.asList(Monster.MonsterType.values()));
+        for (Monster.MonsterType type : types) {
+            // check if monster type is valid (as in, if type only exists in multiverse but property
+            // states otherwise, then we ignore)
+            if (type.inMultiverse && !isMultiverse) continue;
+            String name = type.toString();
+            String property_name = name + src.utility.PropertiesLoader.LOCATION_EXTENSION;
+
+            // valid entry
+            if (properties.containsKey(property_name) && !properties.getProperty(property_name).equals("")) {
+                String[] locations = properties.getProperty(property_name).split(";");
+
+                // get all locations of monster
+                for (String loc : locations) {
+                    String[] pos = loc.split(",");
+                    int posX = Integer.parseInt(pos[0]);
+                    int posY = Integer.parseInt(pos[1]);
+                    Location location = new Location(posX, posY);
+                    Monster monster = switch(type) {
+                        case TX5    -> new TX5(this);
+                        case Troll  -> new Troll(this);
+                        case Orion  -> new Orion(this);
+                        case Alien  -> new Alien(this);
+                        case Wizard -> new Wizard(this);
+                    };
+
+                    // set location and add itself to monster list
+                    monster.setInitLocation(location);
+                    this.MONSTERS.add(monster);
+
+                    /// SET SEED AND SLOW DOWN TO REDUCE GAME DIFFICULTY
+                    monster.setSeed(seed);
+                    monster.setSlowDown(LiveActor.SLOW_DOWN);
+                }
+            }
+        }
     }
 
 
@@ -229,59 +297,12 @@ public class ObjectManager {
             }
     }
 
-    /**
-     * Instantiating monsters. Called in Game constructor.
-     * @param properties properties to parse for monsters
-     * @see   Properties
-     */
-    protected void instantiateMonsters(Properties properties) {
-        // for each monster type
-        ArrayList<Monster.MonsterType> types = new ArrayList<>(Arrays.asList(Monster.MonsterType.values()));
-        for (Monster.MonsterType type : types) {
-            // check if monster type is valid (as in, if type only exists in multiverse but property
-            // states otherwise, then we ignore)
-            if (type.inMultiverse && !isMultiverse) continue;
-            String name = type.toString();
-            String property_name = name + ".location";
-
-            // valid entry
-            if (properties.containsKey(property_name) && !properties.getProperty(property_name).equals("")) {
-                String[] locations = properties.getProperty(property_name).split(";");
-
-                // get all locations of monster
-                for (String loc : locations) {
-                    String[] pos = loc.split(",");
-                    int posX = Integer.parseInt(pos[0]);
-                    int posY = Integer.parseInt(pos[1]);
-                    Location location = new Location(posX, posY);
-                    Monster monster = switch(type) {
-                        case TX5    -> new TX5(this);
-                        case Troll  -> new Troll(this);
-                        case Orion  -> new Orion(this);
-                        case Alien  -> new Alien(this);
-                        case Wizard -> new Wizard(this);
-                    };
-
-                    // set location and add itself to monster list
-                    monster.setInitLocation(location);
-                    this.MONSTERS.add(monster);
-
-                    /// SET SEED AND SLOW DOWN TO REDUCE GAME DIFFICULTY
-                    monster.setSeed(seed);
-                    monster.setSlowDown(LiveActor.SLOW_DOWN);
-                    if (type == Monster.MonsterType.TX5)
-                        monster.stopMoving(5);
-                }
-            }
-        }
-    }
 
     /**
      * Set all monsters to stop moving; used when game is over (win/lose condition is met).
      * @see Monster
      */
     protected void setMonstersStopMoving() {
-        // for (Monster monster : getMonsters().values())
         for (Monster monster: MONSTERS)
             monster.setStopMoving(true);
     }

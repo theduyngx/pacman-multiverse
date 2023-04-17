@@ -14,6 +14,7 @@ public class TX5 extends Monster {
     // Required variables for super constructor
     public static final int NUM_TX5_IMAGES = 1;
     public static final String DIRECTORY = "sprites/m_tx5.gif";
+    private static final int INIT_STOP_TIME = 5;
 
     /**
      * TX5 Constructor
@@ -23,6 +24,8 @@ public class TX5 extends Monster {
         super(manager, false, DIRECTORY, NUM_TX5_IMAGES);
         assert manager != null;
         setType(TYPE);
+        // TX5 is special in that it sets itself to not move initially
+        this.stopMoving(INIT_STOP_TIME);
     }
 
     /**
@@ -48,7 +51,7 @@ public class TX5 extends Monster {
         else {
             double sign = this.RANDOMIZER.nextDouble();
             this.setDirection(oldDirection);
-            this.turn(sign*90);
+            this.turn(sign*RIGHT_TURN_ANGLE);
             next = this.getNextMoveLocation();
 
             // Check if we can turn this direction
@@ -58,7 +61,7 @@ public class TX5 extends Monster {
             // Otherwise just turn backwards
             else {
                 this.setDirection(oldDirection);
-                this.turn(180);
+                this.turn(BACK_TURN_ANGLE);
                 next = this.getNextMoveLocation();
                 this.setLocation(next);
             }

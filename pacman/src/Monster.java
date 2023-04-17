@@ -12,6 +12,13 @@ public abstract class Monster extends LiveActor {
     /**
      * Monster type enumeration. Each monster type has a boolean value indicating whether it is exclusive
      * to the extended multiverse game or not.
+     * <ul>
+     *     <li>Troll  - not exclusive to multiverse
+     *     <li>TX5    - not exclusive to multiverse
+     *     <li>Alien  - exclusive to multiverse
+     *     <li>Orion  - exclusive to multiverse
+     *     <li>Wizard - exclusive to multiverse
+     * </ul>
      */
     public enum MonsterType {
         Troll(false),
@@ -122,7 +129,9 @@ public abstract class Monster extends LiveActor {
     public void act() {
         if (stopMoving) return;
         moveApproach();
-        boolean enable = getDirection() > 150 && getDirection() < 210;
+        int DIRECTION_EXCEED = 150;
+        int DIRECTION_PRECEDE = 210;
+        boolean enable = getDirection() > DIRECTION_EXCEED && getDirection() < DIRECTION_PRECEDE;
         setHorzMirror(!enable);
 
         // Record changes in position to game
@@ -135,8 +144,8 @@ public abstract class Monster extends LiveActor {
      */
     protected void addVisitedList(Location location) {
         visitedList.add(location);
-        int listLength = 10;
-        if (visitedList.size() == listLength)
+        int LIST_LENGTH = 10;
+        if (visitedList.size() == LIST_LENGTH)
             visitedList.remove(0);
     }
 

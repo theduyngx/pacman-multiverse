@@ -20,6 +20,11 @@ public abstract class LiveActor extends Actor {
     // initial location for actor instantiation
     private Location initLocation;
 
+    // direction-related - representing which angle to turn to for a move
+    public static final int RIGHT_TURN_ANGLE = 90;
+    public static final int LEFT_TURN_ANGLE = -RIGHT_TURN_ANGLE;
+    public static final int BACK_TURN_ANGLE = 2 * RIGHT_TURN_ANGLE;
+
     // other properties
     private String name;
     public static final int SLOW_DOWN = 3;

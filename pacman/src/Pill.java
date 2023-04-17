@@ -13,6 +13,7 @@ public class Pill extends Item {
     // properties
     private static final String DIRECTORY = "sprites/ice.png";
     private static final int PILL_SCORE = 1;
+    private static final String PILL_NAME = "pill";
 
     /**
      * Constructor for Pill. It will set its own score, and call Item's constructor with its own
@@ -21,6 +22,7 @@ public class Pill extends Item {
     public Pill() {
         super(DIRECTORY);
         setScore(PILL_SCORE);
+        setName(PILL_NAME);
     }
 
     /**

@@ -6,6 +6,14 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class PropertiesLoader {
+    // properties location entry extension (for representing an object's location in properties file)
+    public static final String LOCATION_EXTENSION = ".location";
+    // properties move entry extension (for representing PacMan's move sequence in properties file)
+    public static final String MOVE_EXTENSION = ".move";
+    // properties entry extension (for representing an object's location in properties file)
+    public static final String AUTO_EXTENSION = ".auto";
+
+
     public static Properties loadPropertiesFile(String propertiesFile) {
         try (InputStream input = new FileInputStream(propertiesFile)) {
             Properties prop = new Properties();
