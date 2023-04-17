@@ -91,7 +91,7 @@ public class Orion extends Monster {
                 int currIndex = this.RANDOMIZER.nextInt(0, directions.length);
                 Location.CompassDirection dir = directions[currIndex];
                 Location newLocation = this.getLocation().getNeighbourLocation(dir);
-                if (this.canMove(newLocation) && dir.getDirection()%10 == 0) {
+                if (this.canMove(newLocation) && dir.getDirection() % 10 == 0) {
                     toMove = newLocation;
                     break;
                 }

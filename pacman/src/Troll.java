@@ -34,7 +34,7 @@ public class Troll extends Monster {
         // Should be int but I don't know what happened
         double sign = this.RANDOMIZER.nextDouble();
         this.setDirection(oldDirection);
-        this.turn(sign*90);
+        this.turn(sign*RIGHT_TURN_ANGLE);
 
         Location next = getNextMoveLocation();
 
@@ -46,7 +46,7 @@ public class Troll extends Monster {
         else {
             // Check if you can go the opposite turn, either left or right
             this.setDirection(oldDirection);
-            this.turn(-sign*90);
+            this.turn(sign*LEFT_TURN_ANGLE);
             next = this.getNextMoveLocation();
 
             if (this.canMove(next))
@@ -55,7 +55,7 @@ public class Troll extends Monster {
             // If nothing really worked, just go backwards
             else {
                 this.setDirection(oldDirection);
-                this.turn(180);
+                this.turn(BACK_TURN_ANGLE);
                 next = this.getNextMoveLocation();
                 this.setLocation(next);
             }

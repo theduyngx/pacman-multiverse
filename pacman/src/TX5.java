@@ -51,7 +51,7 @@ public class TX5 extends Monster {
         else {
             double sign = this.RANDOMIZER.nextDouble();
             this.setDirection(oldDirection);
-            this.turn(sign*90);
+            this.turn(sign*RIGHT_TURN_ANGLE);
             next = this.getNextMoveLocation();
 
             // Check if we can turn this direction
@@ -61,7 +61,7 @@ public class TX5 extends Monster {
             // Otherwise just turn backwards
             else {
                 this.setDirection(oldDirection);
-                this.turn(180);
+                this.turn(BACK_TURN_ANGLE);
                 next = this.getNextMoveLocation();
                 this.setLocation(next);
             }

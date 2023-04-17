@@ -129,7 +129,9 @@ public abstract class Monster extends LiveActor {
     public void act() {
         if (stopMoving) return;
         moveApproach();
-        boolean enable = getDirection() > 150 && getDirection() < 210;
+        int DIRECTION_EXCEED = 150;
+        int DIRECTION_PRECEDE = 210;
+        boolean enable = getDirection() > DIRECTION_EXCEED && getDirection() < DIRECTION_PRECEDE;
         setHorzMirror(!enable);
 
         // Record changes in position to game
@@ -142,8 +144,8 @@ public abstract class Monster extends LiveActor {
      */
     protected void addVisitedList(Location location) {
         visitedList.add(location);
-        int listLength = 10;
-        if (visitedList.size() == listLength)
+        int LIST_LENGTH = 10;
+        if (visitedList.size() == LIST_LENGTH)
             visitedList.remove(0);
     }
 

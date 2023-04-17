@@ -31,9 +31,6 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     private static final String RIGHT_DIR = "R";
     private static final String LEFT_DIR = "L";
     private static final String MOVE_DIR = "M";
-    private static final int RIGHT_TURN_ANGLE = 90;
-    private static final int LEFT_TURN_ANGLE = -RIGHT_TURN_ANGLE;
-    private static final int BACK_TURN_ANGLE = 2 * RIGHT_TURN_ANGLE;
 
 
     /**
