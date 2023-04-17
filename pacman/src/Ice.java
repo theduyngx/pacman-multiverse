@@ -11,6 +11,7 @@ public class Ice extends Item {
     private static final int FREEZE_TIME = 3;
     private static final String DIRECTORY = "sprites/ice.png";
     private static final int ICE_SCORE = 0;
+    private static final String ICE_NAME = "ice";
 
     /**
      * Constructor for Ice. It will set its own score, and call Item's constructor with its own
@@ -19,6 +20,7 @@ public class Ice extends Item {
     public Ice() {
         super(DIRECTORY);
         setScore(ICE_SCORE);
+        setName(ICE_NAME);
     }
 
     /**

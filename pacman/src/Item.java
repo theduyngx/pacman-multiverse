@@ -15,6 +15,8 @@ public abstract class Item extends Actor {
     public static final int RADIUS = 5 * Game.STRETCH_RATE;
     // the score that would be acquired if eaten by PacMan
     private int score;
+    // item's name
+    private String name;
 
     /**
      * Item constructor.
@@ -41,6 +43,14 @@ public abstract class Item extends Actor {
     }
 
     /**
+     * Get the item's name. Used for printing to log in game callback.
+     * @return the item's name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
      * Get the score acquired by eating the item.
      * @return acquired score
      */
@@ -54,6 +64,14 @@ public abstract class Item extends Actor {
      */
     protected void setScore(int score) {
         this.score = score;
+    }
+
+    /**
+     * Set the item's name.
+     * @param name item's name
+     */
+    protected void setName(String name) {
+        this.name = name;
     }
 
     /**

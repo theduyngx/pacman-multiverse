@@ -11,6 +11,7 @@ public class Gold extends Item {
     // properties
     private static final String DIRECTORY = "sprites/gold.png";
     private static final int GOLD_SCORE = 5;
+    private static final String GOLD_NAME = "gold";
 
     /**
      * Constructor for Gold. It will set its own score, and call Item's constructor with its own
@@ -19,6 +20,7 @@ public class Gold extends Item {
     public Gold() {
         super(DIRECTORY);
         setScore(GOLD_SCORE);
+        setName(GOLD_NAME);
     }
 
     /**
