@@ -9,6 +9,7 @@ import java.util.*;
  * their instantiations and locations. Anything that has to do with checking every actor for a specific
  * task uniformly will be a responsibility of ObjectManager, since it has access to all Actors, as well as
  * other grid-related objects.
+ * <p>
  * As such, ObjectManager can be frequently used to deal with a specific Actor checking the 'state' of
  * every other actor.
  * @see Game
@@ -22,7 +23,6 @@ public class ObjectManager {
     // PacMan
     private PacActor pacActor;
     // hashmap of monsters with their initial location as key
-    // private final HashMap<HashableLocation, Monster> monsters;
     private final ArrayList<Monster> MONSTERS;
     // hashmap of all items with their location as key
     private final HashMap<HashableLocation, Item> ITEMS;
@@ -47,7 +47,6 @@ public class ObjectManager {
         assert game != null;
         this.GAME = game;
         this.GAME_CALLBACK = new GameCallback();
-        // this.monsters = new HashMap<>();
         this.MONSTERS = new ArrayList<>();
         this.ITEMS = new HashMap<>();
         this.WALLS = new HashMap<>();
@@ -195,14 +194,23 @@ public class ObjectManager {
      */
     protected void instantiatePacActor(Properties properties) {
         // instantiate pacman
-        this.pacActor = new PacActor(this);
+        pacActor = new PacActor(this);
         pacActor.setSeed(seed);
         pacActor.setSlowDown(LiveActor.SLOW_DOWN);
 
         // parse pacman
-        pacActor.setPropertyMoves(properties.getProperty("PacMan.move"));
-        pacActor.setAuto(Boolean.parseBoolean(properties.getProperty("PacMan.isAuto")));
-        String[] pacManLocations = properties.getProperty("PacMan.location").split(",");
+        pacActor.setPropertyMoves(properties.getProperty(
+                pacActor.getName() +
+                src.utility.PropertiesLoader.MOVE_EXTENSION)
+        );
+        pacActor.setAuto(Boolean.parseBoolean(properties.getProperty(
+                pacActor.getName() +
+                src.utility.PropertiesLoader.AUTO_EXTENSION))
+        );
+        String[] pacManLocations = properties.getProperty(
+                pacActor.getName() +
+                src.utility.PropertiesLoader.LOCATION_EXTENSION
+        ).split(",");
         int pacManX = Integer.parseInt(pacManLocations[0]);
         int pacManY = Integer.parseInt(pacManLocations[1]);
         pacActor.setInitLocation(new Location(pacManX, pacManY));
@@ -222,7 +230,7 @@ public class ObjectManager {
             // states otherwise, then we ignore)
             if (type.inMultiverse && !isMultiverse) continue;
             String name = type.toString();
-            String property_name = name + ".location";
+            String property_name = name + src.utility.PropertiesLoader.LOCATION_EXTENSION;
 
             // valid entry
             if (properties.containsKey(property_name) && !properties.getProperty(property_name).equals("")) {
@@ -295,7 +303,6 @@ public class ObjectManager {
      * @see Monster
      */
     protected void setMonstersStopMoving() {
-        // for (Monster monster : getMonsters().values())
         for (Monster monster: MONSTERS)
             monster.setStopMoving(true);
     }
