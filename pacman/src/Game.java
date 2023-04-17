@@ -51,8 +51,8 @@ public class Game extends GameGrid {
         this.manager = new ObjectManager(this);
 
         // parse properties and instantiate objects
-        manager.instantiatePacActor();
-        manager.parseProperties(properties);
+        manager.parseInanimateActor(properties);
+        manager.instantiatePacActor(properties);
         manager.instantiateObjects(GRID);
 
         // instantiate actors

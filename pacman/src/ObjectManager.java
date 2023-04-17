@@ -136,14 +136,68 @@ public class ObjectManager {
             numPillsAndGold--;
     }
 
+
     /**
-     * Parse properties that do not require an Actor instantiation.
+     * Parse properties that do not relate to a live actor instantiation. This includes the seed, edible
+     * items, among others available in the properties file.
      * @param properties the specified properties
      * @see   Properties
      */
-    public void parseProperties(Properties properties) {
+    public void parseInanimateActor(Properties properties) {
         seed = Integer.parseInt(properties.getProperty("seed"));
         isMultiverse = properties.getProperty("version").contains("multiverse");
+
+        // concern only about locations of edible items
+        ArrayList<PacManGameGrid.BlockType> blockTypes =
+                new ArrayList<>(Arrays.asList(PacManGameGrid.BlockType.values()));
+
+        // for each of said item type
+        for (PacManGameGrid.BlockType blockType : blockTypes) {
+            String name = blockType.toString();
+            String property_name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+
+            // we check if item is included in properties file
+            if (properties.containsKey(property_name)) {
+                String[] itemLocations = properties.getProperty(property_name).split(";");
+
+                // parse its locations
+                for (String pL : itemLocations) {
+                    String[] pos = pL.split(",");
+                    int posX = Integer.parseInt(pos[0]);
+                    int posY = Integer.parseInt(pos[1]);
+                    Location location = new Location(posX, posY);
+                    Item item = switch(blockType) {
+                        case PILL -> new Pill();
+                        case GOLD -> new Gold();
+                        case ICE  -> new Ice();
+                        default   -> null;
+                    };
+
+                    // if null, then it is not an item
+                    assert item != null;
+
+                    // add to item hashmaps and set game grid's cell
+                    HashableLocation.putLocationHash(ITEMS, location, item);
+                    getGame().getGrid().setCell(location, blockType);
+                    if (blockType == PacManGameGrid.BlockType.PILL || blockType == PacManGameGrid.BlockType.GOLD)
+                        numPillsAndGold++;
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Instantiate the pacman actor. Called in Game constructor.
+     * @param properties properties to parse for pacman
+     * @see   Properties
+     * @see   PacActor
+     */
+    protected void instantiatePacActor(Properties properties) {
+        // instantiate pacman
+        this.pacActor = new PacActor(this);
+        pacActor.setSeed(seed);
+        pacActor.setSlowDown(LiveActor.SLOW_DOWN);
 
         // parse pacman
         pacActor.setPropertyMoves(properties.getProperty("PacMan.move"));
@@ -152,82 +206,8 @@ public class ObjectManager {
         int pacManX = Integer.parseInt(pacManLocations[0]);
         int pacManY = Integer.parseInt(pacManLocations[1]);
         pacActor.setInitLocation(new Location(pacManX, pacManY));
-
-        // parse the pill locations if there is pill location
-        if (properties.containsKey("Pill.location")) {
-            String[] pillLocations = properties.getProperty("Pills.location").split(";");
-            for (String pL : pillLocations) {
-                String[] pos = pL.split(",");
-                int posX = Integer.parseInt(pos[0]);
-                int posY = Integer.parseInt(pos[1]);
-                Location location = new Location(posX, posY);
-                Pill pill = new Pill();
-                HashableLocation.putLocationHash(ITEMS, location, pill);
-                getGame().getGrid().setCell(location, PacManGameGrid.BlockType.PILL);
-                numPillsAndGold++;
-            }
-        }
-
-        // parse the gold locations if there is gold location
-        if (properties.containsKey("Gold.location")) {
-            String[] goldLocations = properties.getProperty("Gold.location").split(";");
-            for (String gL : goldLocations) {
-                String[] pos = gL.split(",");
-                int posX = Integer.parseInt(pos[0]);
-                int posY = Integer.parseInt(pos[1]);
-                Location location = new Location(posX, posY);
-                Gold gold = new Gold();
-                HashableLocation.putLocationHash(ITEMS, location, gold);
-                getGame().getGrid().setCell(location, PacManGameGrid.BlockType.GOLD);
-                numPillsAndGold++;
-            }
-        }
     }
 
-    /**
-     * Instantiate the pacman actor. Called in Game constructor.
-     * @see PacActor
-     */
-    protected void instantiatePacActor() {
-        this.pacActor = new PacActor(this);
-        pacActor.setSeed(seed);
-        pacActor.setSlowDown(LiveActor.SLOW_DOWN);
-    }
-
-
-    /**
-     * Instantiate the items in the grid and put them in their respective hashmaps. Called in Game constructor.
-     * @param grid the game grid so that the items can be drawn onto
-     * @see   PacManGameGrid
-     */
-    protected void instantiateObjects(PacManGameGrid grid) {
-        for (int col = 0; col < grid.getNumVerticalCells(); col++)
-            for (int row = 0; row < grid.getNumHorizontalCells(); row++) {
-                PacManGameGrid.BlockType itemType = grid.getMazeArray()[col][row];
-
-                // ignore if location is already occupied
-                Location location = new Location(row, col);
-                if (HashableLocation.containLocationHash(ITEMS, location)) continue;
-
-                // otherwise add
-                switch (itemType) {
-                    case PILL -> {
-                        Pill pill = new Pill();
-                        HashableLocation.putLocationHash(ITEMS, location, pill);
-                        numPillsAndGold++;
-                    }
-                    case GOLD -> {
-                        Gold gold = new Gold();
-                        HashableLocation.putLocationHash(ITEMS, location, gold);
-                        numPillsAndGold++;
-                    }
-                    case ICE -> {
-                        Ice ice = new Ice();
-                        HashableLocation.putLocationHash(ITEMS, location, ice);
-                    }
-                }
-            }
-    }
 
     /**
      * Instantiating monsters. Called in Game constructor.
@@ -269,12 +249,46 @@ public class ObjectManager {
                     /// SET SEED AND SLOW DOWN TO REDUCE GAME DIFFICULTY
                     monster.setSeed(seed);
                     monster.setSlowDown(LiveActor.SLOW_DOWN);
-                    if (type == Monster.MonsterType.TX5)
-                        monster.stopMoving(5);
                 }
             }
         }
     }
+
+
+    /**
+     * Instantiate the items in the grid and put them in their respective hashmaps. Called in Game constructor.
+     * @param grid the game grid so that the items can be drawn onto
+     * @see   PacManGameGrid
+     */
+    protected void instantiateObjects(PacManGameGrid grid) {
+        for (int col = 0; col < grid.getNumVerticalCells(); col++)
+            for (int row = 0; row < grid.getNumHorizontalCells(); row++) {
+                PacManGameGrid.BlockType itemType = grid.getMazeArray()[col][row];
+
+                // ignore if location is already occupied
+                Location location = new Location(row, col);
+                if (HashableLocation.containLocationHash(ITEMS, location)) continue;
+
+                // otherwise add
+                switch (itemType) {
+                    case PILL -> {
+                        Pill pill = new Pill();
+                        HashableLocation.putLocationHash(ITEMS, location, pill);
+                        numPillsAndGold++;
+                    }
+                    case GOLD -> {
+                        Gold gold = new Gold();
+                        HashableLocation.putLocationHash(ITEMS, location, gold);
+                        numPillsAndGold++;
+                    }
+                    case ICE -> {
+                        Ice ice = new Ice();
+                        HashableLocation.putLocationHash(ITEMS, location, ice);
+                    }
+                }
+            }
+    }
+
 
     /**
      * Set all monsters to stop moving; used when game is over (win/lose condition is met).

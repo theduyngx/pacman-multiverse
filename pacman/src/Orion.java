@@ -146,8 +146,8 @@ public class Orion extends Monster {
     /**
      * This function initializes 2 key maps needed for Orion:
      * <ul>
-     * <li>goldLocations: gold piece locations visited for each walking cycle;
-     * <li>goldPacmanAte: gold pieces Pacman ate already
+     *     <li>goldLocations: gold piece locations visited for each walking cycle;
+     *     <li>goldPacmanAte: gold pieces Pacman ate already
      * </ul>
      */
     private void makeGoldMaps() {

@@ -13,6 +13,8 @@ public class PacManGameGrid {
     private final int Y_TOP;
     private final int X_RIGHT;
     private final int Y_BOTTOM;
+    // overestimated maximal distance between any 2 given locations
+    public final int INF;
 
     // number of horizontal cells of the grid
     private final int NUM_HORIZONTAL_CELLS;
@@ -24,12 +26,12 @@ public class PacManGameGrid {
     /**
      * Enumerated block, or inanimate objects, type. This includes
      * <ul>
-     *     <li>wall  - obstructed block which cannot be bypassed
-     *     <li>pill  - the pill item required to be eaten by pacman to win
-     *     <li>space - the empty space
-     *     <li>gold  - the gold piece required to be eaten, but also aggravates monsters
-     *     <li>ice   - the ice piece not required to be eaten, but freezes monsters
-     *     <li>error - error block (nonexistent)
+     *     <li>WALL  - obstructed block which cannot be bypassed
+     *     <li>PILL  - the pill item required to be eaten by pacman to win
+     *     <li>SPACE - the empty space
+     *     <li>GOLD  - the gold piece required to be eaten, but also aggravates monsters
+     *     <li>ICE   - the ice piece not required to be eaten, but freezes monsters
+     *     <li>ERROR - error block (nonexistent)
      * </ul>
      */
     public enum BlockType {
@@ -45,6 +47,7 @@ public class PacManGameGrid {
     public PacManGameGrid(int numHorizontalCells, int numVerticalCells) {
         this.NUM_HORIZONTAL_CELLS = numHorizontalCells;
         this.NUM_VERTICAL_CELLS = numVerticalCells;
+        this.INF = numHorizontalCells + numVerticalCells;
 
         // Setup grid border
         X_LEFT   = 0;
