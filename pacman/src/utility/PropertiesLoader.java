@@ -11,7 +11,7 @@ public class PropertiesLoader {
     // properties move entry extension (for representing PacMan's move sequence in properties file)
     public static final String MOVE_EXTENSION = ".move";
     // properties entry extension (for representing an object's location in properties file)
-    public static final String AUTO_EXTENSION = ".auto";
+    public static final String AUTO_EXTENSION = ".isAuto";
 
 
     public static Properties loadPropertiesFile(String propertiesFile) {
