@@ -12,7 +12,7 @@ import java.util.Properties;
  * @author Jonathan Chen Jie Kong    - 1263651 (jonathanchen@student.unimelb.edu.au)
  */
 public class Driver {
-    public static final String DEFAULT_PROPERTIES_PATH = "pacman/properties/test1.properties";
+    public static final String DEFAULT_PROPERTIES_PATH = "pacman/properties/test5.properties";
 
     /**
      * Entry point to program.

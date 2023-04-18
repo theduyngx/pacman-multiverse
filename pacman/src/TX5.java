@@ -68,6 +68,6 @@ public class TX5 extends Monster {
         }
 
         // Record changes in position to game
-        this.addVisitedList(next);
+        this.putVisitedLocations(next);
     }
 }

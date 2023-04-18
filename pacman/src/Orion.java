@@ -52,13 +52,13 @@ public class Orion extends Monster {
     }
 
     /**
+     * The Orion's movement approach in game. Overridden from Monster.
      * <ul>
-     * <li>Moves Orion to its next location, based on walking through every gold location randomly;
-     * prioritizing golds that Pacman has yet to eat.</li>
-     * <li>Orion has walk cycles; a walk cycle starts when Orion determines the first gold location to walk to,
-     * and ends when it arrives at its last unvisited gold location.</li>
+     *     <li>Moves Orion to its next location, based on walking through every gold location randomly;
+     *         prioritizing golds that Pacman has yet to eat.
+     *     <li>Orion has walk cycles; a walk cycle starts when Orion determines the first gold location
+     *         to walk to, and ends when it arrives at its last unvisited gold location.
      * </ul>
-     * Overridden from Monster.
      */
     @Override
     protected void moveApproach() {
@@ -124,7 +124,7 @@ public class Orion extends Monster {
         }
 
         // Now when the move has been decided, can move Orion to the desired piece
-        this.addVisitedList(toMove);
+        this.putVisitedLocations(toMove);
         this.setLocation(toMove);
     }
 

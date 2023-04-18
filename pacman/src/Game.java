@@ -93,11 +93,11 @@ public class Game extends GameGrid {
         putMonsters();
 
         // Run the game
-        PacActor pacActor = manager.getPacActor();
         doRun();
         show();
 
         // check win / lose conditions
+        PacActor pacActor = manager.getPacActor();
         boolean hasPacmanEatAllPills, hasPacmanBeenHit;
         putItems(bg);
         do {
@@ -115,7 +115,7 @@ public class Game extends GameGrid {
         if (hasPacmanBeenHit) {
             bg.setPaintColor(COLOR_LOSE);
             title = LOSE_MESSAGE;
-            addActor(new Actor("sprites/explosion3.gif"), loc);
+            addActor(new Actor(PacActor.KILLED_SPRITE), loc);
         }
         else {
             bg.setPaintColor(COLOR_WIN);

@@ -1,7 +1,9 @@
 package src;
-import ch.aplu.jgamegrid.*;
 import src.utility.GameCallback;
 
+import ch.aplu.jgamegrid.*;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Random;
 
 
@@ -19,6 +21,12 @@ public abstract class LiveActor extends Actor {
 
     // initial location for actor instantiation
     private Location initLocation;
+
+    // visited locations
+    private final HashMap<HashableLocation, Boolean> visitedLocations = new HashMap<>();
+    // This is to keep track of indexing - after a cycle, the earliest location will be removed from
+    // visited list. We use LinkedList instead of ArrayList for fast removal and adding.
+    private final LinkedList<Location> visitedList = new LinkedList<>();
 
     // direction-related - representing which angle to turn to for a move
     public static final int RIGHT_TURN_ANGLE = 90;
@@ -83,7 +91,8 @@ public abstract class LiveActor extends Actor {
     }
 
     /**
-     * Get PacMan's initial location to add to game.
+     * Get Live Actor's initial location to add to game. As such, the sole purpose of this method is to
+     * add the actor to the grid.
      * @return the initial location
      * @see    Location
      */
@@ -108,7 +117,10 @@ public abstract class LiveActor extends Actor {
     }
 
     /**
-     * Set initial location for PacMan.
+     * Set initial location for live actor. This method goes hand-in-hand with
+     * <code> Location getInitLocation() </code>, as in its sole purpose is only to add the actor
+     * to the game and its grid. For this reason, it should be expected to only be used once for
+     * each actor.
      * @param initLocation PacMan's initial location
      * @see   Location
      */
@@ -117,7 +129,8 @@ public abstract class LiveActor extends Actor {
     }
 
     /**
-     * Abstract method setting seed for the live actor.
+     * Abstract method setting seed for the live actor. Seed is used for determining the randomizer
+     * which dictates movements of actors.
      * @param seed specified seed
      */
     protected abstract void setSeed(int seed);
@@ -130,7 +143,9 @@ public abstract class LiveActor extends Actor {
 
 
     /**
-     * Check whether a live actor can move to a specified location.
+     * Check whether a live actor can move to a specified location. This is to make sure that the location that
+     * the live actor queries should be a space with no obstacles (like wall blocks), or that it is not out of
+     * bound from the game grid.
      * @param location specified location
      * @return         boolean indicating whether actor can move there.
      * @see            Location
@@ -144,9 +159,51 @@ public abstract class LiveActor extends Actor {
     }
 
     /**
-     * Check if 'this' live actor collides with a specified other or not.
+     * Add location to the hashmap of visited locations.
+     * <ul>
+     *     <li>For monsters, this is used for those that need to remember its visited location within a
+     *         specific cycle so that it avoids returning to a location that it's already visited before.
+     *     <li>For PacMan, this is used specifically for auto movement mode. This is for the same reason
+     *         as monsters with behaviors specified above.
+     * </ul>
+     * @param location current location of monster
+     * @see   Orion
+     * @see   TX5
+     * @see   Troll
+     * @see   PacActor
+     */
+    protected void putVisitedLocations(Location location) {
+        HashableLocation.putLocationHash(visitedLocations, location, true);
+        int LIST_LENGTH = 10;
+        visitedList.add(location);
+        if (visitedLocations.size() == LIST_LENGTH) {
+            HashableLocation.removeLocationHash(visitedLocations, visitedList.getFirst());
+            visitedList.removeFirst();
+        }
+    }
+
+    /**
+     * Check if monster has not visited a specific location. This method is used alongside with
+     * <code> putVisitedLocations(Location location) </code> method, meaning it is only used when
+     * the behavior of the live actor calls for a use of the visited locations hashmap.
+     * @param  location specified location to check if monster has visited
+     * @return          true if monster has yet, false if otherwise
+     * @see    Orion
+     * @see    TX5
+     * @see    Troll
+     * @see    PacActor
+     */
+    protected boolean notVisited(Location location) {
+        return ! HashableLocation.containLocationHash(visitedLocations, location);
+    }
+
+    /**
+     * Check if 'this' live actor collides with a specified other or not. This is used to specifically
+     * determine whether PacMan has collided with a monster. Meaning its main purpose is to check for
+     * Game Over condition.
      * @param other specified other live actor
      * @return      if live actor collides with the other or not
+     * @see         PacActor
      */
     public boolean checkCollision(LiveActor other) {
         return (this.getLocation().equals(other.getLocation()));
