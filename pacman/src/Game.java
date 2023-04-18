@@ -1,170 +1,188 @@
-// PacMan.java
-// Simple PacMan implementation
 package src;
 
 import ch.aplu.jgamegrid.*;
-import src.utility.GameCallback;
-
 import java.awt.*;
 import java.util.Map;
 import java.util.Properties;
 
+
+/**
+ * Based on skeleton code for SWEN20003 Project, Semester 2, 2022, The University of Melbourne.
+ * The Game class is responsible for putting items and actors onto its own grid, as well as running
+ * the game.
+ * @see GameGrid
+ *
+ * @author The Duy Nguyen            - 1100548 (theduyn@student.unimelb.edu.au)
+ * @author Ramon Javier L. Felipe VI - 1233281 (rfelipe@student.unimelb.edu.au)
+ * @author Jonathan Chen Jie Kong    - 1263651 (jonathanchen@student.unimelb.edu.au)
+ */
 public class Game extends GameGrid {
+    // draw grid colors
     public final static Color COLOR_LOSE = Color.red;
     public final static Color COLOR_WIN = Color.yellow;
     public final static Color COLOR_BACKGROUND = Color.white;
+    public final static Color COLOR_WALL = Color.gray;
+    public final static Color COLOR_SPACE = Color.lightGray;
+
+    // win/lose messages
     public final static String LOSE_MESSAGE = "GAME OVER";
     public final static String WIN_MESSAGE = "YOU WIN";
-    private final static int numHorizontalCells = 20;
-    private final static int numVerticalCells = 11;
-    protected PacManGameGrid grid;
-    protected PacActor pacActor;
-    protected ObjectManager manager;
-    private final GameCallback gameCallback;
 
-    private final Monster troll = new Monster(this, MonsterType.Troll);
-    private final Monster tx5 = new Monster(this, MonsterType.TX5);
+    // game grid
+    public final static int STRETCH_RATE = 3;
+    public final static int CELL_SIZE = 20 * STRETCH_RATE;
+    private final static int NUM_HORIZONTAL_CELLS = 20;
+    private final static int NUM_VERTICAL_CELLS = 11;
+    private final PacManGameGrid grid;
 
-    public Game(GameCallback gameCallback, Properties properties) {
-        //Setup game
-        super(numHorizontalCells, numVerticalCells, 50, false);
-        this.gameCallback = gameCallback;
-        this.grid = new PacManGameGrid(numHorizontalCells, numVerticalCells);
-        this.pacActor = new PacActor(this);
-        this.manager = new ObjectManager(pacActor);
-        manager.parseProperties(properties);
+    // object manager
+    private final ObjectManager manager;
+
+    /**
+     * Game class constructor.
+     * @param properties properties object read from properties file for instantiating actors and items
+     * @see              Properties
+     */
+    public Game(Properties properties) {
+
+        // Setup game
+        super(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS, CELL_SIZE, false);
+        this.grid = new PacManGameGrid(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS);
+        this.manager = new ObjectManager(this);
+
+        // parse properties and instantiate objects
+        manager.parseInanimateActor(properties);
+        manager.instantiatePacActor(properties);
         manager.instantiateObjects(grid);
-        pacActor.setManager(manager);
 
-
-        /////////////
-        // temporarily initialize troll and tx5
-        String[] trollLocations = properties.getProperty("Troll.location").split(",");
-        String[] tx5Locations = properties.getProperty("TX5.location").split(",");
-        int trollX = Integer.parseInt(trollLocations[0]);
-        int trollY = Integer.parseInt(trollLocations[1]);
-
-        int tx5X = Integer.parseInt(tx5Locations[0]);
-        int tx5Y = Integer.parseInt(tx5Locations[1]);
-
-        addActor(troll, new Location(trollX, trollY), Location.NORTH);
-        addActor(tx5, new Location(tx5X, tx5Y), Location.NORTH);
-        /////////////
+        // instantiate actors
+        manager.instantiateMonsters(properties);
     }
 
-    public GameCallback getGameCallback() {
-        return gameCallback;
+    /**
+     * Get the game grid.
+     * @return the game grid
+     * @see    PacManGameGrid
+     */
+    public PacManGameGrid getGrid() {
+        return grid;
     }
 
-    private int getNumItems() {
-        return manager.getItems().size();
-    }
-
+    /**
+     * Run the game. Upon running, all actors and items will be put to the game, and it will continually
+     * check for a winning / losing condition until either one is met.
+     */
     public void run() {
+        // set up game window
         setSimulationPeriod(100);
         setTitle("[PacMan in the Multiverse]");
-
         GGBackground bg = getBg();
         drawGrid(bg);
 
-        //Setup Random seeds
-        int seed = manager.getSeed();
-        pacActor.setSeed(seed);
-        troll.setSeed(seed);
-        tx5.setSeed(seed);
-        addKeyRepeatListener(pacActor);
+        // Setup Random seeds
+        addKeyRepeatListener(manager.getPacActor());
         setKeyRepeatPeriod(150);
-        troll.setSlowDown(3);
-        tx5.setSlowDown(3);
-        pacActor.setSlowDown(3);
-        tx5.stopMoving(5);
         putPacActor();
         putMonsters();
 
-
-        //Run the game
+        // Run the game
+        PacActor pacActor = manager.getPacActor();
         doRun();
         show();
-        // Loop to look for collision in the application thread
-        // This makes it improbable that we miss a hit
-        boolean hasPacmanBeenHit;
-        boolean hasPacmanEatAllPills;
-        putItems(bg);
-        int maxPillsAndItems = manager.getNumPillsAndGold();
 
+        // check win / lose conditions
+        boolean hasPacmanEatAllPills, hasPacmanBeenHit;
+        putItems(bg);
         do {
-            hasPacmanBeenHit = troll.getLocation().equals(pacActor.getLocation()) ||
-                    tx5.getLocation().equals(pacActor.getLocation());
-            hasPacmanEatAllPills = pacActor.getNbPills() >= maxPillsAndItems;
+            hasPacmanBeenHit = pacActor.collideMonster();
+            hasPacmanEatAllPills = manager.getNumPillsAndGold() <= 0;
             delay(10);
-        } while(!hasPacmanBeenHit && !hasPacmanEatAllPills);
+        } while (! hasPacmanBeenHit && ! hasPacmanEatAllPills);
         delay(120);
 
+        // upon winning / losing
         Location loc = pacActor.getLocation();
-        troll.setStopMoving(true);
-        tx5.setStopMoving(true);
+        manager.setMonstersStopMoving();
         pacActor.removeSelf();
-
-        String title = "";
+        String title;
         if (hasPacmanBeenHit) {
             bg.setPaintColor(COLOR_LOSE);
             title = LOSE_MESSAGE;
             addActor(new Actor("sprites/explosion3.gif"), loc);
         }
-        else if (hasPacmanEatAllPills) {
+        else {
             bg.setPaintColor(COLOR_WIN);
             title = WIN_MESSAGE;
         }
         setTitle(title);
-        gameCallback.endOfGame(title);
+        manager.getGameCallback().endOfGame(title);
         doPause();
     }
 
+
+    /**
+     * Draw the game's grid. The grid includes empty space and walls.
+     * @param bg background object for grid
+     * @see      GGBackground
+     */
     private void drawGrid(GGBackground bg) {
         // set the background
-        bg.clear(Color.gray);
+        bg.clear(COLOR_WALL);
         bg.setPaintColor(COLOR_BACKGROUND);
 
         // draw the maze (its border and items)
-        for (int y = 0; y < numVerticalCells; y++) {
-            for (int x = 0; x < numHorizontalCells; x++) {
+        for (int y = 0; y < NUM_VERTICAL_CELLS; y++) {
+            for (int x = 0; x < NUM_HORIZONTAL_CELLS; x++) {
                 bg.setPaintColor(COLOR_BACKGROUND);
                 Location location = new Location(x, y);
+                // space
                 if (grid.getCell(location) != PacManGameGrid.BlockType.ERROR)
-                    bg.fillCell(location, Color.lightGray);
-                if (grid.getCell(location) == PacManGameGrid.BlockType.WALL)
-                    bg.fillCell(location, ObjectManager.COLOR_WALL);
+                    bg.fillCell(location, COLOR_SPACE);
+                // wall -> added to wall map in manager
+                if (grid.getCell(location) == PacManGameGrid.BlockType.WALL) {
+                    HashableLocation.putLocationHash(manager.getWalls(), location, 1);
+                    bg.fillCell(location, COLOR_WALL);
+                }
             }
         }
     }
 
-    public void putItems(GGBackground bg) {
-        // putting all items
+
+    /**
+     * Putting all items to game. Items once put to the game will exist within the game as well as the
+     * grid, and it will also be visualized to the background.
+     * @param background the background
+     * @see              GGBackground
+     * @see              Item
+     */
+    public void putItems(GGBackground background) {
         for (Map.Entry<HashableLocation, Item> entry : manager.getItems().entrySet()) {
             Location location = entry.getKey().location();
             Item item = entry.getValue();
-            item.putItem(bg, this, location);
+            item.putItem(background, this, location);
         }
     }
 
-    // putting all monsters to grid
+    /**
+     * Putting all monsters to game. Monsters once put to the game will exist within the game as well as the
+     * grid, and it will also be visualized to the background.
+     * @see Monster
+     */
     public void putMonsters() {
-        for (Map.Entry<HashableLocation, Monster> entry : manager.getMonsters().entrySet()) {
-            Location location = entry.getKey().location();
-            Monster monster = entry.getValue();
+        for (int i=0; i<manager.getMonsters().size(); i++) {
+            Monster monster = manager.getMonsters().get(i);
+            Location location = monster.getInitLocation();
             addActor(monster, location, Location.NORTH);
         }
     }
 
-    // putting PacMan
+    /**
+     * Putting PacMan to game. Similar to put monsters, PacMan will also be added to the game in the same
+     * manner.
+     * @see PacActor
+     */
     public void putPacActor() {
+        PacActor pacActor = manager.getPacActor();
         addActor(pacActor, pacActor.getInitLocation());
-    }
-
-    public int getNumHorizontalCells() {
-        return numHorizontalCells;
-    }
-    public int getNumVerticalCells() {
-        return numVerticalCells;
     }
 }

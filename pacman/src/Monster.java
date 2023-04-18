@@ -1,112 +1,163 @@
-// Monster.java
-// Used for PacMan
 package src;
-
 import ch.aplu.jgamegrid.*;
 import java.util.*;
 
-public class Monster extends LiveActor {
-    private final MonsterType type;
-    private final ArrayList<Location> visitedList = new ArrayList<>();
-    private boolean stopMoving = false;
-    private final Random randomizer = new Random(0);
+/**
+ * Based on skeleton code for SWEN20003 Project, Semester 2, 2022, The University of Melbourne.
+ * Monster abstract class extended from abstract LiveActor class.
+ * @see LiveActor
+ */
+public abstract class Monster extends LiveActor {
 
-    public Monster(Game game, MonsterType type) {
-        super(game, false, "sprites/" + type.getImageName(), 1);
-        this.type = type;
+    /**
+     * Monster type enumeration. Each monster type has a boolean value indicating whether it is exclusive
+     * to the extended multiverse game or not.
+     * <ul>
+     *     <li>Troll  - not exclusive to multiverse
+     *     <li>TX5    - not exclusive to multiverse
+     *     <li>Alien  - exclusive to multiverse
+     *     <li>Orion  - exclusive to multiverse
+     *     <li>Wizard - exclusive to multiverse
+     * </ul>
+     */
+    public enum MonsterType {
+        Troll(false),
+        TX5(false),
+        Alien(true),
+        Orion(true),
+        Wizard(true);
+        public final boolean inMultiverse;
+        MonsterType(boolean inMultiverse) {
+            this.inMultiverse = inMultiverse;
+        }
     }
 
-    public void stopMoving(int seconds) {
-        this.stopMoving = true;
+    // time-related constants
+    public static final int SECOND_TO_MILLISECONDS = 1000;
+    public static final int AGGRAVATE_TIME = 3;
+    private static final int AGGRAVATE_SPEED_FACTOR = 2;
+
+    // visited locations
+    private final ArrayList<Location> visitedList = new ArrayList<>();
+    // if it has stopped moving or not
+    private boolean stopMoving = false;
+
+    /**
+     * Monster constructor.
+     * @param isRotatable   if monster is rotatable
+     * @param directory     sprite image directory
+     * @param numSprites    number of sprites
+     */
+    public Monster(ObjectManager manager, boolean isRotatable, String directory, int numSprites) {
+        super(manager, isRotatable, directory, numSprites);
+        assert manager != null;
+    }
+
+    /**
+     * Get the object manager.
+     * @return the object manager
+     */
+    @Override
+    public ObjectManager getManager() {
+        assert super.getManager() != null;
+        return super.getManager();
+    }
+
+    /**
+     * Set the monster type to monster.
+     * @param type the monster type
+     */
+    public void setType(MonsterType type) {
+        setName(type.toString());
+    }
+
+    /**
+     * Overridden method for setting monster's seed.
+     * @param seed specified seed
+     */
+    @Override
+    protected void setSeed(int seed) {
+        getRandomizer().setSeed(seed);
+    }
+
+    /**
+     * Set monster to either stop or continue/start moving.
+     * @param stopMoving boolean indicating if monster stops moving or not
+     */
+    protected void setStopMoving(boolean stopMoving) {
+        this.stopMoving = stopMoving;
+    }
+
+    /**
+     * Stops monster's movement for a specified number of seconds.
+     * @param seconds number of seconds monster stops moving
+     */
+    protected void stopMoving(int seconds) {
+        setStopMoving(true);
         Timer timer = new Timer(); // Instantiate Timer Object
-        int SECOND_TO_MILLISECONDS = 1000;
         final Monster monster = this;
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                monster.stopMoving = false;
+                monster.setStopMoving(false);
             }
         }, (long) seconds * SECOND_TO_MILLISECONDS);
     }
 
-    @Override
-    public void setSeed(int seed) {
-        randomizer.setSeed(seed);
+    /**
+     * Speed up monster's movement by a constant factor for a specified number of seconds.
+     * @param seconds number of seconds monster speeds up
+     */
+    public void speedUp(int seconds) {
+        this.setSlowDown(1/AGGRAVATE_SPEED_FACTOR);
+        Timer timer = new Timer();
+        final Monster monster = this;
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                monster.setSlowDown(AGGRAVATE_SPEED_FACTOR);
+            }
+        }, (long) seconds * SECOND_TO_MILLISECONDS);
     }
 
-    public void setStopMoving(boolean stopMoving) {
-        this.stopMoving = stopMoving;
-    }
 
+    /**
+     * Overridden act method from Actor class for monster to act within the game.
+     * @see Actor
+     */
     @Override
     public void act() {
         if (stopMoving) return;
-        walkApproach();
-        boolean enable = getDirection() > 150 && getDirection() < 210;
+        moveApproach();
+        int DIRECTION_EXCEED = 150;
+        int DIRECTION_PRECEDE = 210;
+        boolean enable = getDirection() > DIRECTION_EXCEED && getDirection() < DIRECTION_PRECEDE;
         setHorzMirror(!enable);
+
+        // Record changes in position to game
+        getGameCallback().monsterLocationChanged(this);
     }
 
-    private void walkApproach() {
-        Location pacLocation = getGame().manager.getPacActor().getLocation();
-        double oldDirection = getDirection();
-
-        // Walking approach:
-        // TX5: Determine direction to pacActor and try to move in that direction. Otherwise, random walk.
-        // Troll: Random walk.
-        Location.CompassDirection compassDir =
-                getLocation().get4CompassDirectionTo(pacLocation);
-        Location next = getLocation().getNeighbourLocation(compassDir);
-        setDirection(compassDir);
-        if (type == MonsterType.TX5 && !isVisited(next) && canMove(next)) {
-            setLocation(next);
-        }
-        else {
-            // Random walk
-            int sign = randomizer.nextDouble() < 0.5 ? 1 : -1;
-            setDirection(oldDirection);
-            turn(sign * 90);  // Try to turn left/right
-            next = getNextMoveLocation();
-            if (canMove(next))
-                setLocation(next);
-            else {
-                setDirection(oldDirection);
-                next = getNextMoveLocation();
-                if (canMove(next))// Try to move forward
-                    setLocation(next);
-                else {
-                    setDirection(oldDirection);
-                    turn(-sign * 90);  // Try to turn right/left
-                    next = getNextMoveLocation();
-                    if (canMove(next))
-                        setLocation(next);
-                    else {
-                        setDirection(oldDirection);
-                        turn(180);  // Turn backward
-                        next = getNextMoveLocation();
-                        setLocation(next);
-                    }
-                }
-            }
-        }
-        getGame().getGameCallback().monsterLocationChanged(this);
-        addVisitedList(next);
-    }
-
-    public MonsterType getType() {
-        return type;
-    }
-
-    private void addVisitedList(Location location) {
+    /**
+     * (WIP: should be HashMap<HashableLocation, Monster>) Add location to visited list.
+     * @param location current location of monster
+     */
+    protected void addVisitedList(Location location) {
         visitedList.add(location);
-        int listLength = 10;
-        if (visitedList.size() == listLength)
+        int LIST_LENGTH = 10;
+        if (visitedList.size() == LIST_LENGTH)
             visitedList.remove(0);
     }
 
-    private boolean isVisited(Location location) {
+    /**
+     * Check if monster has not visited a specific location.
+     * @param location specified location to check if monster has visited
+     * @return         true if monster has yet, false if otherwise
+     */
+    protected boolean notVisited(Location location) {
         for (Location loc : visitedList)
             if (loc.equals(location))
-                return true;
-        return false;
+                return false;
+        return true;
     }
 }

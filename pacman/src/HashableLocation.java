@@ -1,11 +1,17 @@
 package src;
-
 import ch.aplu.jgamegrid.Location;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public record HashableLocation(Location location) {
 
+/**
+ * HashableLocation record class as a placeholder for Location object, but with purpose-driven hashability
+ * to ensure that 2 locations that are equal will produce the same hashed value. This is utilized for hash
+ * maps that use location as keys for fast accessing.
+ * @see Location
+ */
+public record HashableLocation(Location location) {
+    // properties
     public int getX() {
         return location.getX();
     }
@@ -14,11 +20,20 @@ public record HashableLocation(Location location) {
         return location.getY();
     }
 
+    /**
+     * Overridden hashing method for the location.
+     * @return hashed value
+     */
     @Override
     public int hashCode() {
         return Arrays.hashCode(getArrayLocation(location));
     }
 
+    /**
+     * Overridden equal method.
+     * @param obj   the reference object with which to compare
+     * @return      whether 2 locations are equal or not
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -28,14 +43,53 @@ public record HashableLocation(Location location) {
         return other.getX() == this.getX() && other.getY() == this.getY();
     }
 
-    // get hashable location
+    /**
+     * Get the hashable location, which is actually just an array of size 2 in form [x, y].
+     * @param location the specified location
+     * @return         the hashable array
+     * @see            Location
+     */
     public static int[] getArrayLocation(Location location) {
         return new int[]{location.getX(), location.getY()};
     }
 
-    // put entry to hashmap with HashableLocation as key
+    /**
+     * Put entry to hashmap with HashableLocation as key
+     * @param map       the hash map
+     * @param location  specified location as key
+     * @param object    generic object as value
+     * @param <T>       the generic type, but in this context we only use live actors and items for it.
+     * @see             Location
+     */
     public static <T> void putLocationHash(HashMap<HashableLocation, T> map, Location location, T object) {
         HashableLocation hashLocation = new HashableLocation(location);
         map.put(hashLocation, object);
+    }
+
+
+    /**
+     * Get hashmap value via specified location key.
+     * @param map       hash map
+     * @param location  specified location
+     * @return          the value
+     * @param <T>       generic type for value
+     * @see             Location
+     */
+    public static <T> T getLocationHash(HashMap<HashableLocation, T> map, Location location) {
+        return map.get(new HashableLocation(location));
+    }
+
+
+    /**
+     * Check if hashmap of HashableLocation contains a key corresponding to a specified Location object.
+     * @param map       the hashmap
+     * @param location  specified location
+     * @return          boolean value indicating whether key is contained
+     * @param <T>       generic Object class
+     * @see             Location
+     */
+    public static <T> boolean containLocationHash(HashMap<HashableLocation, T> map, Location location) {
+        HashableLocation hashLocation = new HashableLocation(location);
+        return map.containsKey(hashLocation);
     }
 }

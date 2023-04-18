@@ -1,56 +1,80 @@
-// PacActor.java
-// Used for PacMan
 package src;
-
 import ch.aplu.jgamegrid.*;
 import java.awt.event.KeyEvent;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
+
+/**
+ * Based on skeleton code for SWEN20003 Project, Semester 2, 2022, The University of Melbourne.
+ * PacActor class extended from abstract LiveActor class, implementing a key repeat listener interface.
+ * The latter is so that the game responds to player's input.
+ * @see LiveActor
+ * @see GGKeyRepeatListener
+ * @see ObjectManager
+ */
 public class PacActor extends LiveActor implements GGKeyRepeatListener {
-    private static final int INF = 1000;
-    private static final int nbSprites = 4;
-    private static final String directory = "sprites/pacpix.gif";
+    // properties
+    private static final int NUM_SPRITES = 4;
+    private static final String DIRECTORY = "sprites/pacpix.gif";
+    private static final String PACMAN_NAME = "PacMan";
     private int idSprite = 0;
     private int nbPills = 0;
     private int score = 0;
-    private Location initLocation;
+
+    // properties related to sequence of moves for pacman in auto mode
     private List<String> propertyMoves = new ArrayList<>();
     private int propertyMoveIndex = 0;
-    private final Random randomizer = new Random();
+    // if pacman is in auto mode
     private boolean isAuto = false;
 
+    // direction related
+    private static final String RIGHT_DIR = "R";
+    private static final String LEFT_DIR = "L";
+    private static final String MOVE_DIR = "M";
 
-    public PacActor(Game game) {
-        super(game, true, directory, nbSprites);
+
+    /**
+     * PacMan constructor.
+     * @param manager the object manager
+     */
+    public PacActor(ObjectManager manager) {
+        super(manager, true, DIRECTORY, NUM_SPRITES);
+        assert manager != null;
+        setName(PACMAN_NAME);
     }
 
-    public Location getInitLocation() {
-        return initLocation;
-    }
-
-    public void setAuto(boolean auto) {
+    /**
+     * Set whether PacMan runs in auto mode or player mode.
+     * @param auto true if PacMan runs in auto mode, false if otherwise
+     */
+    protected void setAuto(boolean auto) {
         isAuto = auto;
     }
 
-    public void setInitLocation(Location initLocation) {
-        this.initLocation = initLocation;
-    }
-
+    /**
+     * Set the random seed for PacMan.
+     * @param seed specified seed
+     */
     @Override
     protected void setSeed(int seed) {
-        randomizer.setSeed(seed);
+        getRandomizer().setSeed(seed);
     }
 
-    public void setPropertyMoves(String propertyMoveString) {
-        if (propertyMoveString != null) {
+    /**
+     * Setting player's sequence of moves in auto-movement mode.
+     * @param propertyMoveString the string, separated by ',' where each other character represents a
+     *                           particular move
+     */
+    protected void setPropertyMoves(String propertyMoveString) {
+        if (propertyMoveString != null)
             this.propertyMoves = Arrays.asList(propertyMoveString.split(","));
-        }
     }
 
+    /**
+     * Method in key listener.
+     * @param keyCode key code represents which key was pressed by player.
+     */
+    @Override
     public void keyRepeated(int keyCode) {
         if (isAuto) return;
         if (isRemoved())  // Already removed
@@ -76,106 +100,142 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         }
         if (next != null && canMove(next)) {
             setLocation(next);
-            eatPill(getManager(), next);
+            eatItem(getManager());
         }
     }
 
+    /**
+     * Overridden act method from Actor class to act within the game.
+     */
     @Override
     public void act() {
         show(idSprite);
         idSprite++;
-        if (idSprite == nbSprites)
+        if (idSprite == NUM_SPRITES)
             idSprite = 0;
         if (isAuto)
-            moveInAutoMode();
-        getGame().getGameCallback().pacManLocationChanged(getLocation(), score, nbPills);
+            moveApproach();
+        getGameCallback().pacManLocationChanged(getLocation(), score, nbPills);
     }
 
-    private Location closestPillLocation() {
-        int currentDistance = INF;
-        Location currentLocation = null;
-        List<Location> pillAndItemLocations = getManager().getItemLocations();
-        for (Location location: pillAndItemLocations) {
-            int distanceToPill = location.getDistanceTo(getLocation());
-            if (distanceToPill < currentDistance) {
-                currentLocation = location;
-                currentDistance = distanceToPill;
-            }
-        }
-        return currentLocation;
-    }
-
-    private void followPropertyMoves() {
-        String currentMove = propertyMoves.get(propertyMoveIndex);
-        switch (currentMove) {
-            case "R" -> turn(90);
-            case "L" -> turn(-90);
-            case "M" -> {
-                Location next = getNextMoveLocation();
-                if (canMove(next)) {
-                    setLocation(next);
-                    eatPill(getManager(), next);
-                }
-            }
-        }
-        propertyMoveIndex++;
-    }
-
-    private void moveInAutoMode() {
+    /**
+     * Overridden move approach method for PacMan which is only used when in auto movement mode.
+     */
+    @Override
+    protected void moveApproach() {
         if (propertyMoves.size() > propertyMoveIndex) {
             followPropertyMoves();
             return;
         }
         Location closestPill = closestPillLocation();
         double oldDirection = getDirection();
-
         Location.CompassDirection compassDir = getLocation().get4CompassDirectionTo(closestPill);
         Location next = getLocation().getNeighbourLocation(compassDir);
         setDirection(compassDir);
-        if (! canMove(next)) {
-            // normal movement
-            int sign = randomizer.nextDouble() < 0.5 ? 1 : -1;
+        if (canMove(next))
+            setLocation(next);
+        else {
+            int sign = getRandomizer().nextDouble() < 0.5 ? 1 : -1;
             setDirection(oldDirection);
-            turn(sign * 90);            // Try to turn left/right
+            turn(sign * RIGHT_TURN_ANGLE); // Try to turn left/right
             next = getNextMoveLocation();
             if (! canMove(next)) {
                 setDirection(oldDirection);
-                turn(-180);             // Try to move forward
-                next = getNextMoveLocation();
+                next = getNextMoveLocation(); // Try to move forward
                 if (! canMove(next)) {
                     setDirection(oldDirection);
-                    turn(-sign * 90);   // Try to turn right/left
+                    turn(sign * LEFT_TURN_ANGLE); // Try to turn right/left
                     next = getNextMoveLocation();
                     if (! canMove(next)) {
                         setDirection(oldDirection);
-                        turn(180);      // Turn backward
+                        turn(BACK_TURN_ANGLE); // Turn backward
                         next = getNextMoveLocation();
                     }
                 }
             }
+            setLocation(next);
         }
-        setLocation(next);
-        eatPill(getManager(), next);
+        eatItem(getManager());
     }
 
-    private void eatPill(ObjectManager manager, Location location) {
+    /**
+     * Method for handling PacMan eating an item. Each item will have a different effect upon acquired, and
+     * this method will handle that as well.
+     * @param manager object manager
+     */
+    private void eatItem(ObjectManager manager) {
+        Location location = getLocation();
         HashableLocation hashLocation = new HashableLocation(location);
+
+        // item exists
         if (manager.getItems().containsKey(hashLocation)) {
             Item item = manager.getItems().get(hashLocation);
-            String itemType = (item instanceof Pill) ? "pills" :
-                              (item instanceof Gold) ? "gold"  :
-                              "ice";
+
+            // add score (WIP - this shouldn't even be in here)
             if (! (item instanceof Ice)) nbPills++;
             score += item.getScore();
-            getBackground().fillCell(location, Color.lightGray);
-            getGame().getGameCallback().pacManEatPillsAndItems(location, itemType);
+            getManager().decrementNumPillAndGold(item);
+
+            // signals the manager and removes itself
+            item.signalManager(manager);
+            getBackground().fillCell(location, Game.COLOR_SPACE);
+            getGameCallback().pacManEatPillsAndItems(location, item.getName());
             item.removeItem(manager);
         }
         String title = "[PacMan in the Multiverse] Current score: " + score;
-        gameGrid.setTitle(title);
+        getGameGrid().setTitle(title);
     }
 
-    public int getNbPills() {
-        return nbPills;
+    /**
+     * Game over checking - whether PacMan has collided with a monster or not.
+     * @return true if collided, false if otherwise.
+     */
+    public boolean collideMonster() {
+        for (Monster monster : getManager().getMonsters())
+            if (checkCollision(monster))
+                return true;
+        return false;
+    }
+
+    /**
+     * Get the closest location of an item that is either a pill or gold. Used only when in auto mode.
+     * @return said closest location
+     * @see    Location
+     */
+    private Location closestPillLocation() {
+        int currentDistance = getManager().getGame().getGrid().INF; // set distance to infinity
+        Location currentLocation = null;
+        for (Map.Entry<HashableLocation, Item> entry : getManager().getItems().entrySet()) {
+            Item item = entry.getValue();
+            if (item instanceof Pill || item instanceof Gold) {
+                Location location = entry.getKey().location();
+                int distanceToPill = location.getDistanceTo(getLocation());
+                if (distanceToPill < currentDistance) {
+                    currentLocation = location;
+                    currentDistance = distanceToPill;
+                }
+            }
+        }
+        return currentLocation;
+    }
+
+    /**
+     * Let pacman in auto mode follow the moves parsed from properties file. It will read which direction
+     * pacman will be heading to, and move accordingly.
+     */
+    private void followPropertyMoves() {
+        String currentMove = propertyMoves.get(propertyMoveIndex);
+        switch (currentMove) {
+            case RIGHT_DIR -> turn(RIGHT_TURN_ANGLE);
+            case LEFT_DIR  -> turn(LEFT_TURN_ANGLE);
+            case MOVE_DIR  -> {
+                Location next = getNextMoveLocation();
+                if (canMove(next)) {
+                    setLocation(next);
+                    eatItem(getManager());
+                }
+            }
+        }
+        propertyMoveIndex++;
     }
 }
