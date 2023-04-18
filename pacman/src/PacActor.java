@@ -154,7 +154,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             setLocation(next);
         }
         eatItem(getManager());
-        addVisitedList(next);
+        putVisitedLocations(next);
     }
 
     /**

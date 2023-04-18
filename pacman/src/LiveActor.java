@@ -1,8 +1,8 @@
 package src;
-import ch.aplu.jgamegrid.*;
 import src.utility.GameCallback;
 
-import java.util.ArrayList;
+import ch.aplu.jgamegrid.*;
+import java.util.HashMap;
 import java.util.Random;
 
 
@@ -22,7 +22,7 @@ public abstract class LiveActor extends Actor {
     private Location initLocation;
 
     // visited locations
-    private final ArrayList<Location> visitedList = new ArrayList<>();
+    private final HashMap<HashableLocation, Boolean> visitedLocations = new HashMap<>();
 
     // direction-related - representing which angle to turn to for a move
     public static final int RIGHT_TURN_ANGLE = 90;
@@ -151,11 +151,11 @@ public abstract class LiveActor extends Actor {
      * (WIP: should be HashMap<HashableLocation, Monster>) Add location to visited list.
      * @param location current location of monster
      */
-    protected void addVisitedList(Location location) {
-        visitedList.add(location);
+    protected void putVisitedLocations(Location location) {
+        HashableLocation.putLocationHash(visitedLocations, location, true);
         int LIST_LENGTH = 10;
-        if (visitedList.size() == LIST_LENGTH)
-            visitedList.remove(0);
+        if (visitedLocations.size() == LIST_LENGTH)
+            visitedLocations.remove(0);
     }
 
     /**
@@ -164,10 +164,7 @@ public abstract class LiveActor extends Actor {
      * @return         true if monster has yet, false if otherwise
      */
     protected boolean notVisited(Location location) {
-        for (Location loc : visitedList)
-            if (loc.equals(location))
-                return false;
-        return true;
+        return ! HashableLocation.containLocationHash(visitedLocations, location);
     }
 
     /**
