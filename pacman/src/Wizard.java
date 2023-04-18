@@ -35,7 +35,7 @@ public class Wizard extends Monster {
         // This loop will keep on going until a location is set for the wizard
         // Randomly picks from the 8 possible directions
         while (true) {
-            int currIndex = this.RANDOMIZER.nextInt(0, possibleLocations.length);
+            int currIndex = this.getRandomizer().nextInt(0, possibleLocations.length);
             int currDirection = possibleLocations[currIndex].getDirection();
             Location currentLocation = this.getLocation().getNeighbourLocation(currDirection);
 

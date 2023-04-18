@@ -52,7 +52,7 @@ public class Alien extends Monster {
         }
 
         // Randomly pick a direction from all possible minimum distance directions
-        int listIndex = this.RANDOMIZER.nextInt(0, possibleMoves.size());
+        int listIndex = this.getRandomizer().nextInt(0, possibleMoves.size());
         this.setLocation(possibleMoves.get(listIndex));
     }
 }

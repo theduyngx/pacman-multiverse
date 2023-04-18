@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class PacActor extends LiveActor implements GGKeyRepeatListener {
     // properties
-    private static final int NB_SPRITES = 4;
+    private static final int NUM_SPRITES = 4;
     private static final String DIRECTORY = "sprites/pacpix.gif";
     private static final String PACMAN_NAME = "PacMan";
     private int idSprite = 0;
@@ -38,7 +38,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      * @param manager the object manager
      */
     public PacActor(ObjectManager manager) {
-        super(manager, true, DIRECTORY, NB_SPRITES);
+        super(manager, true, DIRECTORY, NUM_SPRITES);
         assert manager != null;
         setName(PACMAN_NAME);
     }
@@ -57,7 +57,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      */
     @Override
     protected void setSeed(int seed) {
-        RANDOMIZER.setSeed(seed);
+        getRandomizer().setSeed(seed);
     }
 
     /**
@@ -111,7 +111,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     public void act() {
         show(idSprite);
         idSprite++;
-        if (idSprite == NB_SPRITES)
+        if (idSprite == NUM_SPRITES)
             idSprite = 0;
         if (isAuto)
             moveApproach();
@@ -135,7 +135,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         if (canMove(next))
             setLocation(next);
         else {
-            int sign = RANDOMIZER.nextDouble() < 0.5 ? 1 : -1;
+            int sign = getRandomizer().nextDouble() < 0.5 ? 1 : -1;
             setDirection(oldDirection);
             turn(sign * RIGHT_TURN_ANGLE); // Try to turn left/right
             next = getNextMoveLocation();

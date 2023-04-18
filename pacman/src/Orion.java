@@ -88,7 +88,7 @@ public class Orion extends Monster {
         if (possibleLocations.isEmpty()) {
             Location.CompassDirection[] directions = Location.CompassDirection.values();
             while(true) {
-                int currIndex = this.RANDOMIZER.nextInt(0, directions.length);
+                int currIndex = this.getRandomizer().nextInt(0, directions.length);
                 Location.CompassDirection dir = directions[currIndex];
                 Location newLocation = this.getLocation().getNeighbourLocation(dir);
                 if (this.canMove(newLocation) && dir.getDirection() % 10 == 0) {
@@ -101,7 +101,7 @@ public class Orion extends Monster {
         // There may be more than one unvisited location that minimizes distance
         // to a gold, randomly select from these options
         else {
-            int randomIndex = this.RANDOMIZER.nextInt(0, possibleLocations.size());
+            int randomIndex = this.getRandomizer().nextInt(0, possibleLocations.size());
             toMove = possibleLocations.get(randomIndex);
         }
 
@@ -184,7 +184,7 @@ public class Orion extends Monster {
     private HashableLocation getRandomLocation(ArrayList<HashableLocation> golds) {
         while (true)
         {
-            int randomIndex = this.RANDOMIZER.nextInt(0, golds.size());
+            int randomIndex = this.getRandomizer().nextInt(0, golds.size());
             HashableLocation currentLocation = golds.get(randomIndex);
 
             if (this.currDestination != null && this.currDestination.getX() == 4 && this.currDestination.getY() == 9

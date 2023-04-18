@@ -32,7 +32,7 @@ public class Troll extends Monster {
     protected void moveApproach() {
         double oldDirection = this.getDirection();
         // Should be int but I don't know what happened
-        double sign = this.RANDOMIZER.nextDouble();
+        double sign = this.getRandomizer().nextDouble();
         this.setDirection(oldDirection);
         this.turn(sign*RIGHT_TURN_ANGLE);
 

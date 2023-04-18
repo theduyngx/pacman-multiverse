@@ -23,16 +23,16 @@ public class ObjectManager {
     // PacMan
     private PacActor pacActor;
     // hashmap of monsters with their initial location as key
-    private final ArrayList<Monster> MONSTERS;
+    private final ArrayList<Monster> monsters;
     // hashmap of all items with their location as key
-    private final HashMap<HashableLocation, Item> ITEMS;
+    private final HashMap<HashableLocation, Item> items;
     // hashmap of all walls with their location as key
-    private final HashMap<HashableLocation, Integer> WALLS;
+    private final HashMap<HashableLocation, Integer> walls;
 
     // the game
-    private final Game GAME;
+    private final Game game;
     // game callback
-    private final GameCallback GAME_CALLBACK;
+    private final GameCallback gameCallback;
     // random seed
     private int seed = INIT_SEED;
     // current number of pills and gold pieces, which indicate whether player has won or not
@@ -45,11 +45,11 @@ public class ObjectManager {
      */
     public ObjectManager(Game game) {
         assert game != null;
-        this.GAME = game;
-        this.GAME_CALLBACK = new GameCallback();
-        this.MONSTERS = new ArrayList<>();
-        this.ITEMS = new HashMap<>();
-        this.WALLS = new HashMap<>();
+        this.game = game;
+        this.gameCallback = new GameCallback();
+        this.monsters = new ArrayList<>();
+        this.items = new HashMap<>();
+        this.walls = new HashMap<>();
     }
 
     /**
@@ -58,7 +58,7 @@ public class ObjectManager {
      * @return the game
      */
     protected Game getGame() {
-        return GAME;
+        return game;
     }
 
     /**
@@ -67,7 +67,7 @@ public class ObjectManager {
      * @see    GameCallback
      */
     protected GameCallback getGameCallback() {
-        return GAME_CALLBACK;
+        return gameCallback;
     }
 
     /**
@@ -85,7 +85,7 @@ public class ObjectManager {
      * @see    Monster
      */
     protected ArrayList<Monster> getMonsters() {
-        return MONSTERS;
+        return monsters;
     }
 
     /**
@@ -95,7 +95,7 @@ public class ObjectManager {
      * @see    Item
      */
     protected HashMap<HashableLocation, Item> getItems() {
-        return ITEMS;
+        return items;
     }
 
     /**
@@ -104,7 +104,7 @@ public class ObjectManager {
      * @see    HashableLocation
      */
     protected HashMap<HashableLocation, Integer> getWalls() {
-        return WALLS;
+        return walls;
     }
 
     /**
@@ -176,7 +176,7 @@ public class ObjectManager {
                     if (item == null) continue;
 
                     // add to item hashmaps and set game grid's cell
-                    HashableLocation.putLocationHash(ITEMS, location, item);
+                    HashableLocation.putLocationHash(items, location, item);
                     getGame().getGrid().setCell(location, blockType);
                     if (blockType == PacManGameGrid.BlockType.PILL || blockType == PacManGameGrid.BlockType.GOLD)
                         numPillsAndGold++;
@@ -252,7 +252,7 @@ public class ObjectManager {
 
                     // set location and add itself to monster list
                     monster.setInitLocation(location);
-                    this.MONSTERS.add(monster);
+                    this.monsters.add(monster);
 
                     /// SET SEED AND SLOW DOWN TO REDUCE GAME DIFFICULTY
                     monster.setSeed(seed);
@@ -275,23 +275,23 @@ public class ObjectManager {
 
                 // ignore if location is already occupied
                 Location location = new Location(row, col);
-                if (HashableLocation.containLocationHash(ITEMS, location)) continue;
+                if (HashableLocation.containLocationHash(items, location)) continue;
 
                 // otherwise add
                 switch (itemType) {
                     case PILL -> {
                         Pill pill = new Pill();
-                        HashableLocation.putLocationHash(ITEMS, location, pill);
+                        HashableLocation.putLocationHash(items, location, pill);
                         numPillsAndGold++;
                     }
                     case GOLD -> {
                         Gold gold = new Gold();
-                        HashableLocation.putLocationHash(ITEMS, location, gold);
+                        HashableLocation.putLocationHash(items, location, gold);
                         numPillsAndGold++;
                     }
                     case ICE -> {
                         Ice ice = new Ice();
-                        HashableLocation.putLocationHash(ITEMS, location, ice);
+                        HashableLocation.putLocationHash(items, location, ice);
                     }
                 }
             }
@@ -303,7 +303,7 @@ public class ObjectManager {
      * @see Monster
      */
     protected void setMonstersStopMoving() {
-        for (Monster monster: MONSTERS)
+        for (Monster monster: monsters)
             monster.setStopMoving(true);
     }
 }

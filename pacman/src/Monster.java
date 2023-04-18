@@ -77,7 +77,7 @@ public abstract class Monster extends LiveActor {
      */
     @Override
     protected void setSeed(int seed) {
-        RANDOMIZER.setSeed(seed);
+        getRandomizer().setSeed(seed);
     }
 
     /**

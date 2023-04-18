@@ -14,8 +14,8 @@ import java.util.Random;
  */
 public abstract class LiveActor extends Actor {
     // manager and randomizer
-    private final ObjectManager MANAGER;
-    protected final Random RANDOMIZER = new Random(0);
+    private final ObjectManager manager;
+    private final Random randomizer = new Random(0);
 
     // initial location for actor instantiation
     private Location initLocation;
@@ -31,6 +31,7 @@ public abstract class LiveActor extends Actor {
 
     /**
      * Constructor for LiveActor.
+     * @param manager       the object manager
      * @param isRotatable   whether the actor is rotatable or not - important if actor's direction changes
      * @param directory     directory that contains sprite image for the actor
      * @param numSprites    number of sprites the actor has
@@ -38,7 +39,7 @@ public abstract class LiveActor extends Actor {
     public LiveActor(ObjectManager manager, boolean isRotatable, String directory, int numSprites) {
         super(isRotatable, directory, numSprites);
         assert manager != null;
-        this.MANAGER = manager;
+        this.manager = manager;
     }
 
     /**
@@ -57,8 +58,8 @@ public abstract class LiveActor extends Actor {
      * @return the object manager
      */
     public ObjectManager getManager() {
-        assert this.MANAGER != null;
-        return MANAGER;
+        assert this.manager != null;
+        return manager;
     }
 
     /**
@@ -70,6 +71,15 @@ public abstract class LiveActor extends Actor {
         GameCallback gameCallback = getManager().getGameCallback();
         assert gameCallback != null;
         return gameCallback;
+    }
+
+    /**
+     * Get the randomizer which, depending on the context and type of actor, will dictate the next move that
+     * the actor will make.
+     * @return the randomizer
+     */
+    public Random getRandomizer() {
+        return randomizer;
     }
 
     /**

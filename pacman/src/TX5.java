@@ -49,7 +49,7 @@ public class TX5 extends Monster {
         // If it can't move here, has to move to a random spot,
         // means either turn left, turn right, or move backwards
         else {
-            double sign = this.RANDOMIZER.nextDouble();
+            double sign = this.getRandomizer().nextDouble();
             this.setDirection(oldDirection);
             this.turn(sign*RIGHT_TURN_ANGLE);
             next = this.getNextMoveLocation();
