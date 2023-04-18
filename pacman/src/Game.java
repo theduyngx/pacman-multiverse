@@ -29,14 +29,14 @@ public class Game extends GameGrid {
     public final static String WIN_MESSAGE = "YOU WIN";
 
     // game grid
-    public final static int STRETCH_RATE = 2;
+    public final static int STRETCH_RATE = 3;
     public final static int CELL_SIZE = 20 * STRETCH_RATE;
     private final static int NUM_HORIZONTAL_CELLS = 20;
     private final static int NUM_VERTICAL_CELLS = 11;
-    private final PacManGameGrid GRID;
+    private final PacManGameGrid grid;
 
     // object manager
-    protected ObjectManager manager;
+    private final ObjectManager manager;
 
     /**
      * Game class constructor.
@@ -47,13 +47,13 @@ public class Game extends GameGrid {
 
         // Setup game
         super(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS, CELL_SIZE, false);
-        this.GRID = new PacManGameGrid(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS);
+        this.grid = new PacManGameGrid(NUM_HORIZONTAL_CELLS, NUM_VERTICAL_CELLS);
         this.manager = new ObjectManager(this);
 
         // parse properties and instantiate objects
         manager.parseInanimateActor(properties);
         manager.instantiatePacActor(properties);
-        manager.instantiateObjects(GRID);
+        manager.instantiateObjects(grid);
 
         // instantiate actors
         manager.instantiateMonsters(properties);
@@ -65,7 +65,7 @@ public class Game extends GameGrid {
      * @see    PacManGameGrid
      */
     public PacManGameGrid getGrid() {
-        return GRID;
+        return grid;
     }
 
     /**
@@ -136,10 +136,10 @@ public class Game extends GameGrid {
                 bg.setPaintColor(COLOR_BACKGROUND);
                 Location location = new Location(x, y);
                 // space
-                if (GRID.getCell(location) != PacManGameGrid.BlockType.ERROR)
+                if (grid.getCell(location) != PacManGameGrid.BlockType.ERROR)
                     bg.fillCell(location, COLOR_SPACE);
                 // wall -> added to wall map in manager
-                if (GRID.getCell(location) == PacManGameGrid.BlockType.WALL) {
+                if (grid.getCell(location) == PacManGameGrid.BlockType.WALL) {
                     HashableLocation.putLocationHash(manager.getWalls(), location, 1);
                     bg.fillCell(location, COLOR_WALL);
                 }
