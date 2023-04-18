@@ -56,7 +56,7 @@ public class Gold extends Item {
                     // monster is Orion, then we want Orion to know that this gold piece is already eaten
                     if (monster instanceof Orion orion)
                         HashableLocation.putLocationHash(
-                                orion.goldPacmanAte,
+                                orion.getGoldPacmanAte(),
                                 this.getLocation(),
                                 true
                         );

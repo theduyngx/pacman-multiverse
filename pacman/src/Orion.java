@@ -41,6 +41,16 @@ public class Orion extends Monster {
         this.makeGoldMaps();
     }
 
+
+    /**
+     * Get all the gold pieces that PacMan has eaten. Used to determine Orion's direction since its
+     * behaviors are different when not all gold pieces have been eaten.
+     * @return the hashmap of gold pieces that pacman has eaten
+     */
+    public HashMap<HashableLocation, Boolean> getGoldPacmanAte() {
+        return goldPacmanAte;
+    }
+
     /**
      * <ul>
      * <li>Moves Orion to its next location, based on walking through every gold location randomly;
