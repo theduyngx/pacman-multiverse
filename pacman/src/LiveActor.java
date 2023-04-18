@@ -117,7 +117,10 @@ public abstract class LiveActor extends Actor {
     }
 
     /**
-     * Set initial location for PacMan.
+     * Set initial location for live actor. This method goes hand-in-hand with
+     * <code> Location getInitLocation() </code>, as in its sole purpose is only to add the actor
+     * to the game and its grid. For this reason, it should be expected to only be used once for
+     * each actor.
      * @param initLocation PacMan's initial location
      * @see   Location
      */
@@ -126,7 +129,8 @@ public abstract class LiveActor extends Actor {
     }
 
     /**
-     * Abstract method setting seed for the live actor.
+     * Abstract method setting seed for the live actor. Seed is used for determining the randomizer
+     * which dictates movements of actors.
      * @param seed specified seed
      */
     protected abstract void setSeed(int seed);
@@ -173,8 +177,8 @@ public abstract class LiveActor extends Actor {
         int LIST_LENGTH = 10;
         visitedList.add(location);
         if (visitedLocations.size() == LIST_LENGTH) {
-            HashableLocation.removeLocationHash(visitedLocations, visitedList.get(0));
-            visitedList.remove(0);
+            HashableLocation.removeLocationHash(visitedLocations, visitedList.getFirst());
+            visitedList.removeFirst();
         }
     }
 
