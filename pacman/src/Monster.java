@@ -36,9 +36,6 @@ public abstract class Monster extends LiveActor {
     public static final int SECOND_TO_MILLISECONDS = 1000;
     public static final int AGGRAVATE_TIME = 3;
     private static final int AGGRAVATE_SPEED_FACTOR = 2;
-
-    // visited locations
-    private final ArrayList<Location> visitedList = new ArrayList<>();
     // if it has stopped moving or not
     private boolean stopMoving = false;
 
@@ -136,28 +133,5 @@ public abstract class Monster extends LiveActor {
 
         // Record changes in position to game
         getGameCallback().monsterLocationChanged(this);
-    }
-
-    /**
-     * (WIP: should be HashMap<HashableLocation, Monster>) Add location to visited list.
-     * @param location current location of monster
-     */
-    protected void addVisitedList(Location location) {
-        visitedList.add(location);
-        int LIST_LENGTH = 10;
-        if (visitedList.size() == LIST_LENGTH)
-            visitedList.remove(0);
-    }
-
-    /**
-     * Check if monster has not visited a specific location.
-     * @param location specified location to check if monster has visited
-     * @return         true if monster has yet, false if otherwise
-     */
-    protected boolean notVisited(Location location) {
-        for (Location loc : visitedList)
-            if (loc.equals(location))
-                return false;
-        return true;
     }
 }

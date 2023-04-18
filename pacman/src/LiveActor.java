@@ -2,6 +2,7 @@ package src;
 import ch.aplu.jgamegrid.*;
 import src.utility.GameCallback;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 
@@ -19,6 +20,9 @@ public abstract class LiveActor extends Actor {
 
     // initial location for actor instantiation
     private Location initLocation;
+
+    // visited locations
+    private final ArrayList<Location> visitedList = new ArrayList<>();
 
     // direction-related - representing which angle to turn to for a move
     public static final int RIGHT_TURN_ANGLE = 90;
@@ -141,6 +145,29 @@ public abstract class LiveActor extends Actor {
         assert grid != null;
         return (! HashableLocation.containLocationHash(getManager().getWalls(), location)) &&
                 x < grid.getXRight() && x >= grid.getXLeft() && y < grid.getYBottom() && y >= grid.getYTop();
+    }
+
+    /**
+     * (WIP: should be HashMap<HashableLocation, Monster>) Add location to visited list.
+     * @param location current location of monster
+     */
+    protected void addVisitedList(Location location) {
+        visitedList.add(location);
+        int LIST_LENGTH = 10;
+        if (visitedList.size() == LIST_LENGTH)
+            visitedList.remove(0);
+    }
+
+    /**
+     * Check if monster has not visited a specific location.
+     * @param location specified location to check if monster has visited
+     * @return         true if monster has yet, false if otherwise
+     */
+    protected boolean notVisited(Location location) {
+        for (Location loc : visitedList)
+            if (loc.equals(location))
+                return false;
+        return true;
     }
 
     /**

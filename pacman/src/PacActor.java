@@ -26,7 +26,6 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
 
     // properties related to sequence of moves for pacman in auto mode
     private List<String> propertyMoves = new ArrayList<>();
-    private final ArrayList<Location> visitedList = new ArrayList<>();
     private int propertyMoveIndex = 0;
     // if pacman is in auto mode
     private boolean isAuto = false;
@@ -131,7 +130,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         Location.CompassDirection compassDir = getLocation().get4CompassDirectionTo(closestPill);
         Location next = getLocation().getNeighbourLocation(compassDir);
         setDirection(compassDir);
-        if (!isVisited(next) && canMove(next))
+        if (notVisited(next) && canMove(next))
             setLocation(next);
         else {
             int sign = getRandomizer().nextDouble() < 0.5 ? 1 : -1;
@@ -217,22 +216,6 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             }
         }
         return currentLocation;
-    }
-
-    private void addVisitedList(Location location)
-    {
-        visitedList.add(location);
-        int listLength = 10;
-        if (visitedList.size() == listLength)
-            visitedList.remove(0);
-    }
-
-    private boolean isVisited(Location location)
-    {
-        for (Location loc : visitedList)
-            if (loc.equals(location))
-                return true;
-        return false;
     }
 
     /**
