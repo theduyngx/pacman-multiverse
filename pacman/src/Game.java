@@ -8,8 +8,8 @@ import java.util.Properties;
 
 /**
  * Based on skeleton code for SWEN20003 Project, Semester 2, 2022, The University of Melbourne.
- * The Game class is responsible for putting items and actors onto its own grid, as well as running
- * the game.
+ * The Game class represents the entire PacMan game. It is responsible for putting items and
+ * actors onto its own grid, as well as running the game.
  * @see GameGrid
  *
  * @author The Duy Nguyen            - 1100548 (theduyn@student.unimelb.edu.au)
@@ -28,8 +28,15 @@ public class Game extends GameGrid {
     public final static String LOSE_MESSAGE = "GAME OVER";
     public final static String WIN_MESSAGE = "YOU WIN";
 
+    // game running constants
+    private final static int SIMULATION_PERIOD = 100;
+    private final static int KEY_REPEATED_PERIOD = 150;
+    private final static String GAME_TITLE = "[PacMan in the Multiverse]";
+    private final static int DELAY_RUN = 10;
+    private final static int DELAY_AFTER_RUN = 120;
+
     // game grid
-    public final static int STRETCH_RATE = 3;
+    public final static int STRETCH_RATE = 2;
     public final static int CELL_SIZE = 20 * STRETCH_RATE;
     private final static int NUM_HORIZONTAL_CELLS = 20;
     private final static int NUM_VERTICAL_CELLS = 11;
@@ -74,14 +81,14 @@ public class Game extends GameGrid {
      */
     public void run() {
         // set up game window
-        setSimulationPeriod(100);
-        setTitle("[PacMan in the Multiverse]");
+        setSimulationPeriod(SIMULATION_PERIOD);
+        setTitle(GAME_TITLE);
         GGBackground bg = getBg();
         drawGrid(bg);
 
         // Setup Random seeds
         addKeyRepeatListener(manager.getPacActor());
-        setKeyRepeatPeriod(150);
+        setKeyRepeatPeriod(KEY_REPEATED_PERIOD);
         putPacActor();
         putMonsters();
 
@@ -96,9 +103,9 @@ public class Game extends GameGrid {
         do {
             hasPacmanBeenHit = pacActor.collideMonster();
             hasPacmanEatAllPills = manager.getNumPillsAndGold() <= 0;
-            delay(10);
+            delay(DELAY_RUN);
         } while (! hasPacmanBeenHit && ! hasPacmanEatAllPills);
-        delay(120);
+        delay(DELAY_AFTER_RUN);
 
         // upon winning / losing
         Location loc = pacActor.getLocation();
