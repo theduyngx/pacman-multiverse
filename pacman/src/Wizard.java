@@ -1,6 +1,8 @@
 package src;
 import ch.aplu.jgamegrid.Location;
 
+import java.util.ArrayList;
+
 
 /**
  * Wizard class extended from Monster class.
@@ -33,13 +35,13 @@ public class Wizard extends Monster {
      */
     @Override
     protected void moveApproach() {
-        Location.CompassDirection[] possibleLocations = Location.CompassDirection.values();
+        Location.CompassDirection[] possibleDirections = Location.CompassDirection.values();
 
         // This loop will keep on going until a location is set for the wizard
         // Randomly picks from the 8 possible directions
         while (true) {
-            int currIndex = this.getRandomizer().nextInt(LIST_START, possibleLocations.length);
-            int currDirection = possibleLocations[currIndex].getDirection();
+            int currIndex = this.getRandomizer().nextInt(LIST_START, possibleDirections.length);
+            int currDirection = possibleDirections[currIndex].getDirection();
             Location currentLocation = this.getLocation().getNeighbourLocation(currDirection);
 
             // best case scenario: the wizard found a location to move to instantly
