@@ -1,5 +1,7 @@
 package src;
 import ch.aplu.jgamegrid.*;
+import src.utility.PropertiesLoader;
+
 import java.awt.event.KeyEvent;
 import java.util.*;
 
@@ -17,20 +19,17 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     private static final int NUM_SPRITES = 4;
     private static final String DIRECTORY = "sprites/pacpix.gif";
     private static final String PACMAN_NAME = "PacMan";
+    public static final String KILLED_SPRITE = "sprites/explosion3.gif";
     private int idSprite = 0;
     private int nbPills = 0;
     private int score = 0;
 
     // properties related to sequence of moves for pacman in auto mode
     private List<String> propertyMoves = new ArrayList<>();
+    private final ArrayList<Location> visitedList = new ArrayList<>();
     private int propertyMoveIndex = 0;
     // if pacman is in auto mode
     private boolean isAuto = false;
-
-    // direction related
-    private static final String RIGHT_DIR = "R";
-    private static final String LEFT_DIR = "L";
-    private static final String MOVE_DIR = "M";
 
 
     /**
@@ -132,7 +131,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         Location.CompassDirection compassDir = getLocation().get4CompassDirectionTo(closestPill);
         Location next = getLocation().getNeighbourLocation(compassDir);
         setDirection(compassDir);
-        if (canMove(next))
+        if (!isVisited(next) && canMove(next))
             setLocation(next);
         else {
             int sign = getRandomizer().nextDouble() < 0.5 ? 1 : -1;
@@ -156,6 +155,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             setLocation(next);
         }
         eatItem(getManager());
+        addVisitedList(next);
     }
 
     /**
@@ -219,6 +219,22 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
         return currentLocation;
     }
 
+    private void addVisitedList(Location location)
+    {
+        visitedList.add(location);
+        int listLength = 10;
+        if (visitedList.size() == listLength)
+            visitedList.remove(0);
+    }
+
+    private boolean isVisited(Location location)
+    {
+        for (Location loc : visitedList)
+            if (loc.equals(location))
+                return true;
+        return false;
+    }
+
     /**
      * Let pacman in auto mode follow the moves parsed from properties file. It will read which direction
      * pacman will be heading to, and move accordingly.
@@ -226,9 +242,9 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     private void followPropertyMoves() {
         String currentMove = propertyMoves.get(propertyMoveIndex);
         switch (currentMove) {
-            case RIGHT_DIR -> turn(RIGHT_TURN_ANGLE);
-            case LEFT_DIR  -> turn(LEFT_TURN_ANGLE);
-            case MOVE_DIR  -> {
+            case PropertiesLoader.RIGHT_DIR -> turn(RIGHT_TURN_ANGLE);
+            case PropertiesLoader.LEFT_DIR  -> turn(LEFT_TURN_ANGLE);
+            case PropertiesLoader.MOVE_DIR  -> {
                 Location next = getNextMoveLocation();
                 if (canMove(next)) {
                     setLocation(next);
