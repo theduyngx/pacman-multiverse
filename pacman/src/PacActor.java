@@ -104,6 +104,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
 
     /**
      * Overridden act method from Actor class to act within the game.
+     * @see Actor
      */
     @Override
     public void act() {
@@ -154,7 +155,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             setLocation(next);
         }
         eatItem(getManager());
-        putVisitedLocations(next);
+        addVisitedList(next);
     }
 
     /**

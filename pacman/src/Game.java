@@ -89,8 +89,8 @@ public class Game extends GameGrid {
         // Setup Random seeds
         addKeyRepeatListener(manager.getPacActor());
         setKeyRepeatPeriod(KEY_REPEATED_PERIOD);
-        putPacActor();
         putMonsters();
+        putPacActor();
 
         // Run the game
         doRun();

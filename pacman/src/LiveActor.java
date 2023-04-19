@@ -2,7 +2,6 @@ package src;
 import src.utility.GameCallback;
 
 import ch.aplu.jgamegrid.*;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -22,9 +21,7 @@ public abstract class LiveActor extends Actor {
     // initial location for actor instantiation
     private Location initLocation;
 
-    // visited locations
-    private final HashMap<HashableLocation, Boolean> visitedLocations = new HashMap<>();
-    // This is to keep track of indexing - after a cycle, the earliest location will be removed from
+    // Visited locations list - after a cycle, the earliest location will be removed from
     // visited list. We use LinkedList instead of ArrayList for fast removal and adding.
     private final LinkedList<Location> visitedList = new LinkedList<>();
 
@@ -172,20 +169,17 @@ public abstract class LiveActor extends Actor {
      * @see   Troll
      * @see   PacActor
      */
-    protected void putVisitedLocations(Location location) {
-        HashableLocation.putLocationHash(visitedLocations, location, true);
-        int LIST_LENGTH = 10;
+    protected void addVisitedList(Location location) {
+        int CYCLE_LENGTH = 10;
         visitedList.add(location);
-        if (visitedLocations.size() == LIST_LENGTH) {
-            HashableLocation.removeLocationHash(visitedLocations, visitedList.getFirst());
+        if (visitedList.size() == CYCLE_LENGTH)
             visitedList.removeFirst();
-        }
     }
 
     /**
      * Check if monster has not visited a specific location. This method is used alongside with
-     * <code> putVisitedLocations(Location location) </code> method, meaning it is only used when
-     * the behavior of the live actor calls for a use of the visited locations hashmap.
+     * <code> void addVisitedList(Location location) </code> method, meaning it is only used
+     * when the behavior of the live actor calls for a use of the visited locations list.
      * @param  location specified location to check if monster has visited
      * @return          true if monster has yet, false if otherwise
      * @see    Orion
@@ -194,7 +188,9 @@ public abstract class LiveActor extends Actor {
      * @see    PacActor
      */
     protected boolean notVisited(Location location) {
-        return ! HashableLocation.containLocationHash(visitedLocations, location);
+        for (Location loc : visitedList)
+            if (loc.equals(location)) return false;
+        return true;
     }
 
     /**
