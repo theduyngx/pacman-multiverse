@@ -124,7 +124,7 @@ public class Orion extends Monster {
         }
 
         // Now when the move has been decided, can move Orion to the desired piece
-        this.putVisitedLocations(toMove);
+        this.addVisitedList(toMove);
         this.setLocation(toMove);
     }
 
