@@ -29,39 +29,40 @@ public class Troll extends Monster {
      * Moves troll to its next location, determination of movement is completely random
      */
     @Override
-    protected void moveApproach() {
+    protected Location nextMonsterLocation(int stepSize) {
         double oldDirection = this.getDirection();
         // Should be int but I don't know what happened
-        double sign = this.getRandomizer().nextDouble();
-        this.setDirection(oldDirection);
+        int sign = this.getRandomizer().nextDouble() < 0.5 ? 1 : -1;
         this.turn(sign*RIGHT_TURN_ANGLE);
 
-        Location next = getNextMoveLocation();
+        // this.printVisited();
+
+        // Location next = getNextMoveLocation();
+        Location next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+        Location finalLoc = null;
 
         // First get a random direction to go to (left or right)
-        if (this.canMove(next))
-            this.setLocation(next);
+        if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
 
         // Collision occurs going first given direction
         else {
             // Check if you can go the opposite turn, either left or right
             this.setDirection(oldDirection);
             this.turn(sign*LEFT_TURN_ANGLE);
-            next = this.getNextMoveLocation();
-
-            if (this.canMove(next))
-                this.setLocation(next);
+            next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+            if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
 
             // If nothing really worked, just go backwards
             else {
                 this.setDirection(oldDirection);
                 this.turn(BACK_TURN_ANGLE);
-                next = this.getNextMoveLocation();
-                this.setLocation(next);
+                next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+                if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
             }
         }
 
         // Tell game to change monster's location and store this as visited
-        this.addVisitedList(next);
+        if (finalLoc != null) this.addVisitedList(finalLoc);
+        return finalLoc;
     }
 }

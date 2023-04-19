@@ -33,7 +33,7 @@ public class TX5 extends Monster {
      * otherwise resorts to random movement. Overridden from Monster.
      */
     @Override
-    protected void moveApproach() {
+    protected Location nextMonsterLocation(int stepSize) {
         // With TX5, need to base direction to move on the position of pacman
         Location pacLocation = getManager().getPacActor().getLocation();
         double oldDirection = this.getDirection();
@@ -41,33 +41,36 @@ public class TX5 extends Monster {
         this.setDirection(compassDir);
 
         // This marks the direction nearest to pacman
-        Location next = this.getLocation().getNeighbourLocation(compassDir);
+        Location next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+        Location finalLoc = null;
+
         // Only go to this direction if you can move here, and if it wasn't visited yet
-        if (this.canMove(next) && this.notVisited(next))
-            this.setLocation(next);
+        if (this.canMove(this.getDirection(), stepSize) && this.notVisited(next))
+            finalLoc = next;
 
         // If it can't move here, has to move to a random spot,
         // means either turn left, turn right, or move backwards
         else {
-            double sign = this.getRandomizer().nextDouble();
+            int sign = this.getRandomizer().nextDouble() < 0.5 ? 1 : -1;
             this.setDirection(oldDirection);
             this.turn(sign*RIGHT_TURN_ANGLE);
-            next = this.getNextMoveLocation();
+            next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
 
             // Check if we can turn this direction
-            if (this.canMove(next))
-                this.setLocation(next);
+            if (this.canMove(this.getDirection(), stepSize))
+                finalLoc = next;
 
             // Otherwise just turn backwards
             else {
                 this.setDirection(oldDirection);
                 this.turn(BACK_TURN_ANGLE);
-                next = this.getNextMoveLocation();
-                this.setLocation(next);
+                next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+                if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
             }
         }
 
         // Record changes in position to game
-        this.addVisitedList(next);
+        if (finalLoc != null) this.addVisitedList(finalLoc);
+        return finalLoc;
     }
 }
