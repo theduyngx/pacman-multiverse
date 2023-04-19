@@ -34,6 +34,9 @@ public class TX5 extends Monster {
      */
     @Override
     protected Location nextMonsterLocation(int stepSize) {
+        // Tracks whether a location was found
+        Location finalLoc = null;
+
         // With TX5, need to base direction to move on the position of pacman
         Location pacLocation = getManager().getPacActor().getLocation();
         double oldDirection = this.getDirection();
@@ -42,7 +45,6 @@ public class TX5 extends Monster {
 
         // This marks the direction nearest to pacman
         Location next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
-        Location finalLoc = null;
 
         // Only go to this direction if you can move here, and if it wasn't visited yet
         if (this.canMove(this.getDirection(), stepSize) && this.notVisited(next))
@@ -57,15 +59,29 @@ public class TX5 extends Monster {
             next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
 
             // Check if we can turn this direction
-            if (this.canMove(this.getDirection(), stepSize))
-                finalLoc = next;
+            if (this.canMove(this.getDirection(), stepSize))  finalLoc = next;
 
-            // Otherwise just turn backwards
             else {
+                // Try move forward
                 this.setDirection(oldDirection);
-                this.turn(BACK_TURN_ANGLE);
                 next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
                 if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
+
+                // Try turn the other direction
+                else {
+                    this.setDirection(oldDirection);
+                    this.turn(sign*LEFT_TURN_ANGLE);
+                    next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+                    if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
+
+                    // Just move backwards
+                    else {
+                        this.setDirection(oldDirection);
+                        this.turn(BACK_TURN_ANGLE);
+                        next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+                        if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
+                    }
+                }
             }
         }
 
