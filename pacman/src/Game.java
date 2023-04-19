@@ -166,7 +166,7 @@ public class Game extends GameGrid {
         for (Map.Entry<HashableLocation, Item> entry : manager.getItems().entrySet()) {
             Location location = entry.getKey().location();
             Item item = entry.getValue();
-            item.putObject(background, this, location);
+            item.putActor(background, this, location);
         }
     }
 
@@ -178,8 +178,7 @@ public class Game extends GameGrid {
     public void putMonsters() {
         for (int i=0; i<manager.getMonsters().size(); i++) {
             Monster monster = manager.getMonsters().get(i);
-            Location location = monster.getInitLocation();
-            addActor(monster, location, Location.NORTH);
+            monster.putActor(this);
         }
     }
 
@@ -189,7 +188,6 @@ public class Game extends GameGrid {
      * @see PacActor
      */
     public void putPacActor() {
-        PacActor pacActor = manager.getPacActor();
-        addActor(pacActor, pacActor.getInitLocation());
+        manager.getPacActor().putActor(this);
     }
 }

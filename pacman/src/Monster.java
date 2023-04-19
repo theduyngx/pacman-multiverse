@@ -137,4 +137,14 @@ public abstract class Monster extends LiveActor {
         // Record changes in position to game
         getGameCallback().monsterLocationChanged(this);
     }
+
+
+    /**
+     * Adding itself to be an 'official' part of the game, viz. an actor of the game.
+     * @param game the game
+     */
+    @Override
+    protected void putActor(Game game) {
+        game.addActor(this, getInitLocation(), Location.NORTH);
+    }
 }

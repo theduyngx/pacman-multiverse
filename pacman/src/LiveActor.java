@@ -13,7 +13,7 @@ import java.util.Random;
  * @see Actor
  * @see ObjectManager
  */
-public abstract class LiveActor extends Actor {
+public abstract class LiveActor extends GameActor {
     // manager and randomizer
     private final ObjectManager manager;
     private final Random randomizer = new Random(0);
@@ -215,15 +215,10 @@ public abstract class LiveActor extends Actor {
         return true;
     }
 
+
     /**
-     * Check if 'this' live actor collides with a specified other or not. This is used to specifically
-     * determine whether PacMan has collided with a monster. Meaning its main purpose is to check for
-     * Game Over condition.
-     * @param other specified other live actor
-     * @return      if live actor collides with the other or not
-     * @see         PacActor
+     * Abstract method to put live actor to the game.
+     * @param game the game
      */
-    public boolean checkCollision(LiveActor other) {
-        return (this.getLocation().equals(other.getLocation()));
-    }
+    protected abstract void putActor(Game game);
 }

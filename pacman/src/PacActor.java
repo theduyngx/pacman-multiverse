@@ -192,7 +192,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      */
     public boolean collideMonster() {
         for (Monster monster : getManager().getMonsters())
-            if (checkCollision(monster))
+            if (actorCollide(monster))
                 return true;
         return false;
     }
@@ -238,5 +238,15 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             }
         }
         propertyMoveIndex++;
+    }
+
+
+    /**
+     * Adding itself to be an 'official' part of the game, viz. an actor of the game.
+     * @param game the game
+     */
+    @Override
+    protected void putActor(Game game) {
+        game.addActor(this, getInitLocation());
     }
 }

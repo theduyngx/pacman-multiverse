@@ -33,7 +33,7 @@ public class Ice extends Item {
      * @see             Location
      */
     @Override
-    protected void putObject(GGBackground bg, Game game, Location location) {
+    protected void putActor(GGBackground bg, Game game, Location location) {
         bg.setPaintColor(Color.blue);
         game.addActor(this, location);
     }
