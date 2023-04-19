@@ -1,6 +1,16 @@
 package src;
+import ch.aplu.jgamegrid.Actor;
+import ch.aplu.jgamegrid.GGBackground;
+import ch.aplu.jgamegrid.Location;
 
-public class InanimateActor {
+
+/**
+ * Inanimate Actor abstract class extended from Actor class. It represents any actors in the game that are
+ * inanimate objects. This can be extended to obstacles such as walls, or later on, if ever, dynamic
+ * obstacles that may or may not change the state of the game.
+ * @see Actor
+ */
+public abstract class InanimateActor extends Actor {
     // character representing specific block
     private static final char WALL_CHAR = 'x';
     private static final char SPACE_CHAR = ' ';
@@ -8,6 +18,9 @@ public class InanimateActor {
     private static final char GOLD_CHAR = 'g';
     private static final char ICE_CHAR = 'i';
     private static final char ERROR_CHAR = '\0';
+
+    // object's name
+    private String name;
 
 
     /**
@@ -33,4 +46,57 @@ public class InanimateActor {
             this.BLOCK_CHAR = BLOCK_CHAR;
         }
     }
+
+
+    /**
+     * Inanimate object constructor. Calls the constructor of Actor class.
+     * @param src the directory for sprite image of the inanimate object
+     */
+    public InanimateActor(String src) {
+        super(src);
+    }
+
+    /**
+     * Get the item's name. Used for printing to log in game callback.
+     * @return the item's name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Set the item's name.
+     * @param name item's name
+     */
+    protected void setName(String name) {
+        this.name = name;
+    }
+
+
+    /**
+     * Check if an item is at PacMan's position, meaning PacMan has obtained item in question.
+     * It should be noted that this method is used purely for assertion before executing the signal
+     * to manager method.
+     * @param manager object manager
+     * @return        whether PacMan has eaten the item
+     */
+    public boolean matchPacmanLocation(ObjectManager manager) {
+        // assert that player is in fact at the location of item
+        int xItem = this.getX();
+        int yItem = this.getY();
+        int xPac  = manager.getPacActor().getX();
+        int yPac  = manager.getPacActor().getY();
+        return (xItem == xPac && yItem == yPac);
+    }
+
+    /**
+     * Abstract method to put itself to the game.
+     * @param bg        background of game grid
+     * @param game      the game
+     * @param location  object's location
+     * @see             GGBackground
+     * @see             Game
+     * @see             Location
+     */
+    protected abstract void putObject(GGBackground bg, Game game, Location location);
 }

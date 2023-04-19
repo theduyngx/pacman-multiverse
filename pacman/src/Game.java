@@ -166,7 +166,7 @@ public class Game extends GameGrid {
         for (Map.Entry<HashableLocation, Item> entry : manager.getItems().entrySet()) {
             Location location = entry.getKey().location();
             Item item = entry.getValue();
-            item.putItem(background, this, location);
+            item.putObject(background, this, location);
         }
     }
 

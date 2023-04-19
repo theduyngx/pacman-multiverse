@@ -35,7 +35,7 @@ public class Pill extends Item {
      * @see             Location
      */
     @Override
-    protected void putItem(GGBackground bg, Game game, Location location) {
+    protected void putObject(GGBackground bg, Game game, Location location) {
         bg.setPaintColor(Color.white);
         bg.fillCircle(game.toPoint(location), RADIUS);
         game.addActor(this, location);
