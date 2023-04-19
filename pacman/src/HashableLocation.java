@@ -67,29 +67,6 @@ public record HashableLocation(Location location) {
 
 
     /**
-     * Get hashmap value via specified location key.
-     * @param map       hash map
-     * @param location  specified location
-     * @return          the value
-     * @param <T>       generic type for value
-     */
-    public static <T> T getLocationHash(HashMap<HashableLocation, T> map, Location location) {
-        return map.get(new HashableLocation(location));
-    }
-
-
-    /**
-     * Remove the entry based on specified location key.
-     * @param map       the hash map
-     * @param location  the specified location to have its entry removed
-     * @param <T>       generic value type
-     */
-    public static <T> void removeLocationHash(HashMap<HashableLocation, T> map, Location location) {
-        map.remove(new HashableLocation(location));
-    }
-
-
-    /**
      * Check if hashmap of HashableLocation contains a key corresponding to a specified Location object.
      * @param map       the hashmap
      * @param location  specified location

@@ -155,7 +155,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             setLocation(next);
         }
         eatItem(getManager());
-        addVisitedList(next);
+        if (isAuto) addVisitedList(next);
     }
 
     /**
@@ -224,6 +224,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      * pacman will be heading to, and move accordingly.
      */
     private void followPropertyMoves() {
+        if (! isAuto) return;
         String currentMove = propertyMoves.get(propertyMoveIndex);
         switch (currentMove) {
             case PropertiesLoader.RIGHT_DIR -> turn(RIGHT_TURN_ANGLE);

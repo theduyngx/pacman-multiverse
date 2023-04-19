@@ -143,10 +143,10 @@ public class Game extends GameGrid {
                 bg.setPaintColor(COLOR_BACKGROUND);
                 Location location = new Location(x, y);
                 // space
-                if (grid.getCell(location) != PacManGameGrid.BlockType.ERROR)
+                if (grid.getCell(location) != InanimateActor.BlockType.ERROR)
                     bg.fillCell(location, COLOR_SPACE);
                 // wall -> added to wall map in manager
-                if (grid.getCell(location) == PacManGameGrid.BlockType.WALL) {
+                if (grid.getCell(location) == InanimateActor.BlockType.WALL) {
                     HashableLocation.putLocationHash(manager.getWalls(), location, 1);
                     bg.fillCell(location, COLOR_WALL);
                 }
