@@ -49,6 +49,7 @@ public abstract class LiveActor extends Actor {
         super(isRotatable, directory, numSprites);
         assert manager != null;
         this.manager = manager;
+        this.stepSize = NORMAL_STEP_SIZE;
     }
 
     /**
@@ -178,6 +179,28 @@ public abstract class LiveActor extends Actor {
     }
 
     /**
+     * Check whether a live actor can move a specified direction and units. This is to adjust
+     * for actors that cannot fly, so movement can be obstructed by any wall on the way to
+     * the end point
+     * @param directionValue specified direction
+     * @param stepSize       number of units in direction
+     * @return               boolean indicating whether actor can move there.
+     * @see                  Location
+     */
+    protected boolean canMove(double directionValue, int stepSize) {
+        Location baseLocation = this.getLocation();
+        Location nextLocation = baseLocation;
+
+        for (int i=0; i<stepSize; i++) {
+            nextLocation = nextLocation.getNeighbourLocation(directionValue);
+            if (!canMove(nextLocation)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Add location to the hashmap of visited locations.
      * <ul>
      *     <li>For monsters, this is used for those that need to remember its visited location within a
@@ -213,6 +236,13 @@ public abstract class LiveActor extends Actor {
         for (Location loc : visitedList)
             if (loc.equals(location)) return false;
         return true;
+    }
+
+    protected void printVisited() {
+        for (Location loc: visitedList) {
+            System.out.print(String.format("%d %d ", loc.getX(), loc.getY()));
+        }
+        System.out.print("\n");
     }
 
     /**
