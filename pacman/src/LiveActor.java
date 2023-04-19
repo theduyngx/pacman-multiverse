@@ -29,10 +29,14 @@ public abstract class LiveActor extends Actor {
     public static final int RIGHT_TURN_ANGLE = 90;
     public static final int LEFT_TURN_ANGLE = -RIGHT_TURN_ANGLE;
     public static final int BACK_TURN_ANGLE = 2 * RIGHT_TURN_ANGLE;
+    public static final int SLOW_DOWN = 3;
+
+    // step sizes
+    public static final int NORMAL_STEP_SIZE = 1;
 
     // other properties
     private String name;
-    public static final int SLOW_DOWN = 3;
+    private int stepSize;
 
     /**
      * Constructor for LiveActor.
@@ -45,6 +49,15 @@ public abstract class LiveActor extends Actor {
         super(isRotatable, directory, numSprites);
         assert manager != null;
         this.manager = manager;
+    }
+
+    /**
+     * Get the step size of the live actor. The step size refers to the number of cells per move of
+     * actor in question.
+     * @return the step size
+     */
+    public int getStepSize() {
+        return stepSize;
     }
 
     /**
@@ -103,6 +116,15 @@ public abstract class LiveActor extends Actor {
      */
     public String getName() {
         return name;
+    }
+
+
+    /**
+     * Set the step size for the live actor.
+     * @param stepSize the step size
+     */
+    public void setStepSize(int stepSize) {
+        this.stepSize = stepSize;
     }
 
     /**
