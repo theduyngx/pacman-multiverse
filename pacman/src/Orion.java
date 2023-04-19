@@ -61,7 +61,10 @@ public class Orion extends Monster {
      * </ul>
      */
     @Override
-    protected void moveApproach() {
+    protected Location nextMonsterLocation(int stepSize) {
+        // This checks if we can move anywhere
+        Location finalLoc = null;
+
         // If already are at destination or destination is null, find a new destination to walk to
         if (this.currDestination != null &&
             this.currDestination.location().getX() == this.getLocation().getX() &&
@@ -86,12 +89,12 @@ public class Orion extends Monster {
         Location toMove;
         for (Location.CompassDirection dir : Location.CompassDirection.values()) {
             if (dir.getDirection()%CHECK_NON_DIAGONAL == NON_DIAGONAL) {
-                Location currLocation = orionLocation.getNeighbourLocation(dir);
+                Location currLocation = orionLocation.getAdjacentLocation(dir.getDirection(), stepSize);
                 int distanceToGold = currLocation.getDistanceTo(this.currDestination.location());
 
                 // To prevent Orion from just going to the same 2 locations repeatedly,
                 // need to track visited locations with visited list
-                if (this.canMove(currLocation) && this.notVisited(currLocation) && distanceToGold <= minDistance) {
+                if (this.canMove(dir.getDirection(), stepSize) && this.notVisited(currLocation) && distanceToGold <= minDistance) {
                     // Keep track of all possible tying directions
                     if (distanceToGold < minDistance) {
                         minDistance = distanceToGold;
@@ -104,15 +107,23 @@ public class Orion extends Monster {
 
         // In case every move has been visited already, just find the immediate place you can move to
         if (possibleLocations.isEmpty()) {
-            Location.CompassDirection[] directions = Location.CompassDirection.values();
-            while(true) {
-                int currIndex = this.getRandomizer().nextInt(LIST_START, directions.length);
-                Location.CompassDirection dir = directions[currIndex];
-                Location newLocation = this.getLocation().getNeighbourLocation(dir);
-                if (this.canMove(newLocation) && dir.getDirection()%CHECK_NON_DIAGONAL == NON_DIAGONAL) {
-                    toMove = newLocation;
+            Location.CompassDirection[] possibleDirections = Location.CompassDirection.values();
+            ArrayList<Integer> directionValues = new ArrayList<>();
+            for (Location.CompassDirection dir : possibleDirections) {
+                directionValues.add(dir.getDirection());
+            }
+
+            // Keep randomly selecting directions and getting corresponding location
+            // until you find a movable location or you go through the whole list
+            while(!directionValues.isEmpty()) {
+                int currIndex = this.getRandomizer().nextInt(LIST_START, directionValues.size());
+                int currentDir = directionValues.get(currIndex);
+                Location newLocation = this.getLocation().getAdjacentLocation(currentDir, stepSize);
+                if (this.canMove(currentDir, stepSize) && currentDir%CHECK_NON_DIAGONAL == NON_DIAGONAL) {
+                    finalLoc = newLocation;
                     break;
                 }
+                directionValues.remove(currIndex);
             }
         }
 
@@ -120,12 +131,12 @@ public class Orion extends Monster {
         // to a gold, randomly select from these options
         else {
             int randomIndex = this.getRandomizer().nextInt(LIST_START, possibleLocations.size());
-            toMove = possibleLocations.get(randomIndex);
+            finalLoc = possibleLocations.get(randomIndex);
         }
 
         // Now when the move has been decided, can move Orion to the desired piece
-        this.addVisitedList(toMove);
-        this.setLocation(toMove);
+        if (finalLoc != null) this.addVisitedList(finalLoc);
+        return finalLoc;
     }
 
     /**

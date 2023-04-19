@@ -31,14 +31,14 @@ public class Alien extends Monster {
      * it can move to and are closest to Pacman. Overridden from Monster.
      */
     @Override
-    protected void moveApproach() {
+    protected Location nextMonsterLocation(int stepSize) {
         // Aliens pick from the directions it can walk to, and choose one that's closest to pacman
         ArrayList<Location> possibleMoves = new ArrayList<>();
         int minDistance = Integer.MAX_VALUE;
         Location pacmanLocation = getManager().getPacActor().getLocation();
 
         for (Location.CompassDirection dir: Location.CompassDirection.values()) {
-            Location currLocation = this.getLocation().getNeighbourLocation(dir);
+            Location currLocation = this.getLocation().getAdjacentLocation(dir, stepSize);
             int distanceToPacman = currLocation.getDistanceTo(pacmanLocation);
 
             // ties means to randomly pick from all tying directions
@@ -51,8 +51,11 @@ public class Alien extends Monster {
             }
         }
 
+        // If there are no possible moves, return null
+        if (possibleMoves.isEmpty()) return null;
+
         // Randomly pick a direction from all possible minimum distance directions
         int listIndex = this.getRandomizer().nextInt(0, possibleMoves.size());
-        this.setLocation(possibleMoves.get(listIndex));
+        return possibleMoves.get(listIndex);
     }
 }
