@@ -9,6 +9,9 @@ import java.util.*;
  */
 public abstract class Monster extends LiveActor {
 
+    // step sizes
+    public static final int AGGRESSIVE_STEP_SIZE = 1;
+
     /**
      * Monster type enumeration. Each monster type has a boolean value indicating whether it is exclusive
      * to the extended multiverse game or not.
