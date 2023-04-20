@@ -109,14 +109,12 @@ public abstract class Monster extends LiveActor {
      * @param seconds number of seconds monster speeds up
      */
     public void speedUp(int seconds) {
-        // this.setSlowDown(1/AGGRAVATE_SPEED_FACTOR);
         this.setStepSize(AGGRESSIVE_STEP_SIZE);
         Timer timer = new Timer();
         final Monster monster = this;
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                // monster.setSlowDown(AGGRAVATE_SPEED_FACTOR);
                 monster.setStepSize(LiveActor.NORMAL_STEP_SIZE);
             }
         }, (long) seconds * SECOND_TO_MILLISECONDS);
