@@ -41,7 +41,7 @@ public class Troll extends Monster {
 
         if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
 
-        // If collision occurs going first given direction, try other directions
+        // If collision occurs going first given direction, try other direction
         else {
             // Try to move forward
             this.setDirection(oldDirection);
@@ -64,6 +64,7 @@ public class Troll extends Monster {
             }
         }
 
+        // Tell game to change monster's location and store this as visited
         return finalLoc;
     }
 }

@@ -1,53 +1,26 @@
 package src;
-import ch.aplu.jgamegrid.*;
 
 
 /**
- * Abstract Item class extended from Actor for any actors in the game that are inanimate objects that
- * have an effect to the game. It will make use of the object manager to handle its locations, which
- * extends to whether or not a live actor has 'collided' with its location or not. In the case of pacman,
- * that should imply the item, if not obstacles, have been acquired.
- * @see Actor
+ * Abstract Item class extended from InanimateActor for any actors in the game that are inanimate objects,
+ * but specifically only those that can be acquired by PacMan. It will make use of the object manager to
+ * handle its locations, which extends to whether or not a live actor has 'collided' with its location or
+ * not. In the case of pacman, that should imply the item, if not obstacles, have been acquired.
+ * @see InanimateActor
  * @see ObjectManager
  */
-public abstract class Item extends Actor {
+public abstract class Item extends InanimateActor {
     // constant radius value when drawn
     public static final int RADIUS = 5 * Game.STRETCH_RATE;
     // the score that would be acquired if eaten by PacMan
     private int score;
-    // item's name
-    private String name;
 
     /**
-     * Item constructor.
+     * Item constructor. Calls the constructor of InanimateActor abstract parent class.
      * @param src the sprite image directory
      */
     public Item(String src) {
         super(src);
-    }
-
-    /**
-     * Check if an item is at PacMan's position, meaning PacMan has obtained item in question.
-     * It should be noted that this method is used purely for assertion before executing the signal
-     * to manager method.
-     * @param manager object manager
-     * @return        whether PacMan has eaten the item
-     */
-    public boolean matchPacmanLocation(ObjectManager manager) {
-        // assert that player is in fact at the location of item
-        int xItem = this.getX();
-        int yItem = this.getY();
-        int xPac  = manager.getPacActor().getX();
-        int yPac  = manager.getPacActor().getY();
-        return (xItem == xPac && yItem == yPac);
-    }
-
-    /**
-     * Get the item's name. Used for printing to log in game callback.
-     * @return the item's name
-     */
-    public String getName() {
-        return name;
     }
 
     /**
@@ -67,14 +40,6 @@ public abstract class Item extends Actor {
     }
 
     /**
-     * Set the item's name.
-     * @param name item's name
-     */
-    protected void setName(String name) {
-        this.name = name;
-    }
-
-    /**
      * Remove item; used when item is eaten by PacMan.
      * @param manager object manager
      */
@@ -83,17 +48,6 @@ public abstract class Item extends Actor {
         manager.getItems().remove(hashLocation);
         removeSelf();
     }
-
-    /**
-     * Abstract method to put itself to the game.
-     * @param bg        background of game grid
-     * @param game      the game
-     * @param location  item's location
-     * @see             GGBackground
-     * @see             Game
-     * @see             Location
-     */
-    protected abstract void putItem(GGBackground bg, Game game, Location location);
 
     /**
      * Abstract method to signal the object manager for changes that acquiring the item makes.

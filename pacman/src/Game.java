@@ -143,10 +143,10 @@ public class Game extends GameGrid {
                 bg.setPaintColor(COLOR_BACKGROUND);
                 Location location = new Location(x, y);
                 // space
-                if (grid.getCell(location) != PacManGameGrid.BlockType.ERROR)
+                if (grid.getCell(location) != InanimateActor.BlockType.ERROR)
                     bg.fillCell(location, COLOR_SPACE);
                 // wall -> added to wall map in manager
-                if (grid.getCell(location) == PacManGameGrid.BlockType.WALL) {
+                if (grid.getCell(location) == InanimateActor.BlockType.WALL) {
                     HashableLocation.putLocationHash(manager.getWalls(), location, 1);
                     bg.fillCell(location, COLOR_WALL);
                 }
@@ -166,7 +166,7 @@ public class Game extends GameGrid {
         for (Map.Entry<HashableLocation, Item> entry : manager.getItems().entrySet()) {
             Location location = entry.getKey().location();
             Item item = entry.getValue();
-            item.putItem(background, this, location);
+            item.putActor(background, this, location);
         }
     }
 
@@ -178,8 +178,7 @@ public class Game extends GameGrid {
     public void putMonsters() {
         for (int i=0; i<manager.getMonsters().size(); i++) {
             Monster monster = manager.getMonsters().get(i);
-            Location location = monster.getInitLocation();
-            addActor(monster, location, Location.NORTH);
+            monster.putActor(this);
         }
     }
 
@@ -189,7 +188,6 @@ public class Game extends GameGrid {
      * @see PacActor
      */
     public void putPacActor() {
-        PacActor pacActor = manager.getPacActor();
-        addActor(pacActor, pacActor.getInitLocation());
+        manager.getPacActor().putActor(this);
     }
 }

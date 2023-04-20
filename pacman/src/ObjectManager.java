@@ -147,11 +147,11 @@ public class ObjectManager {
         isMultiverse = properties.getProperty("version").contains("multiverse");
 
         // concern only about locations of edible items
-        ArrayList<PacManGameGrid.BlockType> blockTypes =
-                new ArrayList<>(Arrays.asList(PacManGameGrid.BlockType.values()));
+        ArrayList<InanimateActor.BlockType> blockTypes =
+                new ArrayList<>(Arrays.asList(InanimateActor.BlockType.values()));
 
         // for each of said item type
-        for (PacManGameGrid.BlockType blockType : blockTypes) {
+        for (InanimateActor.BlockType blockType : blockTypes) {
             String name = blockType.toString();
             String property_name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
 
@@ -178,7 +178,7 @@ public class ObjectManager {
                     // add to item hashmaps and set game grid's cell
                     HashableLocation.putLocationHash(items, location, item);
                     getGame().getGrid().setCell(location, blockType);
-                    if (blockType == PacManGameGrid.BlockType.PILL || blockType == PacManGameGrid.BlockType.GOLD)
+                    if (blockType == InanimateActor.BlockType.PILL || blockType == InanimateActor.BlockType.GOLD)
                         numPillsAndGold++;
                 }
             }
@@ -271,7 +271,7 @@ public class ObjectManager {
     protected void instantiateObjects(PacManGameGrid grid) {
         for (int col = 0; col < grid.getNumVerticalCells(); col++)
             for (int row = 0; row < grid.getNumHorizontalCells(); row++) {
-                PacManGameGrid.BlockType itemType = grid.getMazeArray()[col][row];
+                InanimateActor.BlockType itemType = grid.getMazeArray()[col][row];
 
                 // ignore if location is already occupied
                 Location location = new Location(row, col);

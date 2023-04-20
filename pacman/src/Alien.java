@@ -26,6 +26,7 @@ public class Alien extends Monster {
         setType(TYPE);
     }
 
+
     /**
      * Moves Alien to its next location, purely determined by which 8 neighboring locations
      * it can move to and are closest to Pacman. Overridden from Monster.

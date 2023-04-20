@@ -49,8 +49,7 @@ public class TX5 extends Monster {
         // Only go to this direction if you can move here, and if it wasn't visited yet
         if (this.canMove(this.getDirection(), stepSize) && this.notVisited(next)) finalLoc = next;
 
-        // If it can't move here, has to move to a random spot,
-        // means either turn left, turn right, or move backwards
+        // If it can't move here, has to move to a random spot
         else {
             int sign = this.getRandomizer().nextDouble() < 0.5 ? 1 : -1;
             this.setDirection(oldDirection);
@@ -58,7 +57,8 @@ public class TX5 extends Monster {
             next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
 
             // Check if we can turn this direction
-            if (this.canMove(this.getDirection(), stepSize))  finalLoc = next;
+            if (this.canMove(this.getDirection(), stepSize))
+                finalLoc = next;
 
             else {
                 // Try move forward

@@ -140,12 +140,25 @@ public abstract class Monster extends LiveActor {
         getGameCallback().monsterLocationChanged(this);
     }
 
+
+    /**
+     * Adding itself to be an 'official' part of the game, viz. an actor of the game. Overridden
+     * from Movable interface.
+     * @param game the game
+     * @see        src.utility.Movable
+     */
+    @Override
+    public void putActor(Game game) {
+        game.addActor(this, getInitLocation(), Location.NORTH);
+    }
+
+
     /**
      * Overridden moveApproach method from LiveActor class for monsters within the game
      * @see LiveActor
      */
     @Override
-    protected void moveApproach() {
+    public void moveApproach() {
         Location newLocation = nextMonsterLocation(this.getStepSize());
         if (newLocation == null) {
             newLocation = nextMonsterLocation(LiveActor.NORMAL_STEP_SIZE);

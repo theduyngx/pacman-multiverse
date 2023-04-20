@@ -37,20 +37,15 @@ public class Wizard extends Monster {
      */
     @Override
     protected Location nextMonsterLocation(int stepSize) {
-        // // Tracks whether a location was found
-        Location finalLoc = null;
-
-        // Get the possibleDirections then add each direction int value to the
-        // directionValues
+        // Get the possibleDirections then add each direction to directionValues
         Location.CompassDirection[] possibleDirections = Location.CompassDirection.values();
         ArrayList<Integer> directionValues = new ArrayList<>();
         for (Location.CompassDirection dir : possibleDirections) {
             directionValues.add(dir.getDirection());
         }
+        Location finalLoc = null; // This checks if we even can return a direction
 
-        // This loop will keep on going until a location is set for the wizard
-        // Randomly picks from the 8 possible directions or if it exhausted
-        // all possible directions
+        // loop till a location is set; randomly pick a direction or if it has exhausted all of them
         while (!directionValues.isEmpty()) {
             int currIndex = this.getRandomizer().nextInt(LIST_START, directionValues.size());
             int currDirection = directionValues.get(currIndex);
@@ -61,11 +56,9 @@ public class Wizard extends Monster {
                 break;
             }
 
-            // Even if it can't move to that block, it might be able to go to
-            // the adjacent block if the space beyond the wall is valid
+            // Even when not movable, it might be able to go to adjacent block if space beyond wall is valid
             else {
-                // Whether furious or normal, wizard only looks one step after
-                // its chosen location to see if it's a wall or not
+                // furious or not, wizard only looks 1 step after chosen location to see if it's wall or not
                 if (this.canMove(currDirection, stepSize+BEYOND_WALL)) {
                     Location beyondWallLocation = this.getLocation().getAdjacentLocation(currDirection,
                             stepSize+BEYOND_WALL);
