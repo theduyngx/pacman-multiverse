@@ -41,7 +41,7 @@ public class Alien extends Monster {
             Location currLocation = this.getLocation().getAdjacentLocation(dir, stepSize);
             int distanceToPacman = currLocation.getDistanceTo(pacmanLocation);
 
-            // ties means to randomly pick from all tying directions
+            // ties mean to randomly pick from all tying directions
             if (this.canMove(currLocation) && distanceToPacman <= minDistance) {
                 if (distanceToPacman < minDistance) {
                     minDistance = distanceToPacman;

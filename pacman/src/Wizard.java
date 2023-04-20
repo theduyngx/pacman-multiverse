@@ -37,6 +37,9 @@ public class Wizard extends Monster {
      */
     @Override
     protected Location nextMonsterLocation(int stepSize) {
+        // // Tracks whether a location was found
+        Location finalLoc = null;
+
         // Get the possibleDirections then add each direction int value to the
         // directionValues
         Location.CompassDirection[] possibleDirections = Location.CompassDirection.values();
@@ -44,9 +47,6 @@ public class Wizard extends Monster {
         for (Location.CompassDirection dir : possibleDirections) {
             directionValues.add(dir.getDirection());
         }
-
-        // This checks if we even can return a direction
-        Location finalLoc = null;
 
         // This loop will keep on going until a location is set for the wizard
         // Randomly picks from the 8 possible directions or if it exhausted

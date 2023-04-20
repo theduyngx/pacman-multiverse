@@ -62,7 +62,7 @@ public class Orion extends Monster {
      */
     @Override
     protected Location nextMonsterLocation(int stepSize) {
-        // This checks if we can move anywhere
+        // Tracks whether a location was found
         Location finalLoc = null;
 
         // If already are at destination or destination is null, find a new destination to walk to
@@ -80,13 +80,11 @@ public class Orion extends Monster {
         if (!hasDestination) this.findNewGold();
 
         // Now we go towards the direction of this new location
-        Location orionLocation = this.getLocation();
-
         // Orion monster can only go vertically and horizontally (it doesn't fly)
         // Want to go towards direction where distance to gold is minimized
+        Location orionLocation = this.getLocation();
         int minDistance = Integer.MAX_VALUE;
         ArrayList<Location> possibleLocations = new ArrayList<>();
-        Location toMove;
         for (Location.CompassDirection dir : Location.CompassDirection.values()) {
             if (dir.getDirection()%CHECK_NON_DIAGONAL == NON_DIAGONAL) {
                 Location currLocation = orionLocation.getAdjacentLocation(dir.getDirection(), stepSize);
@@ -94,7 +92,8 @@ public class Orion extends Monster {
 
                 // To prevent Orion from just going to the same 2 locations repeatedly,
                 // need to track visited locations with visited list
-                if (this.canMove(dir.getDirection(), stepSize) && this.notVisited(currLocation) && distanceToGold <= minDistance) {
+                if (this.canMove(dir.getDirection(), stepSize) && this.notVisited(currLocation) &&
+                        distanceToGold <= minDistance) {
                     // Keep track of all possible tying directions
                     if (distanceToGold < minDistance) {
                         minDistance = distanceToGold;
@@ -143,14 +142,15 @@ public class Orion extends Monster {
      * Helper function for moveApproach that decides the next gold piece location Orion moves to.
      */
     private void findNewGold() {
-        // keep track of the gold pieces that have and have not been visited
+        // Keep track of the gold pieces that have and have not been visited
         HashMap<HashableLocation, Boolean> notTaken = new HashMap<>();
 
-        // Loop through all the possible gold coins in the game
+        // Loop through all the possible golds in the game
         for (HashableLocation loc : this.goldPacmanAte.keySet())
             // Prioritize any gold coin that pacman hasn't eaten yet
-            if (!this.goldVisited.get(loc))
+            if (!this.goldVisited.get(loc)) {
                 HashableLocation.putLocationHash(notTaken, loc.location(), true);
+            }
 
         // If there are still golds pacman hasn't eaten yet and Orion hasn't visited
         ArrayList<HashableLocation> goldsToIterate = new ArrayList<>(notTaken.keySet());

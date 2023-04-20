@@ -47,8 +47,7 @@ public class TX5 extends Monster {
         Location next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
 
         // Only go to this direction if you can move here, and if it wasn't visited yet
-        if (this.canMove(this.getDirection(), stepSize) && this.notVisited(next))
-            finalLoc = next;
+        if (this.canMove(this.getDirection(), stepSize) && this.notVisited(next)) finalLoc = next;
 
         // If it can't move here, has to move to a random spot,
         // means either turn left, turn right, or move backwards
@@ -85,7 +84,7 @@ public class TX5 extends Monster {
             }
         }
 
-        // Record changes in position to game
+        // Store location in visited list if not null
         if (finalLoc != null) this.addVisitedList(finalLoc);
         return finalLoc;
     }
