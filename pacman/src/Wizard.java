@@ -37,15 +37,16 @@ public class Wizard extends Monster {
      */
     @Override
     protected Location nextMonsterLocation(int stepSize) {
+        Location finalLoc = null; // This checks if we even can return a direction
+
         // Get the possibleDirections then add each direction to directionValues
         Location.CompassDirection[] possibleDirections = Location.CompassDirection.values();
         ArrayList<Integer> directionValues = new ArrayList<>();
         for (Location.CompassDirection dir : possibleDirections) {
             directionValues.add(dir.getDirection());
         }
-        Location finalLoc = null; // This checks if we even can return a direction
 
-        // loop till a location is set; randomly pick a direction or if it has exhausted all of them
+        // Loop until a location is set; randomly pick a direction or if it has exhausted all of them
         while (!directionValues.isEmpty()) {
             int currIndex = this.getRandomizer().nextInt(LIST_START, directionValues.size());
             int currDirection = directionValues.get(currIndex);
@@ -58,7 +59,7 @@ public class Wizard extends Monster {
 
             // Even when not movable, it might be able to go to adjacent block if space beyond wall is valid
             else {
-                // furious or not, wizard only looks 1 step after chosen location to see if it's wall or not
+                // Furious or not, wizard only looks 1 step after chosen location to see if it's wall or not
                 if (this.canMove(currDirection, stepSize+BEYOND_WALL)) {
                     Location beyondWallLocation = this.getLocation().getAdjacentLocation(currDirection,
                             stepSize+BEYOND_WALL);

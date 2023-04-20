@@ -90,7 +90,7 @@ public class Orion extends Monster {
                 Location currLocation = orionLocation.getAdjacentLocation(dir.getDirection(), stepSize);
                 int distanceToGold = currLocation.getDistanceTo(this.currDestination.location());
 
-                // track visited locations with visited list to prevent going to same 2 locations repeatedly
+                // Track visited locations with visited list to prevent going to same 2 locations repeatedly
                 if (this.canMove(dir.getDirection(), stepSize) &&
                     this.notVisited(currLocation) && distanceToGold <= minDistance)
                 {
@@ -146,7 +146,7 @@ public class Orion extends Monster {
         // keep track of the gold pieces that have and have not been visited
         HashMap<HashableLocation, Boolean> notTaken = new HashMap<>();
         for (HashableLocation loc : this.goldPacmanAte.keySet())
-            // prioritize un-eaten gold
+            // Prioritize un-eaten gold
             if (!this.goldVisited.get(loc))
                 HashableLocation.putLocationHash(notTaken, loc.location(), true);
 
