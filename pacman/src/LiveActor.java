@@ -55,6 +55,7 @@ public abstract class LiveActor extends GameActor implements Movable {
         super(isRotatable, directory, numSprites);
         assert manager != null;
         this.manager = manager;
+        this.stepSize = NORMAL_STEP_SIZE;
     }
 
     /**
@@ -178,6 +179,27 @@ public abstract class LiveActor extends GameActor implements Movable {
                 x < grid.getXRight() && x >= grid.getXLeft() && y < grid.getYBottom() && y >= grid.getYTop();
     }
 
+
+    /**
+     * Check whether a live actor can move a specified direction and units. This is to adjust
+     * for actors that cannot fly, so movement can be obstructed by any wall on the way to
+     * the end point
+     * @param directionValue specified direction
+     * @param stepSize       number of units in direction
+     * @return               boolean indicating whether actor can move there.
+     * @see                  Location
+     */
+    protected boolean canMove(double directionValue, int stepSize) {
+        Location nextLocation = this.getLocation();
+        for (int i=0; i<stepSize; i++) {
+            nextLocation = nextLocation.getNeighbourLocation(directionValue);
+            if (!canMove(nextLocation))
+                return false;
+        }
+        return true;
+    }
+
+
     /**
      * Add location to the hashmap of visited locations. This method is implemented from Movable interface.
      * <ul>
@@ -217,5 +239,12 @@ public abstract class LiveActor extends GameActor implements Movable {
         for (Location loc : visitedList)
             if (loc.equals(location)) return false;
         return true;
+    }
+
+    protected void printVisited() {
+        for (Location loc: visitedList) {
+            System.out.printf("%d %d ", loc.getX(), loc.getY());
+        }
+        System.out.print("\n");
     }
 }

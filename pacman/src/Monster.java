@@ -10,7 +10,7 @@ import java.util.*;
 public abstract class Monster extends LiveActor {
 
     // step sizes
-    public static final int AGGRESSIVE_STEP_SIZE = 1;
+    public static final int AGGRESSIVE_STEP_SIZE = 2;
 
     /**
      * Monster type enumeration. Each monster type has a boolean value indicating whether it is exclusive
@@ -109,13 +109,15 @@ public abstract class Monster extends LiveActor {
      * @param seconds number of seconds monster speeds up
      */
     public void speedUp(int seconds) {
-        this.setSlowDown(1/AGGRAVATE_SPEED_FACTOR);
+        // this.setSlowDown(1/AGGRAVATE_SPEED_FACTOR);
+        this.setStepSize(AGGRESSIVE_STEP_SIZE);
         Timer timer = new Timer();
         final Monster monster = this;
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                monster.setSlowDown(AGGRAVATE_SPEED_FACTOR);
+                // monster.setSlowDown(AGGRAVATE_SPEED_FACTOR);
+                monster.setStepSize(LiveActor.NORMAL_STEP_SIZE);
             }
         }, (long) seconds * SECOND_TO_MILLISECONDS);
     }
@@ -149,4 +151,25 @@ public abstract class Monster extends LiveActor {
     public void putActor(Game game) {
         game.addActor(this, getInitLocation(), Location.NORTH);
     }
+
+
+    /**
+     * Overridden moveApproach method from LiveActor class for monsters within the game
+     * @see LiveActor
+     */
+    @Override
+    public void moveApproach() {
+        Location newLocation = nextMonsterLocation(this.getStepSize());
+        if (newLocation == null) {
+            newLocation = nextMonsterLocation(LiveActor.NORMAL_STEP_SIZE);
+        }
+
+        assert newLocation != null;
+        this.setLocation(newLocation);
+    }
+
+    /**
+     * Abstract method for specific movement behavior of monster types
+     */
+    protected abstract Location nextMonsterLocation(int stepSize);
 }

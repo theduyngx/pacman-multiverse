@@ -26,44 +26,45 @@ public class Troll extends Monster {
     }
 
     /**
-     * Moves troll to its next location, determination of movement is completely random.
-     * Overridden from Movable.
-     * @see src.utility.Movable
+     * Moves troll to its next location, determination of movement is completely random
      */
     @Override
-    public void moveApproach() {
-        double oldDirection = this.getDirection();
-        // Should be int but I don't know what happened
-        double sign = this.getRandomizer().nextDouble();
-        this.setDirection(oldDirection);
-        this.turn(sign*RIGHT_TURN_ANGLE);
-
-        Location next = getNextMoveLocation();
+    protected Location nextMonsterLocation(int stepSize) {
+        // Tracks whether a location was found
+        Location finalLoc = null;
 
         // First get a random direction to go to (left or right)
-        if (this.canMove(next))
-            this.setLocation(next);
+        double oldDirection = this.getDirection();
+        int sign = this.getRandomizer().nextDouble() < 0.5 ? 1 : -1;
+        this.turn(sign*RIGHT_TURN_ANGLE);
+        Location next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
 
-        // Collision occurs going first given direction
+        if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
+
+        // If collision occurs going first given direction, try other direction
         else {
-            // Check if you can go the opposite turn, either left or right
+            // Try to move forward
             this.setDirection(oldDirection);
-            this.turn(sign*LEFT_TURN_ANGLE);
-            next = this.getNextMoveLocation();
+            next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+            if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
 
-            if (this.canMove(next))
-                this.setLocation(next);
-
-            // If nothing really worked, just go backwards
             else {
-                this.setDirection(oldDirection);
-                this.turn(BACK_TURN_ANGLE);
-                next = this.getNextMoveLocation();
-                this.setLocation(next);
+                // Check if you can go the opposite turn, either left or right
+                this.turn(sign * LEFT_TURN_ANGLE);
+                next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+                if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
+
+                // If nothing really worked, just go backwards
+                else {
+                    this.setDirection(oldDirection);
+                    this.turn(BACK_TURN_ANGLE);
+                    next = this.getLocation().getAdjacentLocation(this.getDirection(), stepSize);
+                    if (this.canMove(this.getDirection(), stepSize)) finalLoc = next;
+                }
             }
         }
 
         // Tell game to change monster's location and store this as visited
-        this.addVisitedList(next);
+        return finalLoc;
     }
 }
