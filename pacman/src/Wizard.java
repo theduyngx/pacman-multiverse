@@ -60,9 +60,9 @@ public class Wizard extends Monster {
             // Even when not movable, it might be able to go to adjacent block if space beyond wall is valid
             else {
                 // Furious or not, wizard only looks 1 step after chosen location to see if it's wall or not
-                if (this.canMove(currDirection, stepSize+BEYOND_WALL)) {
-                    Location beyondWallLocation = this.getLocation().getAdjacentLocation(currDirection,
-                            stepSize+BEYOND_WALL);
+                Location beyondWallLocation = this.getLocation().getAdjacentLocation(currDirection,
+                        stepSize+BEYOND_WALL);
+                if (this.canMove(beyondWallLocation)) {
                     finalLoc = beyondWallLocation;
                     break;
                 }
