@@ -9,6 +9,9 @@ import java.util.*;
  */
 public abstract class Monster extends LiveActor {
 
+    // step sizes
+    public static final int AGGRESSIVE_STEP_SIZE = 2;
+
     /**
      * Monster type enumeration. Each monster type has a boolean value indicating whether it is exclusive
      * to the extended multiverse game or not.
@@ -35,7 +38,6 @@ public abstract class Monster extends LiveActor {
     // time-related constants
     public static final int SECOND_TO_MILLISECONDS = 1000;
     public static final int AGGRAVATE_TIME = 3;
-    private static final int AGGRAVATE_SPEED_FACTOR = 2;
     // if it has stopped moving or not
     private boolean stopMoving = false;
 
@@ -106,13 +108,13 @@ public abstract class Monster extends LiveActor {
      * @param seconds number of seconds monster speeds up
      */
     public void speedUp(int seconds) {
-        this.setSlowDown(1/AGGRAVATE_SPEED_FACTOR);
+        this.setStepSize(AGGRESSIVE_STEP_SIZE);
         Timer timer = new Timer();
         final Monster monster = this;
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                monster.setSlowDown(AGGRAVATE_SPEED_FACTOR);
+                monster.setStepSize(LiveActor.NORMAL_STEP_SIZE);
             }
         }, (long) seconds * SECOND_TO_MILLISECONDS);
     }
@@ -134,4 +136,37 @@ public abstract class Monster extends LiveActor {
         // Record changes in position to game
         getGameCallback().monsterLocationChanged(this);
     }
+
+
+    /**
+     * Adding itself to be an 'official' part of the game, viz. an actor of the game. Overridden
+     * from Movable interface.
+     * @param game the game
+     * @see        Movable
+     */
+    @Override
+    public void putActor(Game game) {
+        game.addActor(this, getInitLocation(), Location.NORTH);
+    }
+
+
+    /**
+     * Overridden moveApproach method from LiveActor class for monsters within the game
+     * @see LiveActor
+     */
+    @Override
+    public void moveApproach() {
+        Location newLocation = nextMonsterLocation(this.getStepSize());
+        if (newLocation == null) {
+            newLocation = nextMonsterLocation(LiveActor.NORMAL_STEP_SIZE);
+        }
+
+        assert newLocation != null;
+        this.setLocation(newLocation);
+    }
+
+    /**
+     * Abstract method for specific movement behavior of monster types
+     */
+    protected abstract Location nextMonsterLocation(int stepSize);
 }

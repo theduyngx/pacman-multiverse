@@ -20,30 +20,7 @@ public class PacManGameGrid {
     // number of vertical cells of the grid
     private final int numVerticalCells;
     // the grid data structure, represented by a 2-dimensional array of blocks
-    private final BlockType[][] mazeArray;
-
-    // character representing specific block
-    private static final char WALL_CHAR = 'x';
-    private static final char SPACE_CHAR = ' ';
-    private static final char PILL_CHAR = '.';
-    private static final char GOLD_CHAR = 'g';
-    private static final char ICE_CHAR = 'i';
-
-
-    /**
-     * Enumerated block, or inanimate objects, type. This includes
-     * <ul>
-     *     <li>WALL  - obstructed block which cannot be bypassed
-     *     <li>PILL  - the pill item required to be eaten by pacman to win
-     *     <li>SPACE - the empty space
-     *     <li>GOLD  - the gold piece required to be eaten, but also aggravates monsters
-     *     <li>ICE   - the ice piece not required to be eaten, but freezes monsters
-     *     <li>ERROR - error block (nonexistent)
-     * </ul>
-     */
-    public enum BlockType {
-        WALL, PILL, SPACE, GOLD, ICE, ERROR
-    }
+    private final InanimateActor.BlockType[][] mazeArray;
 
 
     /**
@@ -61,7 +38,7 @@ public class PacManGameGrid {
         Y_TOP    = 0;
         X_RIGHT  = numHorizontalCells;
         Y_BOTTOM = numVerticalCells;
-        mazeArray = new BlockType[numVerticalCells][numHorizontalCells];
+        mazeArray = new InanimateActor.BlockType[numVerticalCells][numHorizontalCells];
         String maze =
                         "xxxxxxxxxxxxxxxxxxxx" + // 0
                         "x....x....g...x....x" + // 1
@@ -78,7 +55,7 @@ public class PacManGameGrid {
         // Copy structure into integer array
         for (int i = 0; i < numVerticalCells; i++)
             for (int k = 0; k < numHorizontalCells; k++) {
-                BlockType value = toType(maze.charAt(numHorizontalCells * i + k));
+                InanimateActor.BlockType value = toType(maze.charAt(numHorizontalCells * i + k));
                 mazeArray[i][k] = value;
             }
     }
@@ -89,8 +66,7 @@ public class PacManGameGrid {
      * @return         the block type in said location
      * @see            Location
      */
-    public BlockType getCell(Location location)
-    {
+    public InanimateActor.BlockType getCell(Location location) {
         return mazeArray[location.y][location.x];
     }
 
@@ -99,9 +75,9 @@ public class PacManGameGrid {
      * @param location the specified location
      * @param value    the value to be replaced with
      * @see            Location
-     * @see            BlockType
+     * @see            InanimateActor
      */
-    protected void setCell(Location location, BlockType value) {
+    protected void setCell(Location location, InanimateActor.BlockType value) {
         mazeArray[location.x][location.y] = value;
     }
 
@@ -124,9 +100,9 @@ public class PacManGameGrid {
     /**
      * Get the grid itself, represented by a 2-dimensional array.
      * @return the grid
-     * @see    BlockType
+     * @see    InanimateActor
      */
-    public BlockType[][] getMazeArray() {
+    protected InanimateActor.BlockType[][] getMazeArray() {
         return mazeArray;
     }
 
@@ -166,16 +142,14 @@ public class PacManGameGrid {
      * Convert a maze string where each cell is represented by a character, to its corresponding block type.
      * @param c cell character
      * @return  its block type
-     * @see     BlockType
+     * @see     InanimateActor
      */
-    private BlockType toType(char c) {
-        return switch (c) {
-            case WALL_CHAR  -> BlockType.WALL;
-            case PILL_CHAR  -> BlockType.PILL;
-            case GOLD_CHAR  -> BlockType.GOLD;
-            case ICE_CHAR   -> BlockType.ICE;
-            case SPACE_CHAR -> BlockType.SPACE;
-            default         -> BlockType.ERROR;
-        };
+    private InanimateActor.BlockType toType(char c) {
+        if (c == InanimateActor.BlockType.WALL.BLOCK_CHAR ) return InanimateActor.BlockType.WALL ;
+        if (c == InanimateActor.BlockType.PILL.BLOCK_CHAR ) return InanimateActor.BlockType.PILL ;
+        if (c == InanimateActor.BlockType.GOLD.BLOCK_CHAR ) return InanimateActor.BlockType.GOLD ;
+        if (c == InanimateActor.BlockType.ICE.BLOCK_CHAR  ) return InanimateActor.BlockType.ICE  ;
+        if (c == InanimateActor.BlockType.SPACE.BLOCK_CHAR) return InanimateActor.BlockType.SPACE;
+        else return InanimateActor.BlockType.ERROR;
     }
 }

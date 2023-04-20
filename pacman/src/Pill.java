@@ -35,7 +35,7 @@ public class Pill extends Item {
      * @see             Location
      */
     @Override
-    protected void putItem(GGBackground bg, Game game, Location location) {
+    public void putActor(GGBackground bg, Game game, Location location) {
         bg.setPaintColor(Color.white);
         bg.fillCircle(game.toPoint(location), RADIUS);
         game.addActor(this, location);
@@ -44,7 +44,6 @@ public class Pill extends Item {
 
     /**
      * Overridden method to signal manager, although since pill has no effect on monsters, it will do nothing.
-     * (WIP) it is perhaps better to also add score here.
      * @param manager the object manager
      */
     @Override

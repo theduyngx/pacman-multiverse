@@ -119,9 +119,11 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
 
     /**
      * Overridden move approach method for PacMan which is only used when in auto movement mode.
+     * Overridden from Movable.
+     * @see Movable
      */
     @Override
-    protected void moveApproach() {
+    public void moveApproach() {
         if (propertyMoves.size() > propertyMoveIndex) {
             followPropertyMoves();
             return;
@@ -155,7 +157,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             setLocation(next);
         }
         eatItem(getManager());
-        addVisitedList(next);
+        if (isAuto) addVisitedList(next);
     }
 
     /**
@@ -192,7 +194,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      */
     public boolean collideMonster() {
         for (Monster monster : getManager().getMonsters())
-            if (checkCollision(monster))
+            if (actorCollide(monster))
                 return true;
         return false;
     }
@@ -224,6 +226,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      * pacman will be heading to, and move accordingly.
      */
     private void followPropertyMoves() {
+        if (! isAuto) return;
         String currentMove = propertyMoves.get(propertyMoveIndex);
         switch (currentMove) {
             case PropertiesLoader.RIGHT_DIR -> turn(RIGHT_TURN_ANGLE);
@@ -237,5 +240,17 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
             }
         }
         propertyMoveIndex++;
+    }
+
+
+    /**
+     * Adding itself to be an 'official' part of the game, viz. an actor of the game.
+     * Overridden from Movable.
+     * @param game the game
+     * @see        Movable
+     */
+    @Override
+    public void putActor(Game game) {
+        game.addActor(this, getInitLocation());
     }
 }

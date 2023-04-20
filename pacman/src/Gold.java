@@ -33,7 +33,7 @@ public class Gold extends Item {
      * @see             Location
      */
     @Override
-    protected void putItem(GGBackground bg, Game game, Location location) {
+    protected void putActor(GGBackground bg, Game game, Location location) {
         bg.setPaintColor(Color.yellow);
         game.addActor(this, location);
     }

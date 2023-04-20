@@ -1,5 +1,6 @@
 package src;
 import ch.aplu.jgamegrid.Location;
+import java.util.ArrayList;
 
 
 /**
@@ -16,6 +17,7 @@ public class Wizard extends Monster {
 
     // Constants needed for wizard class
     public static final int LIST_START = 0;
+    public static final int BEYOND_WALL = 1;
 
     /**
      * Wizard constructor
@@ -32,32 +34,38 @@ public class Wizard extends Monster {
      * but also has the ability to walk through walls. Overridden from Monster.
      */
     @Override
-    protected void moveApproach() {
-        Location.CompassDirection[] possibleLocations = Location.CompassDirection.values();
+    protected Location nextMonsterLocation(int stepSize) {
+        Location finalLoc = null; // This checks if we even can return a direction
 
-        // This loop will keep on going until a location is set for the wizard
-        // Randomly picks from the 8 possible directions
-        while (true) {
-            int currIndex = this.getRandomizer().nextInt(LIST_START, possibleLocations.length);
-            int currDirection = possibleLocations[currIndex].getDirection();
-            Location currentLocation = this.getLocation().getNeighbourLocation(currDirection);
+        // Get the possibleDirections then add each direction to directionValues
+        Location.CompassDirection[] possibleDirections = Location.CompassDirection.values();
+        ArrayList<Integer> directionValues = new ArrayList<>();
+        for (Location.CompassDirection dir : possibleDirections)
+            directionValues.add(dir.getDirection());
 
-            // best case scenario: the wizard found a location to move to instantly
-            if (this.canMove(currentLocation)) {
-                this.setLocation((currentLocation));
+        // Loop until a location is set; randomly pick a direction or if it has exhausted all of them
+        while (!directionValues.isEmpty()) {
+            int currIndex = this.getRandomizer().nextInt(LIST_START, directionValues.size());
+            int currDirection = directionValues.get(currIndex);
+
+            if (this.canMove(currDirection, stepSize)) {
+                finalLoc = this.getLocation().getAdjacentLocation(currDirection, stepSize);
                 break;
             }
 
-            // Even if it can't move to that block, it might be able to go to
-            // the adjacent block if the space beyond the wall is valid
+            // Even when not movable, it might be able to go to adjacent block if space beyond wall is valid
             else {
-                Location beyondWallLocation = currentLocation.getNeighbourLocation(currDirection);
+                // Furious or not, wizard only looks 1 step after chosen location to see if it's wall or not
+                Location beyondWallLocation = this.getLocation().getAdjacentLocation(currDirection,
+                        stepSize+BEYOND_WALL);
                 if (this.canMove(beyondWallLocation)) {
-                    this.setLocation(beyondWallLocation);
+                    finalLoc = beyondWallLocation;
                     break;
                 }
             }
-
+            directionValues.remove(currIndex);
         }
+
+        return finalLoc;
     }
 }
