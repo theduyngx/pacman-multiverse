@@ -140,7 +140,7 @@ public class Orion extends Monster {
 
 
     /**
-     * Helper function for moveApproach that decides the next gold piece location Orion moves to.
+     * Helper method for moveApproach that decides the next gold piece location Orion moves to.
      */
     private void findNewGold() {
         // keep track of the gold pieces that have and have not been visited
@@ -165,7 +165,7 @@ public class Orion extends Monster {
     }
 
     /**
-     * This function initializes 2 key maps needed for Orion:
+     * This method initializes 2 key maps needed for Orion:
      * <ul>
      *     <li>goldLocations: gold piece locations visited for each walking cycle;
      *     <li>goldPacmanAte: gold pieces Pacman ate already

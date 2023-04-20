@@ -1,8 +1,6 @@
 package src;
 import ch.aplu.jgamegrid.Location;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 /**
@@ -42,9 +40,8 @@ public class Wizard extends Monster {
         // Get the possibleDirections then add each direction to directionValues
         Location.CompassDirection[] possibleDirections = Location.CompassDirection.values();
         ArrayList<Integer> directionValues = new ArrayList<>();
-        for (Location.CompassDirection dir : possibleDirections) {
+        for (Location.CompassDirection dir : possibleDirections)
             directionValues.add(dir.getDirection());
-        }
 
         // Loop until a location is set; randomly pick a direction or if it has exhausted all of them
         while (!directionValues.isEmpty()) {
@@ -52,8 +49,7 @@ public class Wizard extends Monster {
             int currDirection = directionValues.get(currIndex);
 
             if (this.canMove(currDirection, stepSize)) {
-                Location currentLocation = this.getLocation().getAdjacentLocation(currDirection, stepSize);
-                finalLoc = currentLocation;
+                finalLoc = this.getLocation().getAdjacentLocation(currDirection, stepSize);
                 break;
             }
 
