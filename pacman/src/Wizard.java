@@ -29,10 +29,11 @@ public class Wizard extends Monster {
 
     /**
      * Moves Wizard to its next location, movement is randomly selected from its 8 neighboring locations,
-     * but also has the ability to walk through walls. Overridden from Monster.
+     * but also has the ability to walk through walls. Overridden from Movable.
+     * @see src.utility.Movable
      */
     @Override
-    protected void moveApproach() {
+    public void moveApproach() {
         Location.CompassDirection[] possibleLocations = Location.CompassDirection.values();
 
         // This loop will keep on going until a location is set for the wizard

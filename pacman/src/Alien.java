@@ -28,10 +28,11 @@ public class Alien extends Monster {
 
     /**
      * Moves Alien to its next location, purely determined by which 8 neighboring locations
-     * it can move to and are closest to Pacman. Overridden from Monster.
+     * it can move to and are closest to Pacman. Overridden from Movable.
+     * @see src.utility.Movable
      */
     @Override
-    protected void moveApproach() {
+    public void moveApproach() {
         // Aliens pick from the directions it can walk to, and choose one that's closest to pacman
         ArrayList<Location> possibleMoves = new ArrayList<>();
         int minDistance = Integer.MAX_VALUE;

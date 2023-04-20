@@ -140,11 +140,13 @@ public abstract class Monster extends LiveActor {
 
 
     /**
-     * Adding itself to be an 'official' part of the game, viz. an actor of the game.
+     * Adding itself to be an 'official' part of the game, viz. an actor of the game. Overridden
+     * from Movable interface.
      * @param game the game
+     * @see        src.utility.Movable
      */
     @Override
-    protected void putActor(Game game) {
+    public void putActor(Game game) {
         game.addActor(this, getInitLocation(), Location.NORTH);
     }
 }

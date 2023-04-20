@@ -14,8 +14,8 @@ public class Orion extends Monster {
     // Name of class required for GameCallback
     private static final MonsterType TYPE = MonsterType.Orion;
     // Constructor arguments
-    public static final int numOrionImages = 1;
-    public static final String directory = "sprites/m_orion.gif";
+    public static final int NUM_ORION_IMAGES = 1;
+    public static final String DIRECTORY = "sprites/m_orion.gif";
 
     // Constants used to check for non-diagonal directions
     private static final int CHECK_NON_DIAGONAL = 10;
@@ -33,7 +33,7 @@ public class Orion extends Monster {
      * @param manager stores locations of all game objects
      */
     public Orion(ObjectManager manager) {
-        super(manager, false, directory, numOrionImages);
+        super(manager, false, DIRECTORY, NUM_ORION_IMAGES);
         assert manager != null;
         setType(TYPE);
         // Assert there are actually items for Orion to store
@@ -52,16 +52,17 @@ public class Orion extends Monster {
     }
 
     /**
-     * The Orion's movement approach in game. Overridden from Monster.
+     * The Orion's movement approach in game. Overridden from Movable.
      * <ul>
      *     <li>Moves Orion to its next location, based on walking through every gold location randomly;
      *         prioritizing golds that Pacman has yet to eat.
      *     <li>Orion has walk cycles; a walk cycle starts when Orion determines the first gold location
      *         to walk to, and ends when it arrives at its last unvisited gold location.
      * </ul>
+     * @see src.utility.Movable
      */
     @Override
-    protected void moveApproach() {
+    public void moveApproach() {
         // If already are at destination or destination is null, find a new destination to walk to
         if (this.currDestination != null &&
             this.currDestination.location().getX() == this.getLocation().getX() &&

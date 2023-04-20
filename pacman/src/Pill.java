@@ -44,7 +44,6 @@ public class Pill extends Item {
 
     /**
      * Overridden method to signal manager, although since pill has no effect on monsters, it will do nothing.
-     * (WIP) it is perhaps better to also add score here.
      * @param manager the object manager
      */
     @Override

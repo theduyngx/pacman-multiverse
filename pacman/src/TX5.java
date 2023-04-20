@@ -30,10 +30,11 @@ public class TX5 extends Monster {
 
     /**
      * Moves TX5 to its next location, determination of movement is purely to get closer to Pacman;
-     * otherwise resorts to random movement. Overridden from Monster.
+     * otherwise resorts to random movement. Overridden from Movable.
+     * @see src.utility.Movable
      */
     @Override
-    protected void moveApproach() {
+    public void moveApproach() {
         // With TX5, need to base direction to move on the position of pacman
         Location pacLocation = getManager().getPacActor().getLocation();
         double oldDirection = this.getDirection();

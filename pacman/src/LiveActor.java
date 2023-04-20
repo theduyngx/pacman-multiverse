@@ -1,5 +1,6 @@
 package src;
 import src.utility.GameCallback;
+import src.utility.Movable;
 
 import ch.aplu.jgamegrid.*;
 import java.util.LinkedList;
@@ -10,10 +11,15 @@ import java.util.Random;
  * Abstract LiveActor class for any actors in the game that are animate objects. Like Item class, it will
  * frequently interact with the object manager to get the state of the game, which includes where every
  * other actor is located at, and whether there is a location collision or not.
- * @see Actor
+ * <p>
+ * The LiveActor class is extended from abstract parent GameActor class which represents any actor within
+ * game, not just live (or animate), but also inanimate as well. It also implements the Movable interface
+ * for any game objects that are movable.
+ * @see GameActor
+ * @see Movable
  * @see ObjectManager
  */
-public abstract class LiveActor extends GameActor {
+public abstract class LiveActor extends GameActor implements Movable {
     // manager and randomizer
     private final ObjectManager manager;
     private final Random randomizer = new Random(0);
@@ -154,22 +160,17 @@ public abstract class LiveActor extends GameActor {
      */
     protected abstract void setSeed(int seed);
 
-    /**
-     * Abstract move approach that changes depending on the live actor: PacActor in auto mode, as well as
-     * different enemies may have each distinctive move approach.
-     */
-    protected abstract void moveApproach();
-
 
     /**
      * Check whether a live actor can move to a specified location. This is to make sure that the location that
      * the live actor queries should be a space with no obstacles (like wall blocks), or that it is not out of
-     * bound from the game grid.
+     * bound from the game grid. This method is implemented from Movable interface.
      * @param location specified location
      * @return         boolean indicating whether actor can move there.
      * @see            Location
      */
-    protected boolean canMove(Location location) {
+    @Override
+    public boolean canMove(Location location) {
         int x = location.getX(), y = location.getY();
         PacManGameGrid grid = getManager().getGame().getGrid();
         assert grid != null;
@@ -178,7 +179,7 @@ public abstract class LiveActor extends GameActor {
     }
 
     /**
-     * Add location to the hashmap of visited locations.
+     * Add location to the hashmap of visited locations. This method is implemented from Movable interface.
      * <ul>
      *     <li>For monsters, this is used for those that need to remember its visited location within a
      *         specific cycle so that it avoids returning to a location that it's already visited before.
@@ -191,7 +192,8 @@ public abstract class LiveActor extends GameActor {
      * @see   Troll
      * @see   PacActor
      */
-    protected void addVisitedList(Location location) {
+    @Override
+    public void addVisitedList(Location location) {
         int CYCLE_LENGTH = 10;
         visitedList.add(location);
         if (visitedList.size() == CYCLE_LENGTH)
@@ -199,9 +201,10 @@ public abstract class LiveActor extends GameActor {
     }
 
     /**
-     * Check if monster has not visited a specific location. This method is used alongside with
-     * <code> void addVisitedList(Location location) </code> method, meaning it is only used
-     * when the behavior of the live actor calls for a use of the visited locations list.
+     * Check if monster has not visited a specific location. This method is implemented from
+     * Movable interface, which represents movable game objects. The method is used alongside with
+     * <code> void addVisitedList(Location location) </code> method, meaning it is only used when
+     * the behavior of the live actor calls for a use of the visited locations list.
      * @param  location specified location to check if monster has visited
      * @return          true if monster has yet, false if otherwise
      * @see    Orion
@@ -209,16 +212,10 @@ public abstract class LiveActor extends GameActor {
      * @see    Troll
      * @see    PacActor
      */
-    protected boolean notVisited(Location location) {
+    @Override
+    public boolean notVisited(Location location) {
         for (Location loc : visitedList)
             if (loc.equals(location)) return false;
         return true;
     }
-
-
-    /**
-     * Abstract method to put live actor to the game.
-     * @param game the game
-     */
-    protected abstract void putActor(Game game);
 }
