@@ -238,13 +238,6 @@ public abstract class LiveActor extends Actor {
         return true;
     }
 
-    protected void printVisited() {
-        for (Location loc: visitedList) {
-            System.out.print(String.format("%d %d ", loc.getX(), loc.getY()));
-        }
-        System.out.print("\n");
-    }
-
     /**
      * Check if 'this' live actor collides with a specified other or not. This is used to specifically
      * determine whether PacMan has collided with a monster. Meaning its main purpose is to check for
