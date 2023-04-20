@@ -240,11 +240,4 @@ public abstract class LiveActor extends GameActor implements Movable {
             if (loc.equals(location)) return false;
         return true;
     }
-
-    protected void printVisited() {
-        for (Location loc: visitedList) {
-            System.out.printf("%d %d ", loc.getX(), loc.getY());
-        }
-        System.out.print("\n");
-    }
 }
