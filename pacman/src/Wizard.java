@@ -62,7 +62,8 @@ public class Wizard extends Monster {
                 // Furious or not, wizard only looks 1 step after chosen location to see if it's wall or not
                 Location beyondWallLocation = this.getLocation().getAdjacentLocation(currDirection,
                         stepSize+BEYOND_WALL);
-                if (this.canMove(beyondWallLocation)) {
+                // Must also check if the location right before the wall is walkable
+                if (this.canMove(beyondWallLocation) && this.canMove(currDirection, stepSize-BEYOND_WALL)) {
                     finalLoc = beyondWallLocation;
                     break;
                 }
