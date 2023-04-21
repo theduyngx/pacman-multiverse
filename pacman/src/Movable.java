@@ -1,6 +1,4 @@
-package src.utility;
-import src.Game;
-
+package src;
 import ch.aplu.jgamegrid.Location;
 
 

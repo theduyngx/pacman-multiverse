@@ -1,6 +1,5 @@
 package src;
 import src.utility.GameCallback;
-import src.utility.Movable;
 
 import ch.aplu.jgamegrid.*;
 import java.util.LinkedList;

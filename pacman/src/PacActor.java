@@ -120,7 +120,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
     /**
      * Overridden move approach method for PacMan which is only used when in auto movement mode.
      * Overridden from Movable.
-     * @see src.utility.Movable
+     * @see Movable
      */
     @Override
     public void moveApproach() {
@@ -247,7 +247,7 @@ public class PacActor extends LiveActor implements GGKeyRepeatListener {
      * Adding itself to be an 'official' part of the game, viz. an actor of the game.
      * Overridden from Movable.
      * @param game the game
-     * @see        src.utility.Movable
+     * @see        Movable
      */
     @Override
     public void putActor(Game game) {

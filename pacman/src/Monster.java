@@ -38,7 +38,6 @@ public abstract class Monster extends LiveActor {
     // time-related constants
     public static final int SECOND_TO_MILLISECONDS = 1000;
     public static final int AGGRAVATE_TIME = 3;
-    private static final int AGGRAVATE_SPEED_FACTOR = 2;
     // if it has stopped moving or not
     private boolean stopMoving = false;
 
@@ -143,7 +142,7 @@ public abstract class Monster extends LiveActor {
      * Adding itself to be an 'official' part of the game, viz. an actor of the game. Overridden
      * from Movable interface.
      * @param game the game
-     * @see        src.utility.Movable
+     * @see        Movable
      */
     @Override
     public void putActor(Game game) {
